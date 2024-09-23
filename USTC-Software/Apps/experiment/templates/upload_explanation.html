@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel = 'stylesheet' type = 'text/css' href = "{% static 'css/upload_explanation.css'%}">
+    <title>文件提交建议详情</title>
+    
+</head>
+<body>
+    <p class='title'>以实验列表第一个实验文件提交为例</p>
+    <img src="{% static 'img/background.png' %}" class='background'></img>
+    <p class='write' id='first'>标准实例：</p>
+    <img src="{% static 'img/file_submit_one.png' %}" id='one'></img>
+    <p class='write' id='second'>选中文件与模版文件</br>数量及名称完全一致</p>
+    <img src="{% static 'img/file_submit_two.png' %}" id='two'></img>
+    <p class='write' id='third'>包含多余文件，但含有完整的示例文</br>件且名称相同，也可成功提交并获取结果</p>
+</br>
+    <p class='write' id='forth'>错误示例：</p>
+    <img src="{% static 'img/file_submit_three.png' %}" id='three'></img>
+    <p class='write' id='fifth'>未包含完整的示例文件</p>
+    <img src="{% static 'img/file_submit_four.png' %}" id='four'></img>
+    <p class='write' id='sixth'>未包含完整的示例文件</p>
+</body>
+</html>

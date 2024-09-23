@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+</head>
+<body>
+    <h1>Signup</h1>
+    <form action="{% url 'accounts:signup_check' %}" method="post">
+        {% csrf_token %}
+                {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username">
+        <br>
+
+
+        <label for="birth_date">Birth Date:</label>
+        <input type="date" id="birth_date" name="birth_date">
+        <br>
+
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password">
+        <br>
+
+        <label for="confirm_password">Confirm Password:</label>
+        <input type="password" id="confirm_password" name="confirm_password">
+        <br>
+
+        <label for="verification_code">Verification Code:</label>
+        <input type="text" id="verification_code" name="verification_code">
+        <br>
+        <input type="submit" value="Signup">
+    </form>
+
+    <form action="{% url 'accounts:send_verification_code' %}" method="post">
+        {% csrf_token %}
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email">
+        <br>
+
+
+
+        <input type="hidden" id="email_for_verification" name="email_for_verification">
+        <input type="submit" value="Send Verification Code">
+    </form>
+</body>
+</html>

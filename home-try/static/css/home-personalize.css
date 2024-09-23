@@ -1,0 +1,126 @@
+.bg-semi-transparent {
+    background-color: rgba(0, 0, 0, 0.3); /* 半透明黑色 */
+}
+
+.custom-nav-text .navbar-brand,
+.custom-nav-text .nav-link {
+  color: rgb(238, 232, 170) !important;
+}
+
+.custom-nav-text .navbar-toggler-icon {
+  color: rgb(238, 232, 170) !important;
+}
+.nav-item {
+    position: relative;
+}
+
+.hover-block {
+    display: none;
+    position: fixed; /* Fixed positioning relative to viewport */
+    top: 60px; /* Adjust according to your navbar height */
+    left: 0;
+    width: 100vw;
+    height: 48vh;
+    z-index: 1000;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+    color: white; /* 文本颜色 */
+}
+  
+/* Different styles for different blocks */
+.block-home{
+    background-color: rgb(255, 255, 255);
+}
+
+.home-text p{
+    color: rgb(112, 36, 147);
+    font-size: 1.3rem;
+    font-weight: bold;
+    text-indent: 2em;
+}
+
+.home-text a,
+.home-text a p{
+    color: rgb(36, 145, 147);
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+.block-6{
+    /* background-color: rgba(0, 0, 0, 0.5); */
+    background: rgb(255, 255, 255); 
+    color: rgb(238, 232, 170); /* Light yellow text color */
+}
+
+.block-1{
+    background-color: rgb(241, 241, 241);
+}
+
+.workflow-text p{
+    color: rgb(24, 24, 24);
+    font-size: 1.3rem;
+    text-indent: 2em;
+}
+
+.block-2{
+    background-color: rgb(201, 197, 193);
+}
+
+.community-text p{
+    color: rgb(40, 119, 184);
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-indent: 2em;
+}
+
+.block-3{
+    background-color: rgb(162, 132, 176);
+    
+}
+
+.resource-text p{
+    color: rgb(244, 162, 96) !important;
+    font-size: 1.3rem;
+    font-weight: bold;
+    text-indent: 2em;
+}
+
+
+.block-4{
+    background-color: rgb(150, 150, 152);
+}
+
+.team-text p{
+    color: black;
+    font-size: 1.23rem;
+    text-indent: 2em;
+}
+
+.team-text-2 p{
+    color: black;
+    font-size: 1.3rem;
+    font-weight: bold;
+    text-indent: 2em;
+}
+
+.block-5{
+    background-color: rgb(243, 233, 229);
+}
+
+.feedback-text p,
+.account-text p{
+    color: black;
+    font-size: 1.3rem;
+    font-weight: bold;
+    text-indent: 2em;
+}
+
+/* 悬停效果 */
+.nav-link:hover + .hover-block {
+    opacity: 1; /* 逐渐显示 */
+    visibility: visible; /* 显示 */
+    transition-delay: 0s; /* 移除 visibility 延迟 */
+}
+
+.nav-item-spaced {
+    margin-right: 35px; /* 调整间距大小 */
+}

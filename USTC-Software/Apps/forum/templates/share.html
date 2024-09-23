@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="title" content="Ask online Form">
+    <meta name="language" content="English">
+    <title>Share</title>
+
+    <!-- 使用 bootstrap.min.css -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" type="text/css">
+    
+    <!-- Quill.js CSS -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container-fluid">
+            <!-- 面包屑组织“相对路径” -->
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'forum:forum_index' %}">Community</a></li>
+                <li class="breadcrumb-item"><a href="#">share</a></li>
+            </ol>
+            {% include 'nav-links.html' %}
+        </div>
+    </nav>
+
+    <section>
+        <div class="container">
+            <div class="ask-question-input-part032">
+                <h4>Share something</h4>
+                <hr>
+                <form id="shareForm" action="{% url 'forum:submit_sharing' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="title">Title*</label>
+                        <input type="text" name="title" class="form-control" id="title" placeholder="Write your title here" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="quillEditor">Content*</label>
+                        <div id="toolbar"></div>
+                        <div id="quillEditor" style="min-height: 300px;"></div>
+                        <input type="hidden" name="content_copy" id="content_copy" required >
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="publis1291" style="background-color: blue;">Publish</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script>
+        var toolbarOptions = [
+            [{ 'font': [] }, { 'size': [] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'script': 'sub'}, { 'script': 'super' }],
+            [{ 'header': '1' }, { 'header': '2' }, 'blockquote', 'code-block'],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'indent': '-1'}, { 'indent': '+1' }],
+            [{ 'direction': 'rtl' }, { 'align': [] }],
+            ['link', 'image', 'video', 'formula'],
+            ['clean']
+        ];
+
+        var quill = new Quill('#quillEditor', {
+            theme: 'snow',
+            modules: {
+                toolbar: toolbarOptions
+            }
+        });
+
+        // 在表单提交之前，将富文本编辑器中的内容同步到隐藏的 input 中
+        $("#shareForm").submit(function(e) {
+            var content = quill.root.innerHTML;
+            $("#content_copy").val(content);
+
+            // 检查内容是否为空
+            if ($("#content_copy").val().trim() === "<p><br></p>" || $("#content_copy").val().trim() === "") {
+                alert("Content cannot be empty!");
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>

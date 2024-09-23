@@ -1,0 +1,54 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/feedback-style.css' %}">
+    <title>Feedback</title>
+</head>
+<body>
+    <div id="panel" class="container mt-5">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <form id="feedback-form" method="POST" action="{% url 'feedback:send_feedback' %}">
+                    {% csrf_token %}
+                    <strong class="d-block mb-3 h4">How satisfied are you with our customer support performance?</strong>
+                    <div class="ratings-container d-flex justify-content-around mb-3">
+                        <div class="rating">
+                            <input type="radio" name="rating" id="unhappy" value="Unhappy" class="d-none">
+                            <label for="unhappy" class="d-flex flex-column align-items-center">
+                                <img src="{% static 'imgs/unhappy.png' %}" alt="Unhappy" class="img-fluid">
+                                <small>Unhappy</small>
+                            </label>
+                        </div>
+                        <div class="rating">
+                            <input type="radio" name="rating" id="neutral" value="Neutral" class="d-none">
+                            <label for="neutral" class="d-flex flex-column align-items-center">
+                                <img src="{% static 'imgs/neutral.png' %}" alt="Neutral" class="img-fluid">
+                                <small>Neutral</small>
+                            </label>
+                        </div>
+                        <div class="rating active">
+                            <input type="radio" name="rating" id="satisfied" value="Satisfied" class="d-none" checked>
+                            <label for="satisfied" class="d-flex flex-column align-items-center">
+                                <img src="{% static 'imgs/satisfied.png' %}" alt="Satisfied" class="img-fluid">
+                                <small>Satisfied</small>
+                            </label>
+                        </div>
+                    </div>
+                    <textarea id="feedback" name="feedback" class="form-control mb-3" placeholder="Please enter your feedback here..."></textarea>
+                    <button type="submit" class="btn btn-dark" id="send">Send Review</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'js/feedback-script.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+</body>
+</html>

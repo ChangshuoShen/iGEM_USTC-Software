@@ -1,0 +1,157 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A layout example that shows off a blog page with a list of posts.">
+    <title>Pure Admin Panel</title>
+
+    <link rel="stylesheet" href="{% static 'css/pure-min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pure-responsive-min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/admin_style.css' %}">
+</head>
+<body>
+    <div id="layout" class="pure-g">
+        <div class="sidebar pure-u-1 pure-u-md-3-24">
+            <div id="menu">
+                <div class="pure-menu">
+                    <p class="pure-menu-heading">
+                        <p style="font-size:2.5em; display: inline;">Admin</p>
+                        <a href="{% url "accounts:signup_login"%}" class="pure-button button-xxsmall">OUT &raquo;</a>
+                    </p>
+                    <ul class="pure-menu-list">
+                        <li class="pure-menu-item">
+                            <a href="{% url "admin_panel:dashboard" %}" class="pure-menu-link">Dashboard</a>
+                        </li>
+
+                        <p style="font-size:1.5em; display: inline;">Posts</p>
+                        <li class="pure-menu-item menu-item-divided">
+                            <a href="{% url "admin_panel:riddles" %}" class="pure-menu-link">Riddles</a>
+                        </li>
+
+                        <li>
+                            <a href="{% url "admin_panel:share_sth_interesting" %}" class="pure-menu-link">Share Sth, Interesting</a>
+                        </li>
+
+                        <li>
+                            <a href="{% url "admin_panel:find_friends" %}" class="pure-menu-link">Find Friends</a>
+                        </li>
+
+                        <li>
+                            <a href="{% url "admin_panel:else" %}" class="pure-menu-link">Else</a>
+                        </li>
+                        
+                        <p style="font-size:1.5em; display: inline;">Comments</p>
+
+                        <li class="pure-menu-item menu-item-divided">
+                            <a href="{% url "admin_panel:show_comments" %}" class="pure-menu-link">All Comments</a>
+                        </li>
+
+                        <p style="font-size:1.5em; display: inline;">Users</p>
+
+                        <li class="pure-menu-item menu-item-divided">
+                            <a href="{% url "admin_panel:user_list" %}" class="pure-menu-link">All Users</a>
+                        </li>
+
+                        <p style="font-size:1.5em; display: inline;">Raffles</p>
+                        <li class="pure-menu-item menu-item-divided">
+                            <a href="#" class="pure-menu-link">Edit Prizes <br>For Raffle</a>
+                        </li>
+
+                        
+                        <li class="pure-menu-item menu-item-divided">
+                            <a href="{% url "home"%}" class="pure-menu-link">
+                                <p style="font-size:2em; display: inline;">Home</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="content pure-u-1 pure-u-md-21-24">
+            <div class="header-small">
+                <div class="items">
+                    <h1 class="subhead">Post List </h1>
+                    <!--
+                    <aside class="pure-message message-success">
+                        <p><strong>SUCCESS</strong>: Success message.</p>
+                    </aside>
+                    <aside class="pure-message message-error">
+                        <p><strong>ERROR</strong>: Error message.</p>
+                    </aside>
+                    <aside class="pure-message message-warning">
+                        <p><strong>WARNING</strong>: Warning message.</p>
+                    </aside>
+                    -->
+
+                    <table class="pure-table pure-table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Theme</th>
+                            <th>Title</th>
+                            <th>Content</th>
+                            <th>Publish Date</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for post in posts %}
+                            <tr>
+                                <td>{{ post.id }}</td>
+                                <td>{{ post.theme }}</td>
+                                <td>{{ post.post_title }}</td>
+                                <td>{{ post.post_content }}</td>
+                                <td>{{ post.publish_date }}</td>
+                                <td>
+                                    <a class="pure-button button-small button-secondary" href="{% url 'forum:post_detail' post_id=post.id %}">View</a>
+                                    <hr>
+                                    <!--
+                                    <a class="pure-button button-small button-success" href="#">Edit</a>
+                                    <hr>
+                                    -->
+                                    <form method="post" class="pure-button button-small button-error" action="{% url 'admin_panel:delete_post' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="post_id" value="{{ post.id }}">
+                                        <input type="hidden" name="return_url" value="{{ this_url }}">
+                                        <button type="submit" onclick="return confirm('Are you sure?');" style="background: none; border: none; padding: 0; font: inherit; cursor: pointer;">Delete</button>
+                                    </form>
+                                    </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="navigation">
+                    <div class="pure-button-group">
+                        {% if posts.has_previous %}
+                        <a href="?page=1" class="pure-button">First</a>
+                        <a href="?page={{ posts.previous_page_number }}" class="pure-button">Previous</a>
+                        {% endif %}
+                        <span class="pure-button pure-button-disabled">Page {{ posts.number }} of {{ posts.paginator.num_pages }}</span>
+                        {% if posts.has_next %}
+                        <a href="?page={{ posts.next_page_number }}" class="pure-button">Next</a>
+                        <a href="?page={{ posts.paginator.num_pages }}" class="pure-button">Last</a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+
+                <div class="footer">
+                    <div class="pure-menu pure-menu-horizontal">
+                        <ul>
+                            <li class="pure-menu-item"><a href="#" class="pure-menu-link">1</a></li>
+                            <li class="pure-menu-item"><a href="#" class="pure-menu-link">2</a></li>
+                            <li class="pure-menu-item"><a href="#" class="pure-menu-link">3</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

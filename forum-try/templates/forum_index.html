@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="title" content="Ask online Form">
+    <meta name="language" content="English">
+    <title>Forum</title>
+
+    <link rel="stylesheet" href="../static/css/bootstrap.css" type="text/css">
+    <link rel="stylesheet" href="../static/css/style.css"  type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/css/editor.css" type="text/css">
+    <link rel="stylesheet" href="../static/css/responsive.css" type="text/css">
+</head>
+
+<body>
+    <section class="welcome-part-one">
+        <div class="container">
+            <ol class="breadcrumb breadcrumb839">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Forum</a></li>
+            </ol>
+            <div class="welcome-demop102 text-center">
+                <h1 style="font-weight: bold; color: #fff;">Forum</h1>
+                <h2>USTC-Software</h2>
+                <p>Ask Some Questions Here or Find some interesting things around you
+                    <br>bala bala 
+                </p>
+
+                <div class="form-style8292">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                        </span>
+                        <input type="text" class="form-control form-control8392" placeholder="Find Some Interesting Things Here?">
+                        <span class="input-group-addon">
+                            <a href="#">Ask Now</a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="main-content920">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9">
+                    <div id="main">
+                        <input id="tab1" type="radio" name="tabs" checked>
+                        <label for="tab1">Riddles</label>
+
+                        <input id="tab2" type="radio" name="tabs">
+                        <label for="tab2">Share Sth. Intersting</label>
+
+                        <input id="tab3" type="radio" name="tabs">
+                        <label for="tab3">Ask For Help</label>
+
+                        <input id="tab4" type="radio" name="tabs">
+                        <label for="tab4">Find Friends</label>
+                        
+                        <input id="tab5" type="radio" name="tabs">
+                        <label for="tab5">Else</label>
+
+                        <!-- 这个是用来写分享 -->
+                        <input id="tab6" name="tabs">
+                        <label for="tab6">Share sth.</label>
+                        
+                        <!-- 从这里开始是下面的主要内容 -->
+                        <!-- 示例内容，实际内容应根据需要填充 -->
+                        <section id="content1">
+                            <div class="question-type2033">
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <div class="left-user12923 left-user12923-repeat">
+                                            <a href="#"><img src="../static/imgs/images.png" alt="image"> </a>
+                                            <a href="#"><i class="fa fa-check" aria-hidden="true"></i></a> 
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-9">
+                                        <div class="right-description893">
+                                            <div id="que-hedder2983">
+                                                <h3><a href="#">示例帖子标题</a></h3>
+                                            </div>
+                                            <div class="ques-details10018">
+                                                <p>示例帖子内容。</p>
+                                            </div>
+                                            <hr>
+                                            <div class="ques-icon-info3293">
+                                                <a href="#"><i class="fa fa-star" aria-hidden="true"> 点赞数 </i> </a>
+                                                <a href="#"><i class="fa fa-clock-o" aria-hidden="true"> 发布日期 </i></a>
+                                                <a href="#"><i class="fa fa-question-circle-o" aria-hidden="true"> 主题 </i></a>
+                                                <a href="#"><i class="fa fa-bug" aria-hidden="true"> Report</i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="ques-type302">
+                                            <a href="#">
+                                                <button type="button" class="q-type238"><i class="fa fa-comment" aria-hidden="true"> 评论数 </i></button>
+                                            </a>
+                                            <a href="#">
+                                                <button type="button" class="q-type23 button-ques2973"><i class="fa fa-user-circle-o" aria-hidden="true"> 点赞数 </i></button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="../static/js/jquery-3.1.1.min.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="../static/js/editor.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#txtEditor").Editor();
+        });
+    </script>
+</body>
+</html>

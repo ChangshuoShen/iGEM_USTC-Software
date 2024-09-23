@@ -1,0 +1,24 @@
+server {
+    listen 80;
+    server_name mobase.top www.mobase.top 121.40.102.28;  # 域名或IP地址
+	
+    # 设置允许的最大上传文件大小
+    client_max_body_size 100M;
+
+    location / {
+        proxy_pass http://127.0.0.1:8000;  # 代理到Gunicorn
+        proxy_set_header Host $host;  # 转发主机头
+        proxy_set_header X-Real-IP $remote_addr;  # 转发真实IP
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;  # 转发X-Forwarded-For头
+        proxy_set_header X-Forwarded-Proto $scheme;  # 转发协议（http或https）
+    }
+
+    location /static/ {
+        alias /var/www/static/;  # 静态文件路径
+    }
+
+    location /media/ {
+        alias /var/www/media/;  # 媒体文件路径
+    }
+}
+

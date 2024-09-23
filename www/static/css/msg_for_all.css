@@ -1,0 +1,37 @@
+
+    .message-container {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 9999;
+      text-align: center;
+    }
+
+    .message {
+      padding: 10px;
+      margin: 5px auto;
+      width: 80%;
+      max-width: 500px;
+      background-color: #dff0d8;
+      border: 1px solid #d6e9c6;
+      color: #3c763d;
+      border-radius: 4px;
+    }
+
+    .message.error {
+      background-color: #f2dede;
+      border-color: #ebccd1;
+      color: #a94442;
+    }
+
+    .message.warning {
+      background-color: #fcf8e3;
+      border-color: #faebcc;
+      color: #8a6d3b;
+    }
+
+    .message.info {
+      background-color: #d9edf7;
+      border-color: #bce8f1;
+      color: #31708f;
+    }

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="feedback-style.css">
+    <title>Feedback</title>
+</head>
+<body>
+    <div id="panel" class="container mt-5">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <strong class="d-block mb-3 h4">How satisfied are you with our customer support performance?</strong>
+                <div class="ratings-container d-flex justify-content-around mb-3">
+                    <div class="rating">
+                        <img src="./imgs/unhappy.png" alt="Unhappy" class="img-fluid">
+                        <small>Unhappy</small>
+                    </div>
+                    <div class="rating">
+                        <img src="./imgs/neutral.png" alt="Neutral" class="img-fluid">
+                        <small>Neutral</small>
+                    </div>
+                    <div class="rating active">
+                        <img src="./imgs/satisfied.png" alt="Satisfied" class="img-fluid">
+                        <small>Satisfied</small>
+                    </div>
+                </div>
+                <textarea id="feedback" class="form-control mb-3" placeholder="Please enter your feedback here..."></textarea>
+                <button class="btn btn-dark" id="send">Send Review</button>
+            </div>
+        </div>
+    </div>
+    <script src="feedback-script.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

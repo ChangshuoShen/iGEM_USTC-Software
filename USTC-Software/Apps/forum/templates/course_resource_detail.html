@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="title" content="Course Resource Detail">
+    <meta name="language" content="English">
+    <title>{{ resource.title }}</title>
+    
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css">
+    
+    <style>
+        .pdf-viewer {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .pdf-viewer iframe {
+            width: 100%;
+            height: 90vh;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container-fluid">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'forum:forum_index' %}">Community</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'forum:course_resources' %}">Course Resources</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Title: {{ resource.title }}</li>
+            </ol>
+            {% include 'nav-links.html' %}
+        </div>
+    </nav>
+
+    <section style="margin-top: 56px;">
+        <div class="container-fluid row">
+            <div class=" col-md-10 pdf-viewer">
+                {% if resource.pdf_file %}
+                    <iframe src="{{ resource.pdf_file.url }}">
+                        This browser does not support PDFs. Please download the PDF to view it:
+                        <a href="{{ resource.pdf_file.url }}">Download PDF</a>
+                    </iframe>
+                {% else %}
+                    <p>No PDF uploaded here.</p>
+                {% endif %}
+            </div>
+            <div class="col-md-2">
+                <h2>{{ resource.title }}</h2>
+                <p><strong>Published on:</strong> {{ resource.publish_date }}</p>
+                <p><strong>Description:</strong> {{ resource.description }}</p>
+            </div>
+        </div>
+    </section>
+
+    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+</body>
+
+</html>

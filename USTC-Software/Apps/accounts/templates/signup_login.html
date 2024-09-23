@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accounts</title>
+  <link rel="stylesheet" href="{% static 'css/signup_login.css' %}">
+  <link rel="stylesheet" href="{% static 'css/msg_for_all.css' %}">
+</head>
+
+<body>
+  {% if messages %}
+    <div class="message-container">
+      {% for message in messages %}
+        <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+  <div class="container right-panel-active">
+    <!-- Sign Up -->
+    <div class="container__form container--signup">
+
+      <form action="{% url 'accounts:send_verification_code' %}" method="post" class="form" id="form1">
+        {% csrf_token %}
+        <h2 class="form__title">Sign Up</h2>
+        <input type="text" placeholder="Name" name="name" class="input" required>
+        <input type="email" placeholder="Email" name="email" class="input" required>
+        <input type="password" placeholder="Password" name="password" class="input" required>
+        <input type="submit" value="Sign Up" class="btn">
+      </form>
+
+    </div>
+
+    <!-- Sign In -->
+    <div class="container__form container--signin">
+
+      <form action="{% url 'accounts:login_check' %}" method="post" class="form" id="form2">
+        {% csrf_token %}
+        <h2 class="form__title">Log In</h2>
+        <input type="email" placeholder="Email" class="input" name="email" required>
+        <input type="password" placeholder="Password" class="input" name="password">
+
+        <input type="submit" value="Log In" class="btn" name="login_btn">
+        <br>
+        <input type="submit" value="Forget your password?" class="forget_btn" name="forget_btn">
+      </form>
+
+    </div>
+
+    <!-- Overlay -->
+    <div class="container__overlay" >
+
+      <div class="overlay" style="background: url('{% static 'imgs/signup_banner.png' %}'); background-size: cover; height: 100%; left: -100%;">
+        <div class="overlay__panel overlay--left">
+          <button class="btn" id="signIn">Log In</button>
+        </div>
+        <div class="overlay__panel overlay--right">
+          <button class="btn" id="signUp">Sign Up</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if register_verification_sent %}
+  <div id="verification-popup" class="popup">
+      <h2>Enter Verification Code</h2>
+      <form action="{% url 'accounts:signup_check' %}" method="post" id="verification-form">
+        {% csrf_token %}
+        <input type="text" id="verification_code" placeholder="Enter verification code" name="verification_code" required>
+        <button type="submit">Confirm</button>
+      </form>
+    </div>
+  {% endif %}
+
+  {% if change_pwd_verification_sent %}
+    <div id="" class="popup">
+      <h2>Enter Verification Code</h2>
+      <form action="{% url 'accounts:change_pwd' %}" method="post" id="">
+        {% csrf_token %}
+        <input type="text" id="" placeholder="Enter verification code" name="verification_code" required>
+        <input type="text" id="" placeholder="Enter your new password" name="new_password" required>
+        <button type="submit">Confirm</button>
+      </form>
+    </div>
+  {% endif %}
+  <script src="{% static 'js/signup_login.js' %}"></script>
+</body>
+</html>

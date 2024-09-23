@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="title" content="Ask online Form">
+    <meta name="language" content="English">
+    <title>Share</title>
+
+    <link rel="stylesheet" href="../static/css/responsive.css" type="text/css">
+    <link rel="stylesheet" href="../static/css/editor.css" type="text/css">
+    <link rel="stylesheet" href="../static/css/bootstrap.css" type="text/css">
+    <link rel="stylesheet" href="../static/css/style.css"  type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <section class="header-descriptin329">
+        <div class="container">
+            <h3 style="color: yellow;">Share Something Interesting</h3>
+            <ol class="breadcrumb breadcrumb839">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Forum</a></li>
+                <li class="active">Share</li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="main-content920">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="ask-question-input-part032">
+                        <h4>share sth.</h4>
+                        <hr>
+                        <form action="#" method="post" enctype="multipart/form-data">
+                            <div class="question-title39">
+                                <span class="form-description433">Title* </span>
+                                <input type="text" name="title" class="question-ttile32" placeholder="Wrote your Title Here">
+                            </div>
+                            <div class="theme49">
+                                <span class="form-description43305">Theme*</span>
+                                <div>
+                                    <label><input type="radio" name="theme" value="Riddle"> Riddle</label><br>
+                                    <label><input type="radio" name="theme" value="Share Something Interesting"> Share Sth. Interesting</label><br>
+                                    <label><input type="radio" name="theme" value="Ask For Help"> Ask For Help</label><br>
+                                    <label><input type="radio" name="theme" value="Find Friends"> Find Friends</label><br>
+                                    <label><input type="radio" name="theme" value="Else"> Else</label>
+                                </div>
+                            </div>
+
+                            <div class="details2-239">
+                                <div class="col-md-12 nopadding">
+                                    <textarea id="txtEditor" name='content'></textarea>
+                                    <input type="hidden" name="content_copy" id="content_copy">
+                                </div>
+                            </div>
+
+                            <div class="publish-button2389">
+                                <button type="submit" class="publis1291" style='background-color: blue'>Publish</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="../static/js/jquery-3.1.1.min.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="../static/js/editor.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#txtEditor").Editor();
+
+            // 在表单提交之前，将富文本编辑器中的内容同步到隐藏的 input 中
+            $("form").submit(function() {
+                var content = $("#txtEditor").Editor("getText");
+                $("#content_copy").val(content);
+            });
+        });
+    </script>
+</body>
+</html>

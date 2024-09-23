@@ -1,0 +1,80 @@
+body {
+    font-family: Arial, sans-serif; /* 使用Arial字体，如果无法加载则使用系统默认无衬线字体 */
+}
+
+p.title {
+    letter-spacing:10px;
+    display: grid;
+    place-items: center;
+    padding-bottom: 50px;
+    font-weight: bold;
+    font-size: 48px;
+    position: absolute;
+    left: 50%;
+    top:7%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+div.main {        
+    display:grid;
+    place-items:center;
+    position:absolute;
+    left:20%;
+    top:15%;
+    width:1000px;
+    border:5px solid #989ea7;
+    box-shadow:1px 1px 4px #9baabc;
+    border-radius:5px;
+    z-index:10;
+    font-weight:bold;
+    font-size:20px;
+}
+
+li.list {
+    padding-top:25px;
+    padding-bottom:25px;
+}
+
+a {
+    position: relative; /* 设置相对定位以容纳伪元素 */
+    text-decoration: none;
+    color:black;
+}
+
+/* 使用伪元素：：before创建透明边框 */
+a::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    width: 0;
+    height: 2px; /* 设置边框高度 */
+    background-color: #2363af; /* 设置边框颜色 */
+    transition: width 0.3s ease-in-out; /* 添加过渡效果 */
+}
+
+/* 定义鼠标悬停时的样式 */
+a:hover::before {
+    width: 100%; /* 设置边框宽度为100% */
+}
+
+form.lan {
+    position:relative;
+    right:5px;
+    top:5px;
+    border-radius:5px;
+}
+
+img.background{
+    position:absolute;
+    top:0px;
+    left:0px;
+    z-index:0;
+    width:100%;
+    height:100vh;
+}
+
+div.upper{
+    position:absolute;
+    z-index:10;
+}

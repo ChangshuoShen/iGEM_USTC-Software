@@ -1,0 +1,46 @@
+{% comment %} {% load i18n %} {% endcomment %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel = 'stylesheet' type = 'text/css' href = "{% static 'css/date_pro.css' %}">
+    <title>物化实验</title>
+    
+</head>
+<body>
+    <img src="{% static 'img/background.png' %}" class='background'></img>
+    <div calss='upper'>
+    <p class = 'title'>物化实验</p>
+    <div class='main'>
+        <ul>
+            <li class='list'><a href="{% url 'experiments' experiment='恒温槽的装配与性能测定' %}"> 恒温槽的装配与性能测定</a></li>
+            <li class='list'><a href="{% url 'experiments' experiment='分光光度法测BPB的电离平衡常数' %}">分光光度法测BPB的电离平衡常数</a></li>
+            <li class='list'><a href="{% url 'experiments' experiment='燃烧热的测定' %}">燃烧热的测定</a></li>
+            <li class='list'><a href="{% url 'experiments' experiment='双液系的气液平衡相图' %}">双液系的气液平衡相图</a></li>
+            <li class='list'><a href="{% url 'experiments' experiment='旋光物质化学反应反应动力学研究' %}">旋光物质化学反应反应动力学研究</a></li>
+            <li class='list'><a href="{% url 'experiments' experiment='乙酸乙酯皂化反应动力学研究' %}">乙酸乙酯皂化反应动力学研究</a></li>
+            <li class='list'><a href="{% url 'experiments' experiment='聚乙二醇的相变热分析' %}">聚乙二醇的相变热分析</a></li>
+            <li class='list'><a href="{% url 'experiments' experiment='稀溶液粘度法测定聚合物的分子量' %}">稀溶液粘度法测定聚合物的分子量</a></li>
+        </ul>
+    </div>
+    </div>
+    {% comment %} <div class = 'language'>       {% endcomment %}
+        {% comment %} <form action="{% url 'set_language' %}" method="post"> {% endcomment %}
+            {% comment %} {% csrf_token %} {% endcomment %}
+            {% comment %} <select name="language" onchange="this.form.submit();"> {% endcomment %}
+                {% comment %} {% get_current_language as LANGUAGE_CODE %} {% endcomment %}
+                {% comment %} {% get_available_languages as LANGUAGES %} {% endcomment %}
+                {% comment %} {% get_language_info_list for LANGUAGES as languages %} {% endcomment %}
+                {% comment %} {% for language in languages %} {% endcomment %}
+                    {% comment %} <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}> {% endcomment %}
+                        {% comment %} {{ language.name_local }} ({{ language.code }}) {% endcomment %}
+                    {% comment %} </option> {% endcomment %}
+                {% comment %} {% endfor %} {% endcomment %}
+            {% comment %} </select> {% endcomment %}
+        {% comment %} </form> {% endcomment %}
+    {% comment %} </div> {% endcomment %}
+
+</body>
+</html>

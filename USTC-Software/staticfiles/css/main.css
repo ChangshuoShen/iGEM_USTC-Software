@@ -1,0 +1,915 @@
+
+/* 设置 banner(横幅，旗帜) 的样式 */
+.banner {
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+}
+
+/* 设置 banner 内的遮罩层样式 */
+.banner .mask {
+  position: absolute; /*相对与banner是absolute*/
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.3);
+}
+
+/* 在启用视差滚动效果时，设置 banner 的 transform 属性和过渡效果 */
+.banner[parallax="true"] {
+  will-change: transform;
+  -webkit-transform-style: preserve-3d;
+  -webkit-backface-visibility: hidden;
+  transition: transform 0.05s ease-out;
+}
+
+/* 媒体查询，根据视口高度调整样式 */
+@media (max-width: 120vh) {
+  .header-inner {
+    max-height: 83.33333333333334vw;
+  }
+  #board {
+    margin-top: -1rem !important;
+  }
+}
+
+/* 媒体查询，根据视口高度调整样式 */
+@media (max-width: 89.99vh) {
+  .scroll-down-bar {
+    display: none;
+  }
+}
+
+/* 设置 board 的样式 */
+#board {
+  position: relative;
+  margin-top: -2rem;
+  padding: 3rem 0;
+  background-color: var(--board-bg-color);
+  transition: background-color 0.2s ease-in-out;
+  border-radius: 0.5rem;
+  z-index: 3;
+  -webkit-box-shadow: 0 12px 15px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  box-shadow: 0 12px 15px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+
+/* 设置 footer 内容区域的样式，包括内边距和文本居中对齐 */
+.footer-inner {
+  padding: 3rem 0 1rem 0;
+  text-align: center;
+}
+
+/* 设置 footer 内除第一个子元素外的其他子元素的样式，包括间距和字体大小 */
+.footer-inner > div:not(:first-child) {
+  margin: 0.25rem 0;
+  font-size: 0.85rem;
+}
+
+/* 设置用于显示统计信息的容器元素的样式，使用 flex 布局，并水平居中对齐 */
+.footer-inner .statistics {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+/* 设置统计信息容器内的 span 元素的样式，使其自动填充剩余空间，并设置间距 */
+.footer-inner .statistics > span {
+  flex: 1;
+  margin: 0 0.25rem;
+}
+
+/* 设置统计信息容器内倒数第二个子元素的第一个子元素的右对齐样式 */
+.footer-inner .statistics > *:nth-last-child(2):first-child {
+  text-align: right;
+}
+
+/* 设置统计信息容器内倒数第二个子元素之后的所有子元素的左对齐样式 */
+.footer-inner .statistics > *:nth-last-child(2):first-child ~ * {
+  text-align: left;
+}
+
+/* 设置用于显示备案信息的容器元素的样式，使用 flex 布局，并水平居中对齐 */
+.footer-inner .beian {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+/* 设置备案信息容器内子元素的间距 */
+.footer-inner .beian > * {
+  margin: 0 0.25rem;
+}
+
+/* 设置备案信息中警徽图片的容器元素的样式，包括位置、溢出和 flex 布局 */
+.footer-inner .beian-police {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: left;
+}
+
+/* 设置备案信息中警徽图片的样式，包括间距和尺寸 */
+.footer-inner .beian-police img {
+  margin-right: 3px;
+  width: 1rem;
+  height: 1rem;
+  margin-bottom: 0.1rem;
+}
+
+/* 在视口宽度小于等于 424px 时应用的样式 */
+@media (max-width: 424px) {
+  /* 调整统计信息容器元素的布局为垂直方向 */
+  .footer-inner .statistics {
+    flex-direction: column;
+  }
+  
+  /* 调整统计信息容器内倒数第二个子元素的对齐方式为居中 */
+  .footer-inner .statistics > *:nth-last-child(2):first-child {
+    text-align: center;
+  }
+  
+  /* 调整统计信息容器内倒数第二个子元素之后的所有子元素的对齐方式为居中 */
+  .footer-inner .statistics > *:nth-last-child(2):first-child ~ * {
+    text-align: center;
+  }
+  
+  /* 调整备案信息容器元素的布局为垂直方向 */
+  .footer-inner .beian {
+    flex-direction: column;
+  }
+  
+  /* 调整备案信息中警徽图片的容器元素的对齐方式为居中 */
+  .footer-inner .beian .beian-police {
+    justify-content: center;
+  }
+  
+  /* 调整备案信息容器内倒数第二个子元素的对齐方式为居中 */
+  .footer-inner .beian > *:nth-last-child(2):first-child {
+    text-align: center;
+  }
+  
+  /* 调整备案信息容器内倒数第二个子元素之后的所有子元素的对齐方式为居中 */
+  .footer-inner .beian > *:nth-last-child(2):first-child ~ * {
+    text-align: center;
+  }
+}
+
+
+/* 设置导航栏的样式，包括背景颜色、字体大小和阴影效果 */
+.navbar {
+  background-color: rgba(0,0,0,0.5);
+  font-size: 0.875rem;
+  box-shadow: 0 2px 5px 0 rgba(230, 208, 4, 0.16), 0 2px 10px 0 rgba(195, 219, 13, 0.12);
+  -webkit-box-shadow: 0 2px 5px 0 rgba(230, 220, 19, 0.16), 0 2px 10px 0 rgba(207, 231, 19, 0.12);
+}
+
+/* 设置导航栏品牌文字的颜色 */
+.navbar .navbar-brand {
+  color: var(--navbar-text-color);
+}
+
+/* 设置导航栏切换按钮中动画图标的颜色 */
+.navbar .navbar-toggler .animated-icon span {
+  background-color: var(--navbar-text-color);
+}
+
+/* 设置导航栏中菜单链接的样式，包括颜色和过渡效果 */
+.navbar .nav-item .nav-link {
+  display: block;
+  color: var(--navbar-text-color);
+  transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+/* 设置导航栏中菜单链接的鼠标悬停样式 */
+.navbar .nav-item .nav-link:hover {
+  color: var(--link-hover-color);
+}
+
+/* 设置导航栏中菜单链接的聚焦样式 */
+.navbar .nav-item .nav-link:focus {
+  color: var(--navbar-text-color);
+}
+
+/* 设置导航栏中菜单链接中图标的样式 */
+.navbar .nav-item .nav-link i {
+  font-size: 0.875rem;
+}
+
+/* 设置导航栏中菜单链接中唯一子元素图标的样式 */
+.navbar .nav-item .nav-link i:only-child {
+  margin: 0 0.2rem;
+}
+
+/* 设置导航栏切换按钮的样式 */
+.navbar .navbar-toggler {
+  border-width: 0;
+  outline: 0;
+}
+
+/* 当导航栏滚动时应用的样式 */
+.navbar.scrolling-navbar {
+  will-change: background, padding;
+  -webkit-transition: background 0.5s ease-in-out, padding 0.5s ease-in-out;
+  transition: background 0.5s ease-in-out, padding 0.5s ease-in-out;
+}
+
+/* 在视口宽度大于等于 600px 时应用的样式 */
+@media (min-width: 600px) {
+  /* 调整滚动导航栏的上内边距和下内边距 */
+  .navbar.scrolling-navbar {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+  /* 设置导航栏中菜单项的过渡效果持续时间 */
+  .navbar.scrolling-navbar .navbar-nav > li {
+    -webkit-transition-duration: 1s;
+    transition-duration: 1s;
+  }
+}
+
+/* 当滚动导航栏收缩时应用的样式 */
+.navbar.scrolling-navbar.top-nav-collapse {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+/* 设置下拉菜单的样式 */
+.navbar .dropdown-menu {
+  font-size: 0.875rem;
+  color: var(--navbar-text-color);
+  background-color: rgba(0,0,0,0.3);
+  border: none;
+  min-width: 8rem;
+  -webkit-transition: background 0.5s ease-in-out, padding 0.5s ease-in-out;
+  transition: background 0.5s ease-in-out, padding 0.5s ease-in-out;
+}
+
+/* 在视口宽度小于等于 991.98px 时应用的样式 */
+@media (max-width: 991.98px) {
+  /* 设置下拉菜单文本居中对齐 */
+  .navbar .dropdown-menu {
+    text-align: center;
+  }
+}
+
+/* 设置下拉菜单项的样式 */
+.navbar .dropdown-item {
+  color: var(--navbar-text-color);
+}
+
+/* 设置下拉菜单项的鼠标悬停和聚焦样式 */
+.navbar .dropdown-item:hover,
+.navbar .dropdown-item:focus {
+  color: var(--link-hover-color);
+  background-color: rgba(0,0,0,0.1);
+}
+
+/* 在视口宽度大于等于 992px 时应用的样式 */
+@media (min-width: 992px) {
+  /* 当鼠标悬停在下拉菜单时显示下拉菜单 */
+  .navbar .dropdown:hover > .dropdown-menu {
+    display: block;
+  }
+  /* 禁用下拉菜单切换按钮的点击事件 */
+  .navbar .dropdown > .dropdown-toggle:active {
+    pointer-events: none;
+  }
+  /* 调整下拉菜单的定位 */
+  .navbar .dropdown-menu {
+    top: 95%;
+  }
+}
+
+/* 设置导航栏切换按钮的动画效果 */
+.navbar .animated-icon {
+  width: 30px;
+  height: 20px;
+  position: relative;
+  margin: 0;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  transform: rotate(0deg);
+  -webkit-transition: 0.5s ease-in-out;
+  -moz-transition: 0.5s ease-in-out;
+  -o-transition: 0.5s ease-in-out;
+  transition: 0.5s ease-in-out;
+  cursor: pointer;
+}
+
+/* 设置导航栏切换按钮动画图标的样式 */
+.navbar .animated-icon span {
+  display: block;
+  position: absolute;
+  height: 3px;
+  width: 100%;
+  border-radius: 9px;
+  opacity: 1;
+  left: 0;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  transform: rotate(0deg);
+  -webkit-transition: 0.25s ease-in-out;
+  -moz-transition: 0.25s ease-in-out;
+  -o-transition: 0.25s ease-in-out;
+  transition: 0.25s ease-in-out;
+  background: #fff;
+}
+
+/* 设置导航栏切换按钮动画图标的三个条纹的位置 */
+.navbar .animated-icon span:nth-child(1) {
+  top: 0;
+}
+.navbar .animated-icon span:nth-child(2) {
+  top: 10px;
+}
+.navbar .animated-icon span:nth-child(3) {
+  top: 20px;
+}
+
+/* 设置打开状态下导航栏切换按钮动画图标的样式 */
+.navbar .animated-icon.open span:nth-child(1) {
+  top: 11px;
+  -webkit-transform: rotate(135deg);
+  -moz-transform: rotate(135deg);
+  -o-transform: rotate(135deg);
+  transform: rotate(135deg);
+}
+.navbar .animated-icon.open span:nth-child(2) {
+  opacity: 0;
+  left: -60px;
+}
+.navbar .animated-icon.open span:nth-child(3) {
+  top: 11px;
+  -webkit-transform: rotate(-135deg);
+  -moz-transform: rotate(-135deg);
+  -o-transform: rotate(-135deg);
+  transform: rotate(-135deg);
+}
+
+/* 当浏览器支持模糊效果时应用的样式 */
+@supports (-webkit-backdrop-filter: blur(3px)) or (backdrop-filter: blur(3px)) {
+  .navbar .dropdown-collapse,
+  .top-nav-collapse,
+  .navbar-col-show {
+    background: rgba(47,65,84,0.7);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+  }
+}
+
+/* 当浏览器不支持模糊效果时应用的样式 */
+@supports not ((-webkit-backdrop-filter: blur(3px)) or (backdrop-filter: blur(3px))) {
+  .navbar .dropdown-collapse,
+  .top-nav-collapse,
+  .navbar-col-show {
+    background: #2f4154;
+  }
+}
+
+/* 在视口宽度小于等于 767px 时应用的样式 */
+@media (max-width: 767px) {
+  /* 调整导航栏字体大小和行高 */
+  .navbar {
+    font-size: 1rem;
+    line-height: 2.5rem;
+  }
+}
+
+
+
+/* 设置横幅文本的样式，包括颜色、最大宽度和换行 */
+.banner-text {
+  color: var(--subtitle-color);
+  max-width: calc(960px - 6rem);
+  width: 80%;
+  overflow-wrap: break-word;
+}
+
+/* 设置横幅文本中类型光标的样式 */
+.banner-text .typed-cursor {
+  margin: 0 0.2rem;
+}
+
+/* 在视口宽度小于等于 767px 时应用的样式 */
+@media (max-width: 767px) {
+  /* 调整字幕和类型光标的字体大小 */
+  #subtitle,
+  .typed-cursor {
+    font-size: 1.5rem;
+  }
+}
+
+/* 在视口宽度小于等于 575px 时应用的样式 */
+@media (max-width: 575px) {
+  /* 调整横幅文本的字体大小 */
+  .banner-text {
+    font-size: 0.9rem;
+  }
+  /* 调整字幕和类型光标的字体大小 */
+  #subtitle,
+  .typed-cursor {
+    font-size: 1.35rem;
+  }
+}
+
+/* 设置页面加载进度条的样式 */
+#nprogress .bar {
+  height: 3px !important;
+  background-color: #29d !important;
+}
+#nprogress .peg {
+  box-shadow: 0 0 14px #29d, 0 0 8px #29d !important;
+}
+
+/* 在视口宽度小于等于 575px 时隐藏加载进度条 */
+@media (max-width: 575px) {
+  #nprogress .bar {
+    display: none;
+  }
+}
+
+/* HTML全局样式 */
+html {
+  font-size: 16px;
+  letter-spacing: 0.02em;
+}
+
+/* HTML和body样式 */
+html,
+body {
+  height: 100%;
+  font-family: HarmonyOS Sans SC;
+  overflow-wrap: break-word;
+}
+
+/* body样式 */
+body {
+  transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  background-color: var(--body-bg-color);
+  color: var(--text-color);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* body中的链接样式 */
+body a {
+  color: var(--text-color);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+/* 链接悬停时的样式 */
+body a:hover {
+  color: var(--link-hover-color);
+  text-decoration: none;
+  transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+/* 代码样式 */
+code {
+  color: inherit;
+}
+
+/* 表格样式 */
+table {
+  font-size: inherit;
+  color: var(--post-text-color);
+}
+
+/* 图片懒加载样式 */
+img[lazyload] {
+  object-fit: cover;
+}
+
+/* 左对齐样式 */
+*[align="left"] {
+  text-align: left;
+}
+
+/* 居中对齐样式 */
+*[align="center"] {
+  text-align: center;
+}
+
+/* 右对齐样式 */
+*[align="right"] {
+  text-align: right;
+}
+
+/* 图标样式 */
+i.iconfont {
+  font-size: 1em;
+  line-height: 1;
+}
+
+/* 根变量设置 */
+:root {
+  --color-mode: "light";
+  --body-bg-color: #eee;
+  --board-bg-color: #fff;
+  --text-color: #3c4858;
+  --sec-text-color: #718096;
+  --post-text-color: #2c3e50;
+  --post-heading-color: #1a202c;
+  --post-link-color: #0366d6;
+  --link-hover-color: #30a9de;
+  --link-hover-bg-color: #f8f9fa;
+  --line-color: #eaecef;
+  --navbar-bg-color: #2f4154;
+  --navbar-text-color: #fff;
+  --subtitle-color: #fff;
+  --scrollbar-color: #c4c6c9;
+  --scrollbar-hover-color: #a6a6a6;
+  --button-bg-color: transparent;
+  --button-hover-bg-color: #f2f3f5;
+  --highlight-bg-color: #fafafa;
+  --inlinecode-bg-color: rgba(175,184,193,0.2);
+}
+
+/* 暗色主题下的根变量设置 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-mode: "dark";
+  }
+  :root:not([data-user-color-scheme]) {
+    --body-bg-color: #181c27;
+    --board-bg-color: #252d38;
+    --text-color: #c4c6c9;
+    --sec-text-color: #a7a9ad;
+    --post-text-color: #c4c6c9;
+    --post-heading-color: #c4c6c9;
+    --post-link-color: #1589e9;
+    --link-hover-color: #30a9de;
+    --link-hover-bg-color: #364151;
+    --line-color: #435266;
+    --navbar-bg-color: #1f3144;
+    --navbar-text-color: #d0d0d0;
+    --subtitle-color: #d0d0d0;
+    --scrollbar-color: #687582;
+    --scrollbar-hover-color: #9da8b3;
+    --button-bg-color: transparent;
+    --button-hover-bg-color: #46647e;
+    --highlight-bg-color: #282c34;
+    --inlinecode-bg-color: rgba(99,110,123,0.4);
+  }
+
+  :root:not([data-user-color-scheme]) img {
+    -webkit-filter: brightness(0.9);
+    filter: brightness(0.9);
+    transition: filter 0.2s ease-in-out;
+  }
+
+  @supports (-webkit-backdrop-filter: blur(3px)) or (backdrop-filter: blur(3px)) {
+    :root:not([data-user-color-scheme]) .navbar .dropdown-collapse,
+    :root:not([data-user-color-scheme]) .top-nav-collapse,
+    :root:not([data-user-color-scheme]) .navbar-col-show {
+      background: rgba(31,49,68,0.7);
+      -webkit-backdrop-filter: blur(3px);
+      backdrop-filter: blur(3px);
+    }
+  }
+  @supports not ((-webkit-backdrop-filter: blur(3px)) or (backdrop-filter: blur(3px))) {
+    :root:not([data-user-color-scheme]) .navbar .dropdown-collapse,
+    :root:not([data-user-color-scheme]) .top-nav-collapse,
+    :root:not([data-user-color-scheme]) .navbar-col-show {
+      background: #1f3144;
+    }
+  }
+  :root:not([data-user-color-scheme]) .license-box {
+    background-color: rgba(62,75,94,0.35);
+    transition: background-color 0.2s ease-in-out;
+  }
+  :root:not([data-user-color-scheme]) .gt-comment-admin .gt-comment-content {
+    background-color: transparent;
+    transition: background-color 0.2s ease-in-out;
+  }
+}
+
+/* 暗色主题下的根变量设置 */
+[data-user-color-scheme="dark"] {
+  --body-bg-color: #181c27;
+  --board-bg-color: #252d38;
+  --text-color: #c4c6c9;
+  --sec-text-color: #a7a9ad;
+  --post-text-color: #c4c6c9;
+  --post-heading-color: #c4c6c9;
+  --post-link-color: #1589e9;
+  --link-hover-color: #30a9de;
+  --link-hover-bg-color: #364151;
+  --line-color: #435266;
+  --navbar-bg-color: #1f3144;
+  --navbar-text-color: #d0d0d0;
+  --subtitle-color: #d0d0d0;
+  --scrollbar-color: #687582;
+  --scrollbar-hover-color: #9da8b3;
+  --button-bg-color: transparent;
+  --button-hover-bg-color: #46647e;
+  --highlight-bg-color: #282c34;
+  --inlinecode-bg-color: rgba(99,110,123,0.4);
+}
+
+/* 暗色主题下的图片亮度样式 */
+[data-user-color-scheme="dark"] img {
+  -webkit-filter: brightness(0.9);
+  filter: brightness(0.9);
+  transition: filter 0.2s ease-in-out;
+}
+
+
+
+/* 支持背景模糊滤镜的样式 */
+@supports (-webkit-backdrop-filter: blur(3px)) or (backdrop-filter: blur(3px)) {
+  [data-user-color-scheme="dark"] .navbar .dropdown-collapse,
+  [data-user-color-scheme="dark"] .top-nav-collapse,
+  [data-user-color-scheme="dark"] .navbar-col-show {
+    background: rgba(31,49,68,0.7);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+  }
+}
+
+/* 不支持背景模糊滤镜的样式 */
+@supports not ((-webkit-backdrop-filter: blur(3px)) or (backdrop-filter: blur(3px))) {
+  [data-user-color-scheme="dark"] .navbar .dropdown-collapse,
+  [data-user-color-scheme="dark"] .top-nav-collapse,
+  [data-user-color-scheme="dark"] .navbar-col-show {
+    background: #1f3144;
+  }
+}
+
+/* 暗色主题下的许可框样式 */
+[data-user-color-scheme="dark"] .license-box {
+  background-color: rgba(62,75,94,0.35);
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* 暗色主题下的评论管理样式 */
+[data-user-color-scheme="dark"] .gt-comment-admin .gt-comment-content {
+  background-color: transparent;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* 淡入向上动画样式 */
+.fade-in-up {
+  -webkit-animation-name: fade-in-up;
+  animation-name: fade-in-up;
+}
+
+/* 移动端隐藏和显示样式 */
+.hidden-mobile {
+  display: block;
+}
+
+.visible-mobile {
+  display: none;
+}
+
+/* 小屏幕下的样式 */
+@media (max-width: 575px) {
+  .hidden-mobile {
+    display: none;
+  }
+  .visible-mobile {
+    display: block;
+  }
+}
+
+/* 无边距样式 */
+.nomargin-x {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* 无内边距样式 */
+.nopadding-x {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* 小屏幕下的无内边距样式 */
+@media (max-width: 767px) {
+  .nopadding-x-md {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+/* 居中显示样式 */
+.flex-center {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  flex-direction: column;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.icon-groups {
+  display: flex;
+  justify-content: center;
+}
+
+.img-icon {
+  flex: 1;
+  display: grid;
+  margin: 100px;
+}
+
+
+/* 设置figure使得caption在img正下方 */
+.img-container{
+  display: grid;
+  grid-template-rows: auto auto;
+  justify-items: center;
+}
+
+.img-container img{
+  grid-row: 1;
+}
+
+.img-container figcaption{
+  grid-row: 2;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+@-moz-keyframes fade-in-up {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+@-webkit-keyframes fade-in-up {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+@-o-keyframes fade-in-up {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+@-moz-keyframes scroll-down {
+  0% {
+    opacity: 0.8;
+    top: 0;
+  }
+  50% {
+    opacity: 0.4;
+    top: -1em;
+  }
+  100% {
+    opacity: 0.8;
+    top: 0;
+  }
+}
+@-webkit-keyframes scroll-down {
+  0% {
+    opacity: 0.8;
+    top: 0;
+  }
+  50% {
+    opacity: 0.4;
+    top: -1em;
+  }
+  100% {
+    opacity: 0.8;
+    top: 0;
+  }
+}
+@-o-keyframes scroll-down {
+  0% {
+    opacity: 0.8;
+    top: 0;
+  }
+  50% {
+    opacity: 0.4;
+    top: -1em;
+  }
+  100% {
+    opacity: 0.8;
+    top: 0;
+  }
+}
+@keyframes scroll-down {
+  0% {
+    opacity: 0.8;
+    top: 0;
+  }
+  50% {
+    opacity: 0.4;
+    top: -1em;
+  }
+  100% {
+    opacity: 0.8;
+    top: 0;
+  }
+}
+@-moz-keyframes scroll-top {
+  0% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  50% {
+    -webkit-transform: translateY(-0.35rem);
+    transform: translateY(-0.35rem);
+  }
+  100% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+@-webkit-keyframes scroll-top {
+  0% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  50% {
+    -webkit-transform: translateY(-0.35rem);
+    transform: translateY(-0.35rem);
+  }
+  100% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+@-o-keyframes scroll-top {
+  0% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  50% {
+    -webkit-transform: translateY(-0.35rem);
+    transform: translateY(-0.35rem);
+  }
+  100% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+@keyframes scroll-top {
+  0% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  50% {
+    -webkit-transform: translateY(-0.35rem);
+    transform: translateY(-0.35rem);
+  }
+  100% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+}

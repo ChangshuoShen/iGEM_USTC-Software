@@ -1,0 +1,222 @@
+{% load static %}
+{% csrf_token %}
+{% comment %} {% load i18n %} {% endcomment %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="{% static 'js/jQuery.js' %}"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel = 'stylesheet' type = 'text/css' href = "{% static 'css/experiment_process.css'%}">
+    <title>{{ title }}</title>
+</head>
+<body>
+    <script>
+        $(function(){
+            var fileSelect = $('input.fileSelect');
+            $('input[type="file"]').on('change', function() {
+                $('li.selectFile').remove();
+                var fileNames = [];
+                $('input[type="file"]').each(function() { 
+                    var files = $(this)[0].files; 
+                    for (var i = 0; i < files.length; i++) {
+                        $('ul.list').append('<li class="selectFile">'+files[i].name+'</li>');
+                        $('ul li:last-child').click(function(){
+                            $(this).remove();
+                        })
+                    }
+                })
+            })
+            var title = "{{title}}";
+            {% comment %} experiment-eight judgement {% endcomment %}
+            if (title == "稀溶液粘度法测定聚合物的分子量"){
+                var link = "<li class = 'refer'><a href = '{% static 'references/稀溶液粘度法测定聚合物的分子量/数据.xlsx' %}'>数据.xlsx</a></li>";
+                var linkbook = "<a id = 'linkbook' href = '{% static 'references2/稀溶液粘度法测定聚合物的分子量.pdf' %}'>稀溶液粘度法测定聚合物的分子量</a>";
+                $('div.references').append(link);
+                $('div.teachbook').append(linkbook);
+            }
+            {% comment %} experiment-three judgement {% endcomment %}
+            else if(title == "燃烧热的测定"){
+                var link_one = "<li class = 'refer'><a href = '{% static 'references/燃烧热的测定/苯甲酸.xlsx' %}'>苯甲酸.xlsx</a></li>"
+                var link_two = "<li class = 'refer'><a href = '{% static 'references/燃烧热的测定/萘.xlsx' %}'>萘.xlsx</a></li>"
+                var linkbook = "<a id = 'linkbook' href = '{% static 'references2/燃烧热的测定.pdf' %}'>燃烧热的测定</a>";
+                $('div.references').append(link_one);
+                $('div.references').append(link_two);
+                $('div.teachbook').append(linkbook);
+            }
+            {% comment %} experiment-six judgement {% endcomment %}
+            else if(title == "乙酸乙酯皂化反应动力学研究"){
+                var link = "<li class = 'refer'><a href = '{% static 'references/乙酸乙酯皂化反应动力学研究/数据.xlsx' %}'>数据.xlsx</a></li>";
+                var linkbook = "<a id = 'linkbook' href = '{% static 'references2/乙酸乙酯皂化反应动力学研究.pdf' %}'>乙酸乙酯皂化反应动力学研究</a>";
+                $('div.references').append(link);
+                $('div.teachbook').append(linkbook);
+            }
+            {% comment %} experiment-four judgement {% endcomment %}
+            else if(title == "双液系的气液平衡相图"){
+                var link = "<li class = 'refer'><a href = '{% static 'references/双液系的气液平衡相图/数据.xlsx' %}'>数据.xlsx</a></li>";
+                var linkbook = "<a id = 'linkbook' href = '{% static 'references2/双液系的气液平衡相图.pdf' %}'>双液系的气液平衡相图</a>";
+                $('div.references').append(link);
+                $('div.teachbook').append(linkbook);
+            }
+            {% comment %} experiment-one judgement {% endcomment %}
+            else if(title == "恒温槽的装配与性能测定"){
+                var link_one = "<li class = 'refer'><a href = '{% static 'references/恒温槽的装配与性能测定/继电器_125V_F.txt' %}'>继电器_125V_F.txt</a></li>";
+                var link_two = "<li class = 'refer'><a href = '{% static 'references/恒温槽的装配与性能测定/继电器_125V_T.txt' %}'>继电器_125V_T.txt</a></li>";
+                var link_three = "<li class = 'refer'><a href = '{% static 'references/恒温槽的装配与性能测定/继电器_200V_F.txt' %}'>继电器_200V_F.txt</a></li>";
+                var link_four = "<li class = 'refer'><a href = '{% static 'references/恒温槽的装配与性能测定/继电器_200V_T.txt' %}'>继电器_200V_T.txt</a></li>";
+                var link_five = "<li class = 'refer'><a href = '{% static 'references/恒温槽的装配与性能测定/DTC_125V_F.txt' %}'>DTC_125V_F.txt</a></li>";
+                var link_six = "<li class = 'refer'><a href = '{% static 'references/恒温槽的装配与性能测定/DTC_125V_T.txt' %}'>DTC_125V_T.txt</a></li>";
+                var link_seven = "<li class = 'refer'><a href = '{% static 'references/恒温槽的装配与性能测定/DTC_200V_F.txt' %}'>DTC_200V_F.txt</a></li>";
+                var link_eight = "<li class = 'refer'><a href = '{% static 'references/恒温槽的装配与性能测定/DTC_200V_T.txt' %}'>DTC_200V_T.txt</a></li>";
+                var linkbook = "<a id = 'linkbook' href = '{% static 'references2/恒温槽的装配与性能测定.pdf' %}'>恒温槽的装配与性能测定</a>";
+                $('div.references').append(link_one);
+                $('div.references').append(link_two);
+                $('div.references').append(link_three);
+                $('div.references').append(link_four);
+                $('div.references').append(link_five);
+                $('div.references').append(link_six);
+                $('div.references').append(link_seven);
+                $('div.references').append(link_eight);
+                $('div.teachbook').append(linkbook);
+            }
+            {% comment %} experiment-two judgement {% endcomment %}
+            else if(title == "分光光度法测BPB的电离平衡常数"){
+                var link_one = "<li class = 'refer'><a href = '{% static 'references/分光光度法测BPB的电离平衡常数/碱.xlsx' %}'>碱.xlsx</a></li>";
+                var link_two = "<li class = 'refer'><a href = '{% static 'references/分光光度法测BPB的电离平衡常数/酸.xlsx' %}'>酸.xlsx</a></li>";
+                var link_three = "<li class = 'refer'><a href = '{% static 'references/分光光度法测BPB的电离平衡常数/样品1.xlsx' %}'>样品1.xlsx</a></li>";
+                var link_four = "<li class = 'refer'><a href = '{% static 'references/分光光度法测BPB的电离平衡常数/样品2.xlsx' %}'>样品2.xlsx</a></li>";
+                var link_five = "<li class = 'refer'><a href = '{% static 'references/分光光度法测BPB的电离平衡常数/样品3.xlsx' %}'>样品3.xlsx</a></li>";
+                var link_six = "<li class = 'refer'><a href = '{% static 'references/分光光度法测BPB的电离平衡常数/样品4.xlsx' %}'>样品4.xlsx</a></li>";
+                var link_seven = "<li class = 'refer'><a href = '{% static 'references/分光光度法测BPB的电离平衡常数/样品5.xlsx' %}'>样品5.xlsx</a></li>";
+                var link_eight = "<li class = 'refer'><a href = '{% static 'references/分光光度法测BPB的电离平衡常数/样品6.xlsx' %}'>样品6.xlsx</a></li>";
+                var link_nine = "<li class = 'refer'><a href = '{% static 'references/分光光度法测BPB的电离平衡常数/样品7.xlsx' %}'>样品7.xlsx</a></li>";
+                var link_ten = "<li class = 'refer'><a href = '{% static 'references/分光光度法测BPB的电离平衡常数/数据.xlsx' %}'>数据.xlsx</a></li>";
+                var linkbook = "<a id = 'linkbook' href = '{% static 'references2/分光光度法测BPB的电离平衡常数.pdf' %}'>分光光度法测BPB的电离平衡常数</a>";
+                $('div.references').append(link_one);
+                $('div.references').append(link_two);
+                $('div.references').append(link_three);
+                $('div.references').append(link_four);
+                $('div.references').append(link_five);
+                $('div.references').append(link_six);
+                $('div.references').append(link_seven);
+                $('div.references').append(link_eight);
+                $('div.references').append(link_nine);
+                $('div.references').append(link_ten);
+                $('div.teachbook').append(linkbook);
+            }
+            {% comment %} experiment-five judgement {% endcomment %}
+            else if(title == "旋光物质化学反应反应动力学研究"){
+                var link_one = "<li class = 'refer'><a href = '{% static 'references/旋光物质化学反应反应动力学研究/dam1_2.xlsx' %}'>dma1_2.xlsx</a></li>";
+                var link_two = "<li class = 'refer'><a href = '{% static 'references/旋光物质化学反应反应动力学研究/dma1_2.xlsx' %}'>dma1_2.xlsx</a></li>";
+                var link_three = "<li class = 'refer'><a href = '{% static 'references/旋光物质化学反应反应动力学研究/liu1_转自XLS.xlsx' %}'>liu1_转自XLS.xlsx</a></li>";
+                var link_four = "<li class = 'refer'><a href = '{% static 'references/旋光物质化学反应反应动力学研究/liu2_转自XLS.xlsx' %}'>liu2_转自XLS.xlsx</a></li>";
+                var link_five = "<li class = 'refer'><a href = '{% static 'references/旋光物质化学反应反应动力学研究/lkh1_转自XLS.xlsx' %}'>lkh1_转自XLS.xlsx</a></li>";
+                var link_six = "<li class = 'refer'><a href = '{% static 'references/旋光物质化学反应反应动力学研究/lkh2_转自XLS.xlsx' %}'>lkh2_转自XLS.xlsx</a></li>";
+                var link_seven = "<li class = 'refer'><a href = '{% static 'references/旋光物质化学反应反应动力学研究/mtd1_1.xlsx' %}'>mtd1_1.xlsx</a></li>";
+                var link_eight = "<li class = 'refer'><a href = '{% static 'references/旋光物质化学反应反应动力学研究/mtd2_2.xlsx' %}'>mtd2_2.xlsx</a></li>";
+                var linkbook = "<a id = 'linkbook' href = '{% static 'references2/旋光物质化学反应反应动力学研究.pdf' %}'>旋光物质化学反应反应动力学研究</a>";
+                $('div.references').append(link_one);
+                $('div.references').append(link_two);
+                $('div.references').append(link_three);
+                $('div.references').append(link_four);
+                $('div.references').append(link_five);
+                $('div.references').append(link_six);
+                $('div.references').append(link_seven);
+                $('div.references').append(link_eight);
+                $('div.teachbook').append(linkbook);
+            }
+            {% comment %} experiment-seven judgement {% endcomment %}
+            else if(title == "聚乙二醇的相变热分析"){
+                var link_one = "<li class = 'refer'><a href = '{% static 'references/experiment-seven/1-0.4正丁醇.txt' %}'>1-0.4正丁醇.txt</a></li>";
+                var link_two = "<li class = 'refer'><a href = '{% static 'references/聚乙二醇的相变热分析/2-0.8正丁醇.txt' %}'>2-0.8正丁醇.txt</a></li>";
+                var link_three = "<li class = 'refer'><a href = '{% static 'references/聚乙二醇的相变热分析/3-1.2正丁醇.txt' %}'>3-1.2正丁醇.txt</a></li>";
+                var link_four = "<li class = 'refer'><a href = '{% static 'references/聚乙二醇的相变热分析/4-1.6正丁醇.txt' %}'>4-1.6正丁醇.txt</a></li>";
+                var link_five = "<li class = 'refer'><a href = '{% static 'references/聚乙二醇的相变热分析/5-2.0正丁醇.txt' %}'>5-2.0正丁醇.txt</a></li>";
+                var link_six = "<li class = 'refer'><a href = '{% static 'references/聚乙二醇的相变热分析/6-2.4正丁醇.txt' %}'>6-2.4正丁醇.txt</a></li>";
+                var link_seven = "<li class = 'refer'><a href = '{% static 'references/聚乙二醇的相变热分析/水.txtx' %}'>水.txt</a></li>";
+                var linkbook = "<a id = 'linkbook' href = '{% static 'references2/聚乙二醇的相变热分析.pdf' %}'>聚乙二醇的相变热分析</a>";
+                $('div.references').append(link_one);
+                $('div.references').append(link_two);
+                $('div.references').append(link_three);
+                $('div.references').append(link_four);
+                $('div.references').append(link_five);
+                $('div.references').append(link_six);
+                $('div.references').append(link_seven);
+                $('div.teachbook').append(linkbook);
+            }
+            var success = "{{success}}";
+            if (success == ''){
+                $('div.loaddown').hide();
+            }
+            else if (success == '未包含完整文件或文件名、拓展名与模版文件不符'){
+                $('div.loaddown').hide();
+            }
+            else{
+                $('div.upload').hide();
+            }
+        })
+    </script>
+    <img src="{% static 'img/background.png' %}" class='background'></img>
+    <div class = 'head'>
+        <h1>{{ title }}</h1>
+        <p class='success'>{{success}}</p>
+    </div>
+    <div class = 'teachbook'>
+        <p class = 'teach_p'>实验教案</p>
+    </div>
+    <div class = 'file'>
+        <div class = 'upload'>
+            <form action="/upload/" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input class="fileSelect" type="file" name="file" multiple><br />
+                <p class='upload_p'>(<br>1:请一次性进行文件的选择<br>2:文件选择可以包含无关文件但必须必须包含完整的模版文件<br>3:模版文件<strong> '.' </strong>后为文件扩展名，只需保持文件类型相同即可，<br>不需将扩展名加入文件名称中<br>)<p id='explain'><a href="{% url 'explanation' %}">点击查看详情...</a></p></p>
+                <input class="formSubmit" type="submit" name="提交">
+                <input type="hidden" name="file_title" value="{{title}}">
+                <ul class="list"></ul>
+            </form>
+        </div>
+        <div class = 'loaddown'>
+            <form action="/download/" method="Post">
+                {% csrf_token %}
+                {% comment %} {% csrf_token %} {% endcomment %}
+                <input type="submit" name="download" value="下载">
+                <div class="exegesis">
+                <p class="exegesisHead">注：</p>
+                <p>(</p>
+                <p>1:请及时下载，工具退出后数据处理结果自动清除</p>
+                <p>2:下载后，数据处理结果自动清除，请妥善保存</p>
+                <p>)</p>
+                </div>
+            </form>
+        </div>
+
+        {% comment %} <div class = 'language'> {% endcomment %}
+            {% comment %} <form action="{% url 'set_language' %}" method="post"> {% endcomment %}
+                {% comment %} {% csrf_token %} {% endcomment %}
+                {% comment %} <select name="language" onchange="this.form.submit();"> {% endcomment %}
+                    {% comment %} {% get_current_language as LANGUAGE_CODE %} {% endcomment %}
+                    {% comment %} {% get_available_languages as LANGUAGES %} {% endcomment %}
+                    {% comment %} {% get_language_info_list for LANGUAGES as languages %} {% endcomment %}
+                    {% comment %} {% for language in languages %} {% endcomment %}
+                        {% comment %} <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}> {% endcomment %}
+                            {% comment %} {{ language.name_local }} ({{ language.code }}) {% endcomment %}
+                        {% comment %} </option> {% endcomment %}
+                    {% comment %} {% endfor %} {% endcomment %}
+                {% comment %} </select> {% endcomment %}
+            {% comment %} </form> {% endcomment %}
+        {% comment %} </div> {% endcomment %}
+       
+    </div>
+    <div class = "references">
+        <p class = 'refer_title'>文件上传参考模版</p>
+        <p class="mark">(上传文件格式，数据形式与文件名称应与模版文件保持一致)</p>
+        <ul>
+
+        </ul>
+    </div>
+        
+    <div class = 'home'>
+        <button class='buttonHome'><a id = 'home' href="{% url 'date_pro' %}">主页</a></button>
+    </div>
+</body>
+</html>

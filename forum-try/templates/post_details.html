@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="title" content="Ask online Form">
+    <meta name="language" content="English">
+    <title>Forum</title>
+
+    <link rel="stylesheet" href="../static/css/responsive.css" type="text/css">
+    <link rel="stylesheet" href="../static/css/bootstrap.css" type="text/css">
+    <link rel="stylesheet" href="../static/css/style.css"  type="text/css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+        .show-comment-box {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            background: linear-gradient(135deg, #f4f4f9, #c9d6ff);
+            width: 77%;
+            transform: translateX(-50%);
+            padding: 10px;
+            z-index: 999;
+        }
+
+        .close-icon {
+            position: absolute;
+            top: 5px; /* 距离容器顶部的距离 */
+            right: 5px; /* 距离容器右侧的距离 */
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <section class="header-descriptin329">
+        <div class="container">
+            <h3 style="color: yellow;">Post Details</h3>
+            <ol class="breadcrumb breadcrumb839">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Forum</a></li>
+                <li><a href="#">Post Details</a></li>
+                <li class="active">Post Title Here</li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="main-content920">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9">
+
+                    <div class="post-details">
+                        <div class="details-header923">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="post-title-left129">
+                                        <h3>Post Title Here</h3> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="post-details-info1982">
+                            <div>Post detail content here.</div>                            
+                            <hr>
+
+                            <div class="post-footer29032">
+                                <div class="l-side2023"> 
+
+                                    <i class="fa fa-check check2" aria-hidden="true">solved</i>
+                                     <a href="#"><i class="fa fa-star star2" aria-hidden="true">Likes Count</i></a> 
+                                     <i class="fa fa-clock-o clock2" aria-hidden="true"> Publish Date</i> 
+                                     <a href="#"><i class="fa fa-commenting commenting2" aria-hidden="true">Comments Count</i></a> 
+                                     <i class="fa fa-user user2" aria-hidden="true"> 70 views</i> </div>
+
+                                <div class="l-rightside39">
+                                    <span class="single-question-vote-result">Likes Count</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="author-details8392">
+                        <div class="author-img202l"> 
+                            <img src="../media/avators/default.png" alt="Avator">
+                            <div class="au-image-overlay text-center"> 
+                                <a href="#">
+                                    <i class="fa fa-plus-square-o" aria-hidden="true">
+                                    </i>
+                                </a> 
+                            </div>
+                        </div>
+                        <h5>Author Username</h5>
+                        <p>Author Bio</p>
+                    </div>
+                    
+                    <div class="comment-list12993">
+                        <div class="container">
+                            <div class="row">
+                                <div class="comments-container">
+                                    <ul id="comments-list" class="comments-list">
+                                        <!-- Comments and replies will be listed here -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="comment289-box" id='comment_box'>
+                        <h3>Leave A Reply</h3>
+                            <div class="col-md-12">
+                                <div class="post9320-box">
+                                    <span class="close-icon" onclick="closeCommentBox()">&#10006;</span>
+                                    <form action="#" method="post">
+                                        <input type="text" class="comment-input219882" placeholder="Enter Your Comments/Replies" name="comment_or_reply">
+                                        <button type="submit" class="pos393-submit">Leave a Comment/Reply</button>
+                                    </form>                                    
+                                </div>
+                                <br><br><br>
+                            </div>
+                    </div>
+                    
+                </div>
+
+            </div>
+    </section>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="../static/js/jquery-3.1.1.min.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="../static/js/editor.js"></script>
+    <script>
+        function closeCommentBox() {
+            var commentBox = document.getElementById('comment_box');
+            commentBox.classList.remove('show-comment-box');
+        }
+
+        $(document).ready(function() {
+            function replyToComment(commentId) {
+                var commentBox = document.getElementById('comment_box');
+                commentBox.classList.add('show-comment-box');
+            }
+
+            $('.main_comment').click(function() {
+                var commentId = $(this).data('comment-id');
+                replyToComment(commentId);
+            });
+        });
+    </script>
+    
+</body>
+</html>

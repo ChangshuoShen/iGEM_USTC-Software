@@ -1,0 +1,402 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- 基础信息 -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>USTC-Software</title>
+    <!-- jQuery -->
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" type="text/css" href="{% static 'home-css/bootstrap.min.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'home-css/mobile.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'home-css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'home-css/loading.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'home-css/animation.css'%}">
+    <!-- Izitoast一个显示漂亮提示框和通知消息的JS库 -->
+    <link rel="stylesheet" href="{% static 'home-css/iziToast.min.css'%}">
+    <script type="text/javascript" src="{% static 'js/iziToast.min.js'%}"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+</head>
+
+<body>
+<!--加载动画-->
+<div id="loading-box">
+    <div class="loading-left-bg"></div>
+    <div class="loading-right-bg"></div>
+    <div class="spinner-box">
+        <div class="loader">
+            <div class="inner one"></div>
+            <div class="inner two"></div>
+            <div class="inner three"></div>
+        </div>
+        <div class="loading-word">
+            <p class="loading-title" id="loading-title">USTC-Software</p>
+            <span id="loading-text">Loading~~~</span>
+        </div>
+    </div>
+</div>
+
+<!-- 导航栏 -->
+<nav class="navbar navbar-expand-lg navbar-light bg-semi-transparent fixed-top custom-nav-text" style="height: 60px;">
+    <div class="container-fluid">
+        <div class="row align-items-center w-100">
+            <div class="col-auto">
+                <a class="navbar-brand nav-link " href="{% url 'home'%}" data-block="block-home">
+                    <img src="{%static 'imgs/home-imgs/home-logo.png'%}" alt="icon" height="55" class="d-inline-block align-top">
+                </a>
+            </div>
+            <div class="col">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto justify-content-between">
+                        <li class="nav-item">
+                            <a class="nav-link nav-item-spaced" href="#" data-block="block-1">Workflow</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-item-spaced" href="{% url 'forum:forum_index'%}" data-block="block-2">Community</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-item-spaced" href="{% url 'forum:forum_index'%}" data-block="block-3">Resources</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-item-spaced" href="#" data-block="block-4">Team</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-item-spaced" href="{% url 'accounts:signup_login'%}" data-block="block-5">Account</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-item-spaced" href="{% url 'feedback:feedback_page'%}" data-block="block-6">Feedback</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- 这部分之后用来展示想要hover的时候展示的内容 -->
+<div class="hover-block block-home">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 text-left home-text">
+                <p>MoBASY即"Multi-omics Bioinformatics Analysis Synthesis Platform"。</p> 
+                <p>平台的前身为2023年iGEM软件队设计的Prot-DAP：即<a href="https://2023.igem.wiki/ustc-software/" target="_blank">一站式蛋白质序列设计</a></p>
+            </div>
+            <div class="col-md-3">
+                <img src="{%static 'imgs/home-imgs/banners/home.svg'%}" alt="Logo" class="img-fluid">
+            </div>
+            <div class="col-md-5 text-left home-text">
+                <p>今年我们基于去年的平台建设思路，进一步完善了平台前端建设，优化了界面设计，提供了多种语言；</p>
+                <p>在建模方面，我们进一步探索组学研究与应用，尝试部署更加丰富、前沿的生信分析pipline，建设一个集教学，讨论，应用为一体的生信平台。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="hover-block block-1">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 text-left workflow-text">
+                <p>随着单细胞测序，空间转录组等生物技术的发展，使用python，pytorch，linux服务器以及大语言模型来辅助下游数据分析处理已经逐渐常态化，而这些代码工作本身有着不小的学习成本。</p>
+            </div>
+            <div class="col-md-3">
+                <img src="{%static 'imgs/home-imgs/banners/workflow.png'%}" alt="Workflow" class="img-fluid">
+            </div>
+            <div class="col-md-6 text-left workflow-text">
+                <p>本模块最重要的部分是部署了scRNA-seq下游的分析流程的Pipeline：包括数据获取，质量控制，标准化，批次效应校正，聚类与可视化，微调大模型用于基因注释等功能。同时还部署有ChIP-seq，ATAC-seq的交互分析流程以及一些前沿的CNN，transformer模型来用于学习交流。</p>
+                <p>后续我们将聚焦多组学分析，一方面丰富该板块的功能性，进一步帮助科研工作者提高工作效率，另一方面追踪前沿技术变革，评估新的模型与方法的实际应用效果。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="hover-block block-2" style="background-color: black;">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 text-left community-text">
+                <p>得益于计算机硬件设施、微流控技术的快速发展，组学分析的数据量近几年爆炸式的增长，过去的数据处理尚且可以通过Origin，MATLAB等工具辅助完成，
+                但是随着scRNA-seq，空间转录组学等分析手段的发展，对于处理庞大的稀疏矩阵进行个性化的调整和可视化展示，就需要使用python代码来辅助完成了。</p>
+                <p>在此基础之上，顶尖的学术期刊上也有不少关于分析流程中技术的变革，它们大多使用深度学习的手段，用来提高数据处理的效果或是构建分类或是疾病预警模型。
+                    同时随着GPT4这样的大模型的横空出世，对于生信分析又会有更加多样的思路：比如进行大语言模型微调来协助完成基因注释，或是智能化读取病例样本信息来判断给药等等。</p>
+                
+            </div>
+            <div class="col-md-3">
+                <img src="{%static 'imgs/home-imgs/banners/community.png'%}" alt="Community" class="img-fluid">
+            </div>
+            <div class="col-md-3 text-left community-text">
+                <p>而学习python，pytorch和linux服务器使用对于生命科学的同学来说并不轻松，因此我们推出了这样一个社区论坛，一方面发布生物信息学的学习代码和解析文章，另一方面构建讨论生态，来解决学习中遇到的诸多问题。</p>    
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="hover-block block-3">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-5 text-left resource-text">
+                <p>此处我们提供了本科学习过程中一些课程的提纲或总结，试点性的部署了物理化学基础实验的数据分析交互式处理工具，同时考虑提供一部分python，pytorch的学习代码。</p>
+            </div>
+            <div class="col-md-3">
+                <img src="{%static 'imgs/home-imgs/banners/resources.png'%}" alt="Resources" class="img-fluid">
+            </div>
+            <div class="col-md-4 text-left resource-text">
+                <p>欢迎上传自己的学习资料和代码，让我们一起构建一个便捷的学习生态！</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="hover-block block-4">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4 text-left team-text">
+                <p>iGEM USTC-Software自2009年首次建队以来,获得有2次最佳软件项目奖,11次团队金牌,4次团队银牌。
+                    队伍由来自大数据学院,计算机科学学院,网络安全学院,物理学院,生命科学院等多个院系的本科生组成。
+                    团队课题建设由中国科学技术大学生命科学院和中国科学技术大学新创校友基金会支持,多年来课题聚焦合成生物学领域中,使用计算机科学的技术和方法解决生物学问题或提供更加便捷的工具。
+                </p>
+            </div>
+            <div class="col-md-4">
+                <img src="{%static 'imgs/home-imgs/banners/team.png'%}" alt="Team" class="img-fluid">
+            </div>
+            <div class="col-md-4 text-left team-text-2">
+                <p>今年,2024年USTC-Software基于2023年的课题设计进一步延伸,探索组学分析技术变革和医学影像分割等,并尝试使用大模型微调来辅助解决生命科学问题,最终我们集成化这些功能,产生MoBASE这个中文平台,来服务于广大的生命科学研究人员。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="hover-block block-5">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+                <img src="{%static 'imgs/home-imgs/banners/account.png'%}" alt="Account" class="img-fluid">
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-5 text-left account-text">
+                <p>用户账号系统将用于存储包括社区论坛中的文章和提问发布，模型工作流中Pipeline运行后的结果暂存，同时提供一个进行反馈的渠道~~~</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="hover-block block-6">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-5">
+                <img src="{%static 'imgs/home-imgs/banners/feedback.png'%}" alt="Feedback" class="img-fluid">
+            </div>
+            <div class="col-md-5 text-left feedback-text">
+                <p>欢迎针对使用平台时遇到的bug或者是不便的地方进行反馈，这将让我们得以更快的迭代我们的平台，从而提供更优质的服务~</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section id="section" class="section">
+    <!-- 背景图片 -->
+    <div class="bg-all">
+        <img id="bg" onerror="this.classList.add('error');">
+        <div class="cover"></div>
+    </div>
+    <!-- 鼠标指针 -->
+    <div id="g-pointer-1"></div>
+    <div id="g-pointer-2"></div>
+
+    <!-- 主体内容 -->
+    <main id="main" class="main">
+        <div class="container" id="container">
+            <div class="row" id="row">
+                <div class="col left">
+                    <!--基本信息-->
+                    <div class="main-left">
+                        <!--Logo-->
+                        <div class="main-img">
+                            <img id="logo-img" src="{%static 'imgs/home-imgs/icon/home-logo1.png'%}" alt="Logo">
+                            <div class="img-title">
+                                <span class="img-title-big" id="logo-text-1">Mo-</span>
+                                <span class="img-text" id="logo-text-2">Base</span>
+                            </div>
+                        </div>
+
+                        <!--介绍信息-->
+                        <div class="message cards" id="switchmore">
+                            <div class="des" id="des">
+                                <i class="fa-solid fa-quote-left"></i>
+                                <div class="des-title">
+                                    <span>
+                                        Multi-Omics
+                                        <br>
+                                        Bioformatics Analysis SynthEsis platform
+                                    </span>
+                                </div>
+                                <i class="fa-solid fa-quote-right"></i>
+                            </div>
+                        </div>
+
+                        <!--社交链接-->
+                        <div class="social" id="social">
+                            <a href="https://github.com/Stephen-Shenc" class="link" id="github" style="margin-left: 4px"
+                               target="_blank">
+                                <i class="fa-brands fa-github"></i>
+                            </a>
+                            <a href="https://wpa.qq.com/msgrd?v=3&uin=507614154&site=qq&menu=yes" class="link"
+                               id="wechat" target="_blank">
+                                <i class="fa-brands fa-weixin"></i>
+                            </a>
+                            <a href="mailto:507614154@qq.com" class="link" id="email">
+                                <i class="fa-solid fa-envelope"></i>
+                            </a>
+                            <a href="https://2024.igem.wiki/ustc-software/" class="link" id="wiki"
+                               target="_blank">
+                               <i class="fa-solid fa-dna"></i>
+                            </a>
+                            <a id="link-text">Contact Us Here</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col right">
+                    <div class="main-right">
+                        <div class="line">
+                            <i class="fa-solid fa-link"></i>
+                            <span class="line-text">Link</span>
+                        </div>
+
+                        <div class="row rightone" id="rightone">
+                            <div class="col">
+                                <div class="development-log cards">
+                                    <div class="development-log-all">
+                                        <div class="development-log-text text-center">
+                                            <span>
+                                                <i class="fas fa-flask"></i>
+                                                单细胞分析工作流
+                                            </span>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col times">
+                                <!-- 时间 -->
+                                <div class="time cards" id="upWeather">
+                                    <div class="timeshow" id="time">
+                                        2000&nbsp;Year&nbsp;0&nbsp;Month&nbsp;00&nbsp;Day&nbsp;<span class="weekday">Monday</span>
+                                        <br>
+                                        <span class="time-text">00:00:00</span>
+                                    </div>
+                                    <div>
+                                        <span class="development-log-span">
+                                            <i class="fas fa-book"></i>
+                                            开发日志
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--分割线-->
+                        <div class="line">
+                            <i class="fa-solid fa-link"></i>
+                            <span class="line-text">Main</span>
+                        </div>
+
+                        <!--网站链接-->
+                        <div class="link">
+                            <!--第一组-->
+                            <div class="row">
+                                <div class="col">
+                                    <a id="link-url-1" href="#">
+                                        <div class="link-card cards">
+                                            <i id="link-icon-1" class="fas fa-dna"></i>
+                                            <span class="link-name" id="link-name-1">ChIP-seq</span>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col 2">
+                                    <a id="link-url-2" href="#">
+                                        <div class="link-card cards">
+                                            <i id="link-icon-1" class="fas fa-dna"></i>
+                                            <span class="link-name" id="link-name-2">ATAC-seq</span>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col">
+                                    <a id="link-url-3" href="#">
+                                        <div class="link-card cards">
+                                            <i id="link-icon-1" class="fas fa-dna"></i>
+                                            <span class="link-name" id="link-name-3">PyMOL教学</span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <!--第二组-->
+                            <div class="row" style="margin-top: 1.5rem;">
+                                <div class="col">
+                                    <a id="link-url-4" href="#">
+                                        <div class="link-card cards">
+                                            <i id="link-icon-1" class="fas fa-dna"></i>
+                                            <span class="link-name" id="link-name-4">论坛</span>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col 2">
+                                    <a id="link-url-5" href="#">
+                                        <div class="link-card cards">
+                                            <i id="link-icon-1" class="fas fa-dna"></i>
+                                            <span class="link-name" id="link-name-5">课程学习资料</span>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col">
+                                    <a id="link-url-6" href="#">
+                                        <div class="link-card cards text-center">
+                                            <i id="link-icon-1" class="fas fa-dna"></i>
+                                            <span class="link-name" id="link-name-6">
+                                                蛋白质序列设计
+                                                <br>
+                                                工作流</span>
+                                            
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--展开菜单按钮-->
+            <div class="menu" id="switchmenu">
+                <a class="munu-button cards" id="menu">
+                    <i class="fa-solid fa-bars"></i>
+                </a>
+            </div>
+</section>
+
+<!-- 版权信息 -->
+<footer id="footer" class="footer fixed-bottom">
+    <div class="power">
+            <span id="power">Copyright&nbsp;&copy;
+                <script>
+                    document.write((new Date()).getFullYear());
+                </script>
+                <a href="#" id="power-text">USTC-Software</a>
+            </span>
+    </div>
+</footer>
+<!-- noscript -->
+<noscript>
+    <div class="noscript fixed-top">Please Start JavaScript</div>
+</noscript>
+<!-- JS -->
+
+<script type="text/javascript" src="{% static 'js/main.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/time.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/bootstrap.min.js'%}"></script>
+</body>
+</html>

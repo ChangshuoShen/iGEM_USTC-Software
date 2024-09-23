@@ -1,0 +1,219 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="title" content="Ask online Form">
+    <meta name="language" content="English">
+    <title>Post Detail</title>
+    
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css'%}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}"  type="text/css">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/responsive.css'%}" type="text/css">
+    
+    <style>
+        .show-comment-box {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            background: linear-gradient(135deg, #f4f4f9, #c9d6ff);
+            width: 77%;
+            transform: translateX(-50%);
+            padding: 10px;
+            z-index: 999;
+        }
+
+        .close-icon {
+            position: absolute;
+            top: 5px; /* 距离容器顶部的距离 */
+            right: 5px; /* 距离容器右侧的距离 */
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container-fluid">
+            <!-- 面包屑组织“相对路径” -->
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'forum:forum_index'%}">Community</a></li>
+                <li class="breadcrumb-item"><a href="#">Post_detail: {{ post_content.post_title }}</a></li>
+            </ol>  
+            {% include 'nav-links.html' %}
+        </div>
+    </nav>
+
+    <section class="main-content920" style="margin-top: 56px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="post-details">
+                        <!-- 这里是详细的分享内容 -->
+                        <div class="details-header923">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="post-title-left129">
+                                        <h3>{{ post_content.post_title }}</h3> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="post-details-info1982">
+                            <div>{{post_content.post_detail|safe}}</div>                            
+                            <hr>
+
+                            <div class="post-footer29032">
+                                <div class="l-side2023"> 
+
+                                    <!-- <i class="fa fa-check check2" aria-hidden="true">solved</i> -->
+                                    <a href="#"><i class="fa fa-star star2" aria-hidden="true">{{post_content.post_likes}}</i></a> 
+                                    <!--<i class="fa fa-folder folder2" aria-hidden="true"> wordpress</i> -->
+                                    <i class="fa fa-clock-o clock2" aria-hidden="true"> {{ post_content.publish_date }}</i> 
+                                    <!-- <a href="#"><i class="fa fa-commenting commenting2" aria-hidden="true">{{ comment.comments }}</i></a>  -->
+                                    <i class="fa fa-user user2" aria-hidden="true"> 70 views</i> </div>
+
+                                <div class="l-rightside39">
+                                    <form id="likeForm " action="{% url "forum:like_post"%}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="post_id" value="{{post_content.post_id}}">
+                                        <button type="input" class="like-button tolltip-button thumbs-up2">
+                                            <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+                                        </button>
+                                    </form>
+                                    <span class="single-question-vote-result">{{ post_content.post_likes }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="author-details8392">
+                        <!-- 这里是作者的信息 -->
+                        <div class="author-img202l"> 
+                            {% if publisher.gender == 'female' %}
+                                <img src="{{ MEDIA_URL }}avators/for_female.png" alt="Avator">
+                            {% else %}
+                                <img src="{{ MEDIA_URL }}avators/for_male.png" alt="Avator">
+                            {% endif %}
+                            <div class="au-image-overlay text-center"> 
+                                <a href="#">
+                                    <i class="fa fa-plus-square-o" aria-hidden="true">
+                                    </i>
+                                </a> 
+                            </div>
+                        </div>
+                        <h5>{{publisher.username}}</h5>
+                        <p>{{publisher.bio}}</p>
+                    </div>
+                    
+                    <div class="comment-list12993">
+                        <!-- 这里是针对分享的评论以及对评论的评论 -->
+                        <div class="container">
+                            <div class="row">
+                                <div class="comments-container col-md-12">
+                                    <ul id="comments-list" class="comments-list">
+                                        {% for single_comment in main_comments %}
+                                        <li>
+                                            <!-- main-level针对的是对整个post的评论 -->
+                                            <div class="comment-main-level">
+                                                <!-- Avatar -->
+                                                <div class="comment-avatar"><img src="{{ MEDIA_URL }}avators/for_male.png" alt=""></div>
+                                                <!-- Contenedor del Comentario -->
+                                                <div class="comment-box">
+                                                    <div class="comment-head" >
+                                                        <h6 class="comment-name"><a href="#">{{single_comment.commenter}}</a></h6> 
+                                                    </div>
+                                                    <div class="comment-content main_comment" data-comment-id="{{ single_comment.id }}"> {{ single_comment.comment_detail }} 
+                                                        <br>
+                                                    </div>
+                                                    <i class="fa fa-clock-o clock2" aria-hidden="true"> {{ single_comment.date }}</i><br>
+                                                </div>
+                                            </div>
+                                                                                
+                                                                            
+                                            <ul class="comments-list reply-list">
+                                                <!-- 这里的comments-list, reply-list表示的是对本评论的回复 -->
+                                                {% for reply in single_comment.replies %}
+                                                <li>
+                                                    <div class="comment-avatar"><img src="{{ MEDIA_URL }}avators/for_male.png" alt=""></div>
+                                                    <div class="comment-box">
+                                                        <div class="comment-head">
+                                                            <h6 class="comment-name"><a href="#">{{ reply.replier }}</a></h6>
+                                                                <span><i class="fa fa-clock-o" aria-hidden="true"> January 15 , 2014 at 10:00 pm</i></span>
+                                                                <i class="fa fa-reply"></i> <i class="fa fa-heart"></i> </div>
+                                                                <div class="comment-content"> {{reply.reply_detail}}<br>
+                                                                    <i class="fa fa-clock-o clock2" aria-hidden="true"> {{ reply.date }}</i><br>
+                                                                </div>
+                                                    </div>
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="comment289-box" id='comment_box'>
+                        <!-- 这里是给一个评论或评论评论的地方 -->
+                        <h3>Leave A Reply</h3>
+                            <div class="col-md-12">
+                                <div class="post9320-box">
+                                    <span class="close-icon" onclick="closeCommentBox()">&#10006;</span>
+                                    <form action="{% url 'forum:comment_or_reply' %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="text" class="comment-input219882" placeholder="Enter Your Comments/Replies" name="comment_or_reply">
+                                        <input type="hidden" name="reply" id="reply" value="False">
+                                        <input type="hidden" name="comment_id" id="comment_id" value="-1">
+                                        <button type="submit" class="pos393-submit" style="background-color: blue;">Leave a Comment/Reply</button>
+                                    </form>                                    
+                                </div>
+                                <br><br><br>
+                            </div>
+                    </div>
+                    
+                </div>
+
+            </div>
+    </section>
+
+    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+    <script>
+        /* 这里是评论 */
+        function closeCommentBox() {
+            var commentBox = document.getElementById('comment_box');
+            commentBox.classList.remove('show-comment-box');
+            document.getElementById('reply').value = 'False';
+            document.getElementById('comment_id').value = 'None';
+        }
+
+        $(document).ready(function() {
+            function replyToComment(commentId) {
+                var commentBox = document.getElementById('comment_box');
+                commentBox.classList.add('show-comment-box');
+                document.getElementById('reply').value = 'true';
+                document.getElementById('comment_id').value = commentId;
+            }
+
+            $('.main_comment').click(function() {
+                var commentId = $(this).data('comment-id');
+                replyToComment(commentId);
+            });
+        });
+
+       
+    </script>
+    
+</body>
+</html>
+
+

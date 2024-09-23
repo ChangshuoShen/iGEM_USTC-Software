@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor.js Markdown Editor</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest/dist/editorjs.min.css">
+</head>
+<body>
+    <div id="editorjs"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+    <script>
+    // 初始化 Editor.js
+    var editor = new EditorJS({
+        /**
+         * 配置项
+         */
+        holder: 'editorjs', // 编辑器容器的 DOM 元素 id
+        tools: {
+            markdown: {
+                class: MarkdownTool,
+                shortcut: 'CMD+SHIFT+M' // 可选：设置快捷键
+            }
+        },
+        data: {
+            // 初始内容，如果有的话
+            blocks: [
+                {
+                    type: 'paragraph',
+                    data: {
+                        text: '## Write Markdown Here'
+                    }
+                }
+            ]
+        },
+        onReady: function () {
+            console.log('Editor.js is ready!');
+        }
+    });
+
+    // Markdown 工具类
+    class MarkdownTool {
+        // 构造函数
+        constructor({ data, config, api }) {
+            this.data = data;
+            this.api = api;
+            this._CSS = {
+                block: this.api.styles.block,
+                settingsButton: this.api.styles.settingsButton,
+            };
+        }
+
+        // 定义渲染方法
+        render() {
+            // 创建并返回 DOM 元素
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = `
+                <textarea id="markdown-textarea" class="${this._CSS.block}"></textarea>
+            `;
+            return wrapper;
+        }
+
+        // 定义保存方法
+        save(blockContent) {
+            // 返回 Markdown 内容
+            return {
+                text: blockContent.querySelector('#markdown-textarea').value,
+            };
+        }
+    }
+</script>
+
+</body>
+</html>

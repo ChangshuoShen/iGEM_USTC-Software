@@ -1,0 +1,155 @@
+body {
+    font-family: Arial, sans-serif; /* 使用Arial字体，如果无法加载则使用系统默认无衬线字体 */
+}
+
+div.home{
+    position:fixed;
+    right:0px;
+    top:0px;
+}
+
+div.head{
+    display:grid;
+    place-items:center;
+    font-size:24px;
+    font-weight:bold;
+    padding-bottom:0px;
+    margin-bottom:15px;
+    position:absolute;
+    top:5%;
+    left:50%;
+    transform:translate(-50%, 0%);
+}
+
+p.success{
+    margin-top:0px;
+}
+
+div.file{
+    float:left;
+    width:49%;
+    height:350px;
+    margin-left:10px;
+    position:absolute;
+    top:40%;
+    left:25%;
+}
+
+div.references{
+    float:right;
+    width:50%;
+    height:350px;
+    border-left:5px dotted #2363af;
+    position:absolute;
+    top:40%;
+    left:50%;
+    height:50vh;
+}
+
+div.upload{
+    height:300px;
+}
+
+div.loaddown{
+    height:50px;
+}
+
+p.refer_title{
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:0px;
+    margin-left:10px;
+}
+
+p.mark{
+    margin-top:0px;
+    font-size:12px;
+    margin-left:10px;
+}
+
+div.teachbook{
+    display:grid;
+    place-items:center;
+    margin-bottom:50px;   
+    margin-top:0px;
+    position:absolute;
+    top:30%;
+    left:50%;
+    transform:translate(-50%, 0%);         
+}
+
+p.teach_p{
+    font-weight:bold;
+}
+
+a {
+    text-decoration: none;
+    position: relative;
+    transition: all 0.3s ease;
+    color:black;
+}
+
+a::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #000;
+    transition: width 0.3s ease;
+}
+
+a:hover::before {
+    width: 100%;
+}
+
+#home{
+    text-decoration:none;
+}
+
+li.refer{
+    margin-bottom:10px;
+    margin-left:10px;
+}
+
+input.formSubmit{
+    margin-top:10px;
+    border-radius:5px;
+}
+
+div.exegesis{
+    font-size:12px;
+}
+
+p.exegesisHead{
+    font-weight:bold;
+}
+
+img.background{
+    position:absolute;
+    z-index:0;
+    top:0px;
+    left:0px;
+    height:100vh;
+    width:100%;
+}
+
+button.buttonHome{
+    border-radius:10px;
+    border-color:#2363af;
+    background-color:#2363af;
+    color:#dde80d;
+    width:70px;
+    height:35px;
+    font-size:20px;
+    font-weight:bold;
+}
+
+p.upload_p{
+    font-size:12px;
+}
+
+p.explain{
+    font-weight:bold;
+}

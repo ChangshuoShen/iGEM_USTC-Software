@@ -1,0 +1,150 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    {% comment %} <link rel="stylesheet" href="{% static 'css/signup_login.css' %}"> {% endcomment %}
+    <link rel="stylesheet" href="{% static 'css/msg_for_all.css' %}">
+    <link rel="stylesheet" href="{% static 'css/profile_style.css' %}">
+<style>
+        /* 回到主页按钮样式 */
+    .back-to-home {
+    position: fixed;
+    top: 60px;
+    right: 20px;
+    }
+
+    .back-to-home .btn {
+    background: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease;
+    }
+
+    .back-to-home .btn:hover {
+    background: #0056b3;
+    }
+
+    /* 注销按钮样式 */
+    .logout {
+    position: fixed;
+    top: 100px; /* Adjust as needed */
+    right: 20px;
+    }
+
+    .logout .btn {
+    background: #dc3545; /* Red color */
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease;
+    }
+
+    .logout .btn:hover {
+    background: #c82333; /* Darker red on hover */
+    }
+</style>
+</head>
+
+<body>
+    {% comment %} <h1>Profile</h1> {% endcomment %}
+
+    {% if messages %}
+    <div class="message-container">
+      {% for message in messages %}
+        <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- 这里是主要部分，用于展示用户信息，修改用户信息 -->
+    <form action="{% url 'accounts:change_profile' %}" method="post">
+        {% csrf_token %}
+        {% if gender == 'female' %}
+            <img src="{{ MEDIA_URL }}avators/for_female.png" alt="Avator">
+        {% else %}
+            <img src="{{ MEDIA_URL }}avators/for_male.png" alt="Avator">
+        {% endif %}
+        <br>
+        {% comment %} <label for="avator"> Change Avator:</label>
+        <input type="file" id="avator" accept="image/*" name="avator" style="width: auto;" enctype="multipart/form-data">
+        <br> {% endcomment %}
+
+        <label for="username">name:</label>
+        <input type="text" id="username" name="username" placeholder="{{ username }}">
+        <br>
+
+        <label for="email">Email:</label>
+        <span id="email">{{ email }}</span>
+        <br>
+        
+        <label for="gender">Gender:</label>
+        <div class='gender-options'> 
+          <input type="radio" id="male" name="gender" value="male" {% if gender == 'male' %} checked {% endif %}>
+          <label for="male">Male</label>
+          <input type="radio" id="female" name="gender" value="female" {% if gender == 'female' %} checked {% endif %}>
+          <label for="female">Female</label>
+          <input type="radio" id="uncertain" name="gender" value="uncertain" {% if gender == 'uncertain' %} checked {% endif %}>
+          <label for="uncertain">Uncertain</label>
+        </div>
+        <br>
+
+        <label for="birthday">Birthday:{{ birthday }}</label>
+        <input type="date" id="birthday" name="birthday" value="{{ birthday }}">
+        <br>
+
+        <label for="bio">Biography:</label>
+        <br>
+        <textarea id="bio" name="bio" rows="4" cols="50" placeholder="{{ bio }}"></textarea>
+        <br>
+
+        <!-- 下面这部分只给看 -->
+        <label for="likes">Likes:</label>
+        <span id="likes">{{ likes }}</span>
+        <br>
+
+        <label for="liked_by">Liked By:</label>
+        <span id="liked_by">{{ liked_by }}</span>
+        <br>
+
+        <input type="submit" value="Change">
+    </form>
+
+    <div class="back-to-home">
+        <a href="{% url "home" %}" class="btn">Back to Home</a>
+    </div>
+
+    <div class="logout">
+        <a href="{% url "accounts:logout" %}" class="btn">Logout</a>
+    </div>
+
+    <script>
+      function formatDate(dateString) {
+          // 只是用来转换日期的存储格式
+          var date = new Date(dateString);
+          var year = date.getFullYear();
+          var month = ('0' + (date.getMonth() + 1)).slice(-2); // 补零
+          var day = ('0' + date.getDate()).slice(-2); // 补零
+          return year + '-' + month + '-' + day;
+      }
+      // 将生日字段的值格式化为 YYYY-MM-DD
+      var birthday = formatDate('{{ birthday }}');
+      document.getElementById('birthday').value = birthday;
+    </script>
+</body>
+</html>

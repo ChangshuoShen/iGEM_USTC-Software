@@ -1,0 +1,160 @@
+/* 基础样式 */
+body {
+    font-family: Arial, sans-serif;
+    background: url('./static/imgs/bgs/bg.png');
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* 修改为flex-start，确保内容从顶部开始 */
+    min-height: 100vh; /* 确保页面高度至少为视口高度 */
+    color: #333;
+    overflow-y: auto; /* 允许纵向滚动 */
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+form {
+    background: linear-gradient(135deg, #f4f4f9, #c9d6ff);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: 70%;
+    box-sizing: border-box;
+    margin: 20px 0; /* 增加上下间距 */
+}
+
+label {
+    display: block;
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="file"],
+textarea {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+input[type="radio"] {
+    margin-top: 10px;
+    margin-right: 5px;
+}
+
+input[type="submit"] {
+    background: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input[type="submit"]:hover {
+    background: #0056b3;
+}
+
+textarea {
+    resize: vertical;
+}
+
+img {
+    display: block;
+    margin: 10px 0;
+    max-width: 100px;
+    max-height: 100px;
+    border-radius: 50%;
+}
+
+span {
+    display: inline-block;
+    margin-top: 5px;
+}
+
+/* 特定部分样式 */
+#email, #likes, #liked_by, #followers, #following {
+    display: block;
+    margin-top: 5px;
+    padding: 10px;
+    background: #f4f4f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* 性别选项样式 */
+.gender-options {
+    display: flex;
+    flex-direction: row; /* 设置为水平排列 */
+    align-items: center;
+    gap: 10px; /* 可以根据需要调整间距 */
+}
+
+.gender-options label {
+    margin-right: 5px; /* 标签与单选按钮之间的间距 */
+}
+
+
+
+
+/* 回到主页按钮样式 */
+.back-to-home {
+    position: fixed;
+    top: 50px;
+    right: 20px;
+}
+
+
+.back-to-home .btn {
+    background: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease;
+}
+
+.back-to-home .btn:hover {
+    background: #0056b3;
+}
+
+/* 注销按钮样式 */
+.logout {
+    position: fixed;
+    top: 100px; /* Adjust as needed */
+    right: 20px;
+}
+
+.logout .btn {
+    background: #dc3545; /* Red color */
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease;
+}
+
+.logout .btn:hover {
+    background: #c82333; /* Darker red on hover */
+}

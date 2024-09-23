@@ -1,0 +1,150 @@
+{% load static%}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="https://static.igem.wiki/common/icons/favicons/igem-2022.svg"/>
+    <link rel="license" href="https://creativecommons.org/licenses/by/4.0/"/>
+
+    <!-- Bootstrap CSS -->
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap-icons.css' %}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{% static 'css/home_style.css' %}" rel="stylesheet">
+
+    <!-- JQuery JS -->
+    <script src="{% static 'js/jquery-3.5.1.js' %}"></script>
+    <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
+
+    <title>Home|USTC-Software - iGEM 2024</title>
+
+</head>
+<body>
+    <!-- Navigation -->
+    {% include 'menu.html'%}
+    <script>
+      $(function(){
+        $(document).on("mousewheel DOMMouseScroll", function (e) {
+          var delta = (e.originalEvent.wheelDelta && (e.originalEvent.wheelDelta > 0 ? 1 : -1)) ||  // chrome & ie
+                      (e.originalEvent.detail && (e.originalEvent.detail > 0 ? -1 : 1));              // firefox
+          if (delta > 0) {
+            $(".navbar").fadeIn(500);
+          }
+          else if (delta < 0) {
+            $(".navbar").fadeOut(500);
+          }
+        });
+      });
+    </script>
+
+    <div class="top">
+      <div class="content">
+        <div class="head">
+          <div class="title">
+            Prot-
+          </div>
+          <img class="title-img" src="https://static.igem.wiki/teams/4659/wiki/dap.png">
+        </div>
+        <div class="info" style="padding-top: 0; margin-top: -30px; margin-bottom: 30px;">
+          <span>Prot</span>ein <span>D</span>esign  <span>A</span>uxiliary <span>P</span>latform
+        </div>
+        <button class="btn" id="home_btn1" style="margin-right: 20px;">
+          <span class="shadow"></span>
+          <span class="edge"></span>
+          <span class="front" style="background: #fed647;">
+            <a href="#">Prot-DAP INFO(记得该超链接)</a>
+          </span>
+        </button>
+        
+        <button class="btn" id="home_btn2">
+          <span class="shadow"></span>
+          <span class="edge"></span>
+          <span class="front" style="background: #41DBC5;">
+            <a href="#" target="_blank">See Platform</a>
+          </span>
+        </button>
+      </div>
+      <img class="logo" src="https://static.igem.wiki/teams/4659/wiki/home-logo1.gif">
+    </div>
+  
+    <!-- Page Content -->
+    <div class="container">
+      <div class="board">
+
+
+        <div class="intro-box" style="flex-direction: row-reverse;">
+            <img src="https://static.igem.wiki/teams/4659/wiki/home-pic-1.png">
+            <div class="intro">
+                <h4 class="subh" style="text-align: right; padding-right: 5rem;">Why</h4>
+                <div>In the process of scientific research, people usually need to modify certain proteins, such as enzymes and antibodies, to improve their performance. Protein stability is often affected by other factors such as pH, temperature, and solvent. And as the application of computer science in the field of biology, using computer science to solve biological problems will be a trend in the future.</div>
+            </div>
+          </div>
+          <div class="intro-box">
+            <img src="https://static.igem.wiki/teams/4659/wiki/home-pic2-1.gif">
+            <div class="intro">
+                <h4 class="subh" style="padding-left: 5rem;">Problem</h4>
+                <div>For many green-hands in synthetic biology, there are various biological tools on the Internet, which are extremely costly to learn and very troublesome to use, which invisibly raises the threshold for synthetic biology.</div>
+            </div>
+          </div>
+          <div class="intro-box" style="flex-direction: row-reverse;">
+            <img src="https://static.igem.wiki/teams/4659/wiki/home-pic3.png">
+            <div class="intro">
+                <h4 class="subh" style="text-align: right; padding-right: 5rem;">Product</h4>
+                <div>We have built a full-process auxiliary protein optimization platform, from protein sequence import, to multiple sequence alignment, model prediction, mutation site viewing, structural analysis, to downstream vector selection, codon optimization, signal peptide excision, and primer design. Protein sequence optimization.</div>
+            </div>
+          </div>
+          <div class="intro-box">
+            <img src="https://static.igem.wiki/teams/4659/wiki/home-pic4-2.gif">
+            <div class="intro">
+                <h4 class="subh" style="padding-left: 5rem;">Advantage</h4>
+                <div>Prot-DAP can help scientific researchers reduce time costs and complete predictions faster.We try our best to simplify the user interface as much as possible to make it more intuitive. We have added data of several commonly used plasmids, which can save a considerable number of users from the trouble of searching and entering vectors by themselves.</div>
+            </div>
+          </div>
+          <div class="intro-box" style="flex-direction: row-reverse;">
+            <img src="https://static.igem.wiki/teams/4659/wiki/home-pic-5.gif">
+            <div class="intro">
+                <h4 class="subh" style="text-align: right; padding-right: 5rem;">Disadvantage</h4>
+                <div>Due to algorithm limitations, we can currently only perform protein sequence modifications of approximately 200aa at most.</div>
+            </div>
+          </div>
+          
+          <script>
+            $(function(){
+              const sliding = [
+                { transform: 'translateX(10%)' },
+                { transform: 'translate(0)'}
+              ]
+          
+              var eles = document.getElementsByClassName('intro-box');
+          
+              $(window).scroll(function () {
+                slideIn();
+              })
+              
+              function slideIn() {
+                
+                eles = Array.from(eles);
+                for(let i = 0; i < eles.length; i++) {
+                  const element = eles[i];
+                  var scrollTop = $(window).scrollTop();
+                  var targetHeight = element.offsetTop;
+          
+                  if (scrollTop > targetHeight - 800) {
+                    element.animate(sliding, 1000);
+                    element.style.opacity = `${1}`;
+                    eles.splice(i, 1);
+                  }
+                }
+            }});
+          </script>
+      </div>
+    </div>
+    
+    <!-- Footer: MUST mention license AND have a link to team wiki's repository on gitlab.igem.org -->
+    {% include 'footer.html' %}
+  </body>
+</html>

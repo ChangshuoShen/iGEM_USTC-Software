@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="title" content="Upload Development Log">
+    <title>Upload Development Log</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h2>Upload Development Log</h2>
+        <form method="post" action="{% url 'forum:upload_development_log' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_title" class="form-label">Title</label>
+                <input type="text" name="title" id="id_title" class="form-control" value="{{ log.title }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="id_description" class="form-label">Description</label>
+                <textarea name="description" id="id_description" class="form-control" required>{{ log.description }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="id_log_date" class="form-label">Log Date</label>
+                <input type="date" name="log_date" id="id_log_date" class="form-control" value="{{ log.log_date|default_if_none:"" }}" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+    </div>
+
+    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+</body>
+</html>
