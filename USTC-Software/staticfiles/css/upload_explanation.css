@@ -1,0 +1,101 @@
+body {
+    font-family: Arial, sans-serif; /* 使用Arial字体，如果无法加载则使用系统默认无衬线字体 */
+}
+
+img.background{
+    position:absolute;
+    z-index:0;
+    top:0px;
+    left:0px;
+    height:100vh;
+    width:100%;
+}
+
+img#one{
+    position:absolute;
+    z-index:10;
+    left:30%;
+    top:20%;
+    width:20%;
+    height:30h;
+}
+
+img#two{
+    position:absolute;
+    z-index:10;
+    right:30%;
+    top:20%;
+    width:20%;
+    height:30h;
+}
+
+img#three{
+    position:absolute;
+    z-index:10;
+    left:30%;
+    top:60%;
+    width:20%;
+    height:30h;
+}
+
+img#four{
+    position:absolute;
+    z-index:10;
+    right:30%;
+    top:60%;
+    width:20%;
+    height:30h;
+}
+
+p.write{
+    position:absolute;
+    z-index:10;
+}
+
+p.title{
+    position:absolute;
+    z-index:10;
+    display:grid;
+    place-items:center;
+    font-size:24px;
+    font-weight:bold;
+    padding-bottom:0px;
+    margin-bottom:15px;
+    position:absolute;
+    top:5%;
+    left:50%;
+    transform:translate(-50%, 0%);
+}
+
+p#first{
+    left:25%;
+    top:15%;
+    font-weight:bold;
+}
+
+p#second{
+    left:33%;
+    top:50%;
+}
+
+p#third{
+    right:30%;
+    top:50%;
+}
+
+p#forth{
+    left:25%;
+    top:55%;
+    font-weight:bold;
+}
+
+p#fifth{
+    left:33%;
+    top:80%;
+}
+
+p#sixth{
+    right:38%;
+    top:80%;
+}
+
