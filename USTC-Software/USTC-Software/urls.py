@@ -39,6 +39,7 @@ urlpatterns = [
     # path('socialize/', include('Apps.socialize.urls', namespace='socialize')),
     path('works/', include('Apps.works.urls', namespace='works')),
     path('experiment/', include("Apps.experiment.urls", namespace='experiment')),
+    path('image_segment/', include("Apps.SAM_Med2D.urls", namespace='image_segment')),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
