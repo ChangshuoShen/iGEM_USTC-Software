@@ -103,30 +103,30 @@ UPLOAD_ROOT = '/var/www/upload/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 # 之后再改
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.mysql",
+#         "NAME": "ec",
+#         'USER': 'root',
+#         'PASSWORD': 'Scs31410.0',
+#         'HOST': '127.0.0.1',       # 主机
+#         'PORT': '3306',     # 端口
+#     }
+# }
+
+# 此处已注释，在服务器上使用下面这段：
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "ec",
+        "NAME": "iGEM",
         'USER': 'root',
+        # 'PASSWORD': 'Czf341503',
         'PASSWORD': 'Scs31410.0',
         'HOST': '127.0.0.1',       # 主机
         'PORT': '3306',     # 端口
     }
 }
-
-# 此处已注释，在服务器上使用下面这段：
-
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.mysql",
-#         "NAME": "iGEM",
-#         'USER': 'root',
-#         'PASSWORD': 'Czf341503',
-#         # 'PASSWORD': 'Scs31410.0',
-#         'HOST': '127.0.0.1',       # 主机
-#         'PORT': '3306',     # 端口
-#     }
-# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

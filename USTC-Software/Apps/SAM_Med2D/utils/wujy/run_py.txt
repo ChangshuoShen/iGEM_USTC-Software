@@ -1,0 +1,5 @@
+python3 main.py --encoder_model /home/wjy/SAM-Med2D/onnx_model/sam-med2d_b.encoder.onnx --decoder_model /home/wjy/SAM-Med2D/onnx_model/sam-med2d_b.decoder.onnx
+
+ps：可以加入参数--img_path指定输入图片路径，--input_size指定输入图片大小 --work_dir指定输出结果路径 ，不输入的话遵从default设置，也是可以跑起来的
+
+curl -X POST "http://172.17.0.6:36505/infer" -F "image=@/home/wjy/SAM-Med2D/data_demo/images/amos_0507_31.png" --output result.png

@@ -3,24 +3,17 @@ albucore==0.0.13
 albumentations==1.4.14
 annotated-types==0.7.0
 anyio==4.4.0
-appnope @ file:///home/conda/feedstock_root/build_artifacts/appnope_1707233003401/work
 asgiref==3.8.1
-asttokens @ file:///home/conda/feedstock_root/build_artifacts/asttokens_1698341106958/work
 blinker==1.8.2
 certifi==2024.7.4
 channels==4.1.0
 charset-normalizer==3.3.2
 click==8.1.7
 coloredlogs==15.0.1
-comm @ file:///home/conda/feedstock_root/build_artifacts/comm_1710320294760/work
 contourpy==1.2.1
 cycler==0.12.1
-debugpy @ file:///Users/runner/miniforge3/conda-bld/debugpy_1722923759142/work
-decorator @ file:///opt/conda/conda-bld/decorator_1643638310831/work
 Django==5.1.1
 eval_type_backport==0.2.0
-exceptiongroup @ file:///home/conda/feedstock_root/build_artifacts/exceptiongroup_1720869315914/work
-executing @ file:///home/conda/feedstock_root/build_artifacts/executing_1698579936712/work
 fastapi==0.112.1
 filelock==3.15.4
 Flask==3.0.3
@@ -33,57 +26,41 @@ huggingface-hub==0.24.5
 humanfriendly==10.0
 idna==3.7
 imageio==2.35.1
-importlib_metadata @ file:///home/conda/feedstock_root/build_artifacts/importlib-metadata_1724187233579/work
-ipykernel @ file:///Users/runner/miniforge3/conda-bld/ipykernel_1719845458456/work
-ipython @ file:///home/conda/feedstock_root/build_artifacts/ipython_1719582526268/work
 itsdangerous==2.2.0
-jedi @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_194648shy3/croot/jedi_1721058355221/work
+jedi==0.19.1  # 假设这是正确的版本，请根据实际情况替换
 Jinja2==3.1.4
 jsonify==0.5
-jupyter_client @ file:///home/conda/feedstock_root/build_artifacts/jupyter_client_1716472197302/work
-jupyter_core @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_73nomeum4p/croot/jupyter_core_1718818302815/work
 kiwisolver==1.4.5
 lazy_loader==0.4
 MarkupSafe==2.1.5
 matplotlib==3.9.2
-matplotlib-inline @ file:///home/conda/feedstock_root/build_artifacts/matplotlib-inline_1713250518406/work
 mpmath==1.3.0
-nest-asyncio @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_310vb5e2a0/croot/nest-asyncio_1708532678212/work
 networkx==3.3
 numpy==1.26.4
 onnx==1.16.2
 onnxruntime==1.19.0
 opencv-python-headless==4.10.0.84
-packaging @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_81ri4yfpjw/croot/packaging_1720101866878/work
-parso @ file:///home/conda/feedstock_root/build_artifacts/parso_1712320355065/work
+packaging==23.2  # 假设这是正确的版本，请根据实际情况替换
 peft==0.12.0
-pexpect @ file:///home/conda/feedstock_root/build_artifacts/pexpect_1706113125309/work
-pickleshare @ file:///tmp/build/80754af9/pickleshare_1606932040724/work
 pillow==10.4.0
-platformdirs @ file:///home/conda/feedstock_root/build_artifacts/platformdirs_1715777629804/work
-prompt_toolkit @ file:///home/conda/feedstock_root/build_artifacts/prompt-toolkit_1718047967974/work
-protobuf==5.27.3
-psutil @ file:///Users/runner/miniforge3/conda-bld/psutil_1719274598821/work
-ptyprocess @ file:///tmp/build/80754af9/ptyprocess_1609355006118/work/dist/ptyprocess-0.7.0-py2.py3-none-any.whl
-pure_eval @ file:///home/conda/feedstock_root/build_artifacts/pure_eval_1721585709575/work
+psutil==5.9.5  # 假设这是正确的版本，请根据实际情况替换
+ptyprocess==0.7.0
+pure_eval==0.2.2  # 假设这是正确的版本，请根据实际情况替换
 pydantic==2.8.2
 pydantic_core==2.20.1
-Pygments @ file:///home/conda/feedstock_root/build_artifacts/pygments_1714846767233/work
 pyparsing==3.1.3
-python-dateutil @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_66ud1l42_h/croot/python-dateutil_1716495741162/work
+python-dateutil==2.8.2
 python-multipart==0.0.9
 PyYAML==6.0.2
-pyzmq @ file:///Users/runner/miniforge3/conda-bld/pyzmq_1724399107022/work
 regex==2024.7.24
 requests==2.32.3
 safetensors==0.4.4
 scikit-image==0.24.0
 scipy==1.14.1
 setuptools==72.2.0
-six @ file:///tmp/build/80754af9/six_1644875935023/work
+six==1.16.0  # 假设这是正确的版本，请根据实际情况替换
 sniffio==1.3.1
 sqlparse==0.5.1
-stack-data @ file:///home/conda/feedstock_root/build_artifacts/stack_data_1669632077133/work
 starlette==0.38.2
 sympy==1.13.2
 tifffile==2024.8.10
@@ -91,14 +68,11 @@ tokenizers==0.19.1
 tomli==2.0.1
 torch==2.4.0
 torchvision==0.19.0
-tornado @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_a4w03z48br/croot/tornado_1718740114858/work
 tqdm==4.66.5
-traitlets @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_500m2_1wyk/croot/traitlets_1718227071952/work
 transformers==4.44.0
-typing_extensions @ file:///home/conda/feedstock_root/build_artifacts/typing_extensions_1717802530399/work
+typing_extensions==4.10.0  # 假设这是正确的版本，请根据实际情况替换
 urllib3==2.2.2
 uvicorn==0.30.6
-wcwidth @ file:///home/conda/feedstock_root/build_artifacts/wcwidth_1704731205417/work
 Werkzeug==3.0.3
 wheel==0.44.0
-zipp @ file:///home/conda/feedstock_root/build_artifacts/zipp_1723591248676/work
+zipp==3.16.2  # 假设这是正确的版本，请根据实际情况替换
