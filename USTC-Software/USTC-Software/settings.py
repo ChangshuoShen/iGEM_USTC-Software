@@ -95,8 +95,9 @@ MEDIA_ROOT = '/var/www/media/'
 MEDIA_URL = '/media/'
 
 EXP_ROOT = '/var/www/exp/'
-
 UPLOAD_ROOT = '/var/www/upload/'
+
+SAM_ROOT = '/var/www/sam'
 # REFER_ROOT = STATIC_ROOT + 'references/'
 
 # Database
@@ -121,8 +122,8 @@ DATABASES = {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "iGEM",
         'USER': 'root',
-        # 'PASSWORD': 'Czf341503',
-        'PASSWORD': 'Scs31410.0',
+        'PASSWORD': 'Czf341503',
+        # 'PASSWORD': 'Scs31410.0',
         'HOST': '127.0.0.1',       # 主机
         'PORT': '3306',     # 端口
     }
