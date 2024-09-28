@@ -1,0 +1,189 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scRNA-seq Analysis</title>
+    <!-- 引入 Bootstrap 和 FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- 引入 ProgressBar.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.0.1/progressbar.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            height: 100vh;
+            margin: 0;
+            background-image: url("{% static 'imgs/rna_bg.png' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        #left-nav {
+            width: 15%;
+            height: 99%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .nav-item {
+            flex: 1; /* Allow each item to grow equally */
+            margin: 5px 0; /* Spacing between buttons */
+        }
+
+        .nav-link {
+            height: 100%; /* Make the button fill the nav item height */
+            display: flex; /* Use flexbox for centering text */
+            align-items: center; /* Center vertically */
+            justify-content: center; /* Center horizontally */
+            font-size: 16px; /* Font size for button text */
+            text-align: center; /* Center text alignment */
+            border-radius: 5px; /* Slightly rounded corners */
+            transition: background-color 0.3s; /* Transition effect on hover */
+        }
+
+        .nav-link:hover {
+            background-color: #e0e0e0; /* Change background on hover */
+        }
+
+        #main-content {
+            width: 85%;
+            height: 99%;
+            padding: 10%;
+            position: relative;
+            box-sizing: border-box;
+        }
+        #bottom-progressbar {
+            width: 100%; 
+            height: 1%;
+            /* background-color: #f8f9fa; */
+            /* padding: 20px 5px;  */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            position: absolute;
+            bottom: 0;
+        }
+        .action-buttons {
+            position: absolute;
+            bottom: 80px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+        .btn-custom {
+            height: 60px;
+            font-size: 23px;
+        }
+        #download-button {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        #progress-bar-container {
+            width: 100%;
+            height: calc(100% - 40px); 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #progress-bar {
+            width: 30px; 
+            height: 90%; 
+            background-color: #e0e0e0;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 左边选项栏 -->
+    <div id="left-nav">
+        <h4>scRNA-seq Steps</h4>
+        <ul class="nav flex-column">
+            <li class="nav-item"><a class="nav-link btn btn-light" href="#">Step 1: Upload Data</a></li>
+            <li class="nav-item"><a class="nav-link btn btn-light" href="#">Step 2: QC Metrics</a></li>
+            <li class="nav-item"><a class="nav-link btn btn-light" href="#">Step 3: Dimensionality Reduction</a></li>
+            <li class="nav-item"><a class="nav-link btn btn-light" href="#">Step 4: Clustering</a></li>
+            <li class="nav-item"><a class="nav-link btn btn-light" href="#">Step 5: Differential Expression</a></li>
+        </ul>
+    </div>
+
+
+    <!-- 中间主要内容 -->
+    <div id="main-content">
+        <div class="step-title"><h1>1: Upload Data</h1></div>
+        <div class="upload-section">
+            <form id="upload-form" method="POST" action="{% url 'rna_seq:upload'%}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="dataFile" class="form-label"><h3>Upload scRNA-seq Data (.h5ad)</h3></label>
+                    <input type="file" class="form-control" id="dataFile" name="data_files" accept=".h5ad">
+                </div>
+                <div class="mb-3">
+                    <h3>or you can select our provided datasets (recommended):</h3>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="dataset1" name="datasets" value="dataset1" onclick="toggleUpload()">
+                        <label class="form-check-label" for="dataset1">Dataset 1--</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="dataset2" name="datasets" value="dataset2" onclick="toggleUpload()">
+                        <label class="form-check-label" for="dataset2">Dataset 2</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" id="upload-button">Upload</button>
+            </form>
+            {% if file_url %}
+            <div class="alert alert-success mt-3" role="alert">
+                File uploaded successfully! <a href="{{ file_url }}" class="alert-link">View uploaded file</a>.
+            </div>
+            {% endif %}
+        </div>
+        <div class="description mt-3">
+            <p>This step allows you to upload your scRNA-seq data in .h5ad format. Once the data is uploaded, you will proceed to calculate quality control metrics.</p>
+        </div>
+        <!-- 向前向后的按钮 -->
+        <div class="action-buttons">
+            <button class="btn btn-primary btn-custom"><i class="fas fa-arrow-left"></i> Previous</button>
+            <button class="btn btn-primary btn-custom">Next <i class="fas fa-arrow-right"></i></button>
+        </div>
+    </div>
+
+    <!-- 右边进度栏 -->
+    <div id="bottom-progressbar">
+        <div id="progress-bar-container">
+            <div id="progress-bar"></div>
+        </div>
+    </div>
+
+    <!-- 初始化 ProgressBar.js -->
+    <script>
+        var bar = new ProgressBar.Line('#progress-bar', {
+            strokeWidth: 10,
+            easing: 'easeInOut',
+            duration: 1400,
+            color: '#4caf50',
+            trailColor: '#eee',
+            trailWidth: 10,
+            svgStyle: { width: '100%', height: '100%' },
+            from: { color: '#ff6347' },
+            to: { color: '#4caf50' },
+            step: (state, bar) => {
+                bar.path.setAttribute('stroke', state.color);
+            },
+            transform: {
+                prefix: true,
+                value: 'rotate(-90deg)'
+            }
+        });
+        bar.animate(0.2);
+    </script>
+
+</body>
+</html>

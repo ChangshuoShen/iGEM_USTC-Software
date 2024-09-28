@@ -44,7 +44,7 @@ def process_image(
     input_image_path: str,
     output_image_path: str,
     api_url: str='http://127.0.0.1:8002/infer'
-):
+    ):
     input_file = Path(input_image_path)
     if not input_file.is_file():
         raise FileNotFoundError(f'file {input_file} not found')

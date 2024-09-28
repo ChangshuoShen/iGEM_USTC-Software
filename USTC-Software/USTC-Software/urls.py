@@ -40,6 +40,7 @@ urlpatterns = [
     path('works/', include('Apps.works.urls', namespace='works')),
     path('experiment/', include("Apps.experiment.urls", namespace='experiment')),
     path('image_segment/', include("Apps.SAM_Med2D.urls", namespace='image_segment')),
+    path('rna_seq/', include("Apps.rna_seq.urls", namespace='rna_seq')),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

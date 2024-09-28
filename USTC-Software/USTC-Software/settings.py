@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "Apps.works.apps.WorksConfig",
     "Apps.experiment.apps.ExperimentConfig",
     "Apps.SAM_Med2D.apps.SamMed2DConfig",
+    "Apps.rna_seq.apps.RnaSeqConfig", 
     'django_extensions', # 这个用于后面内嵌Jupyter
 ]
 
@@ -122,8 +123,8 @@ DATABASES = {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "iGEM",
         'USER': 'root',
-        'PASSWORD': 'Czf341503',
-        # 'PASSWORD': 'Scs31410.0',
+        # 'PASSWORD': 'Czf341503',
+        'PASSWORD': 'Scs31410.0',
         'HOST': '127.0.0.1',       # 主机
         'PORT': '3306',     # 端口
     }

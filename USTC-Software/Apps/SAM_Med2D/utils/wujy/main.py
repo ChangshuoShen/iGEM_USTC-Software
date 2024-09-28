@@ -406,7 +406,7 @@ if __name__ == "__main__":
     # encoder_session = SamEncoder(model_path="./onnx_model/sam-med2d_b.encoder.onnx", device="cuda", warmup_epoch=3)
     encoder_session = SamEncoder(model_path="/home/shenc/onnx_model/sam-med2d_b.encoder.onnx", device="cuda", warmup_epoch=3)
 
-    decoder_session = SamDecoder(model_path="home/shenc/onnx_model/sam-med2d_b.decoder.onnx")
+    decoder_session = SamDecoder(model_path="/home/shenc/onnx_model/sam-med2d_b.decoder.onnx")
 
     import uvicorn
 

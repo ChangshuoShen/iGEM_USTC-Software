@@ -57,7 +57,7 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto justify-content-between">
                         <li class="nav-item">
-                            <a class="nav-link nav-item-spaced" href="#" data-block="block-1">Workflow</a>
+                            <a class="nav-link nav-item-spaced" href="{% url 'rna_seq:rna_seq_index' %}" data-block="block-1">Workflow</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link nav-item-spaced" href="{% url 'forum:forum_index'%}" data-block="block-2">Community</a>
@@ -165,8 +165,11 @@
                                     <div class="development-log-all">
                                         <div class="development-log-text text-center">
                                             <span>
-                                                <i class="fas fa-flask"></i>
-                                                Single-Cell Analysis Workflow
+                                                <a href="{% url 'rna_seq:rna_seq_index' %}">
+                                                    <i class="fas fa-flask"></i>
+                                                    Single-Cell Analysis Workflow
+                                                </a>
+                                                
                                             </span>
                                     </div>
                                     </div>
