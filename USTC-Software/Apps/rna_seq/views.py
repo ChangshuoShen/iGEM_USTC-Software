@@ -56,7 +56,6 @@ def clear_directory(directory):
             print(f'Failed to delete {file_path}. Reason: {e}')
 
 def upload_file(request):
-    
     if request.method == 'POST':
         user_id = request.session.get('user_id')
         if not user_id:
@@ -64,47 +63,38 @@ def upload_file(request):
             return redirect('accounts:signup_login')
         
         user_folder = create_user_folder(user_id)
+        clear_directory(user_folder)
         uploaded_files = request.FILES.getlist('data_files')
-        # Check if a file was uploaded
+        adata_list = []
         
+        # 检查是否上传了文件
         if uploaded_files:
             # 如果上传了文件，使用这部分做分析
-            adata_list = []
-            # If a file is uploaded, handle the file storage
             for data_file in uploaded_files:
                 file_path = os.path.join(user_folder, data_file.name)
                 with open(file_path, 'wb+') as destination:
-                    for chunk in data_file.chunks():
+                    for chunk in data_file.chunks():    
                         destination.write(chunk)
-                adata_list.append(
-                    sc.read_h5ad(file_path)
-                )
+                # 读取上传的h5ad文件并添加到adata_list
+                adata_list.append(sc.read_h5ad(file_path))
 
             # Proceed with processing the uploaded file
             # [Continue with your data processing logic]
 
-            return render(request, 'upload.html', {'file_url': file_url})
-
-        # If no file was uploaded, check for dataset selection
-        elif 'datasets' in request.POST:
-            dataset_choice = request.POST.get('datasets')
-
-            # Load the selected dataset using Scanpy
-            if dataset_choice == 'dataset1':
-                adata = sc.datasets.pbmc3k()
-            elif dataset_choice == 'dataset2':
-                adata = sc.datasets.pbmc68k()
-
-            # Proceed with processing the selected dataset
-            # [Continue with your data processing logic]
-            return render(request, 'upload.html', {'dataset': dataset_choice})
-
-        # If neither file upload nor dataset selection, use the default dataset (pbmc3k)
+            # return render(request, 'upload.html', {'file_url': file_url})
         else:
-            adata = sc.datasets.pbmc3k()
+            selected_datasets = request.POST.getlist('datasets')
+            if selected_datasets:
+                # 根据选中的数据集加载相应的示例数据并添加到 adata_list
+                if 'dataset1' in selected_datasets:
+                    adata_list.append(sc.datasets.pbmc3k())
+                if 'dataset2' in selected_datasets:
+                    adata_list.append(sc.datasets.pbmc68k())
 
-            # Proceed with processing the default dataset
-            # [Continue with your data processing logic]
-            return render(request, 'upload.html', {'dataset': 'default_pbmc3k'})
+            else:
+                # 这个时候就默认使用第一个adata数据创建一个adata_list了
+                adata_list.append(sc.datasets.pbmc3k())
+        # 这里开始处理adata_list数据，直接实例化，然后计算完毕
+        
 
     return render(request, 'upload.html')
