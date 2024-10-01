@@ -1,6 +1,6 @@
 server {
     listen 80;
-    server_name mobase.top www.mobase.top 121.40.102.28;  # 域名或IP地址
+    server_name mobase.top www.mobase.top 121.40.141.182;  # 域名或IP地址
 	
     # 设置允许的最大上传文件大小
     client_max_body_size 100M;
