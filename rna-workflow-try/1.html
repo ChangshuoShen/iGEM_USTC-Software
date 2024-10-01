@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scRNA-seq Analysis</title>
+    <!-- 引入 Bootstrap 和 FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- 引入 ProgressBar.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.0.1/progressbar.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            height: 100vh;
+            margin: 0;
+        }
+        #left-nav {
+            width: 15%;
+            background-color: #f8f9fa;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        #main-content {
+            width: 80%;
+            padding: 20px;
+            position: relative;
+            box-sizing: border-box;
+        }
+        #right-sidebar {
+            width: 5%; /* 调整宽度，使其更细 */
+            background-color: #f8f9fa;
+            padding: 20px 5px; /* 调整内边距 */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .step-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .action-buttons {
+            position: absolute;
+            bottom: 80px; /* 调整位置，避免与下载按钮重叠 */
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+        .btn-custom {
+            height: 60px;
+            font-size: 23px;
+        }
+        #download-button {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        #progress-bar-container {
+            width: 100%;
+            height: calc(100% - 40px); /* 减去标题的高度 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #progress-bar {
+            width: 30px; /* 进度条宽度 */
+            height: 90%; /* 进度条高度 */
+            background-color: #e0e0e0;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 左边选项栏 -->
+    <div id="left-nav">
+        <h4>scRNA-seq Steps</h4>
+        <ul class="nav flex-column">
+            <li class="nav-item"><a class="nav-link" href="#">Step 1: Upload Data</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Step 2: QC Metrics</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Step 3: Dimensionality Reduction</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Step 4: Clustering</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Step 5: Differential Expression</a></li>
+        </ul>
+    </div>
+
+    <!-- 中间主要内容 -->
+    <div id="main-content">
+        <div class="step-title">Step 1: Upload Data</div>
+        <div class="visualization">
+            <img src="placeholder.png" alt="Visualization Result" class="img-fluid">
+        </div>
+        <div class="description mt-3">
+            <p>This step allows you to upload your scRNA-seq data in .h5ad format. Once the data is uploaded, you will proceed to calculate quality control metrics.</p>
+        </div>
+        <!-- 向前向后的按钮 -->
+        <div class="action-buttons">
+            <button class="btn btn-primary btn-custom"><i class="fas fa-arrow-left"></i> Previous</button>
+            <button class="btn btn-primary btn-custom">Next <i class="fas fa-arrow-right"></i></button>
+        </div>
+        <!-- 下载按钮 -->
+        <button id="download-button" class="btn btn-success">Download Results</button>
+    </div>
+
+    <!-- 右边进度栏 -->
+    <div id="right-sidebar">
+        <h4>Progress</h4>
+        <div id="progress-bar-container">
+            <div id="progress-bar"></div>
+        </div>
+    </div>
+
+    <!-- 初始化 ProgressBar.js -->
+    <script>
+        // 创建一个垂直的进度条
+        var bar = new ProgressBar.Line('#progress-bar', {
+            strokeWidth: 10,
+            easing: 'easeInOut',
+            duration: 1400,
+            color: '#4caf50',
+            trailColor: '#eee',
+            trailWidth: 10,
+            svgStyle: { width: '100%', height: '100%' },
+            from: { color: '#ff6347' },
+            to: { color: '#4caf50' },
+            step: (state, bar) => {
+                bar.path.setAttribute('stroke', state.color);
+            },
+            // 将进度条旋转以实现垂直效果
+            transform: {
+                prefix: true,
+                value: 'rotate(-90deg)'
+            }
+        });
+
+        // 设置初始进度（例如 20%）
+        bar.animate(0.2); // 设置为 20% 进度
+    </script>
+
+</body>
+</html>

@@ -121,7 +121,8 @@ SAM_ROOT = '/var/www/sam'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "iGEM",
+        # "NAME": "iGEM",
+        "NAME": 'ec',
         'USER': 'root',
         # 'PASSWORD': 'Czf341503',
         'PASSWORD': 'Scs31410.0',
