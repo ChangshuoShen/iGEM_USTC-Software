@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scRNA-seq Analysis</title>
+    <!-- 引入 Bootstrap 和 FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.0.1/progressbar.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center; /* 水平居中 */
+            align-items: center; /* 垂直居中 */
+            height: 100vh;
+            margin: 0;
+            background-image: url(../static/imgs/rna_bg.png);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            overflow: hidden; /* 避免整体页面出现滚动条 */
+        }
+    
+        #workflow-form {
+            display: flex;
+            width: 100%;
+            max-width: 1200px; /* 限制最大宽度 */
+            height: 80%; /* 设置高度来确保内容居中 */
+            box-sizing: border-box;
+            border: solid #63dfe1;
+            border-radius: 20px;
+            padding: 20px;
+            padding-top: 70px; /* 增加顶部内边距，避免header遮挡 */
+            overflow: hidden; /* 避免内部出现水平滚动条 */
+        }
+    
+        #left-upload, #main-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* 使内容从顶部开始排列 */
+            box-sizing: border-box;
+        }
+    
+        #left-upload {
+            width: 40%;
+            border-right: 1px solid #dee2e6; /* 右侧边框 */
+            overflow-y: auto; /* 添加垂直滚动条 */
+        }
+    
+        #main-content {
+            width: 60%;
+            padding: 20px;
+            max-height: calc(80vh - 70px); /* 根据视窗高度限制内容最大高度，避免header遮挡 */
+            overflow-y: auto; /* 添加垂直滚动条 */
+        }
+    
+        .method-options {
+            display: flex;
+            gap: 10px;
+        }
+    
+        .method-option {
+            flex: 1;
+            padding: 10px;
+            background-color: #f1f5f4;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+    
+        .method-option:hover {
+            background-color: #e0e0e0;
+        }
+    
+        .method-option.selected {
+            background-color: #63dfe1;
+            color: white;
+        }
+    
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+    
+        .btn-custom {
+            height: 40px;
+            font-size: 18px;
+            position: fixed;
+            bottom: 5vh;
+            right: 5vw;
+            background-color: #63dfe1;
+            border: none;
+        }
+    
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(255, 255, 255, 0.8); /* 设置背景色以提高可读性 */
+            z-index: 1000; /* 确保其在其他内容之上 */
+            padding: 10px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 增加阴影效果 */
+        }
+    </style>
+    
+</head>
+<body>
+    <header>
+        <h3>Welcome to scRNA-seq Analysis Workflow</h3>
+    </header>
+    <!-- 表单 -->
+    <form id="workflow-form" method="POST" action="{% url 'rna_seq:upload' %}" enctype="multipart/form-data" style="display: flex; width: 100%;">
+        {% csrf_token %}
+        <!-- 左边选项栏 -->
+        <div id="left-upload">
+            <h4>Upload Data</h4>
+            
+            <!-- 上传文件部分 -->
+            <div class="mb-3">
+                <label for="dataFiles" class="form-label"><p>Upload scRNA-seq Data (.h5ad)</p></label>
+                <input type="file" class="form-control" id="dataFiles" name="data_files" accept=".h5ad" multiple>
+            </div>
+            
+            <!-- 说明文本 -->
+            <div class="description mb-3">
+                <p>This step allows you to upload your scRNA-seq data in .h5ad format. You can upload multiple files at once.</p>
+                <p>or you can select our provided datasets:</p>
+            </div>
+
+            <!-- 提供的数据集选择 -->
+            <div class="mb-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="dataset1" name="datasets" value="dataset1" onclick="toggleUpload()">
+                    <label class="form-check-label" for="dataset1">Dataset 1</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="dataset2" name="datasets" value="dataset2" onclick="toggleUpload()">
+                    <label class="form-check-label" for="dataset2">Dataset 2</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- 中间主要内容 -->
+        <div id="main-content">
+            <h4>Select Methods for Each Step</h4>
+            
+            <!-- Preprocessing -->
+            <div class="nav-item">
+                <h5>Step 1: Quality Control</h5>
+            </div>
+            
+            <div class="nav-item">
+                <h5>Step 2: Normalization</h5>
+            </div>
+            
+            <div class="nav-item">
+                <h5>Step 3: Feature Selection</h5>
+            </div>
+            
+            <!-- Batch Correction Section -->
+            <div class="nav-item">
+                <h5>Step 4: Batch Correction</h5>
+                <div class="method-options" id="batch-correction">
+                    <div class="method-option selected" onclick="toggleSelect(this, 'batch-correction')">BBKNN</div>
+                    <div class="method-option" onclick="toggleSelect(this, 'batch-correction')">Combat</div>
+                    <div class="method-option" onclick="toggleSelect(this, 'batch-correction')">Harmony</div>
+                </div>
+                <!-- Hidden input to store selected method -->
+                <input type="hidden" id="batch-correction-input" name="batch_correction" value="BBKNN">
+            </div>
+            
+            <!-- Principal Component Analysis -->
+            <div class="nav-item">
+                <h5>Step 5: Dimensionality Reduction--PCA</h5>
+            </div>
+            
+            <!-- Computing the Neighborhood Graph -->
+            <div class="nav-item">
+                <h5>Step 6: Nearest Neighbor Graph Construction and Visualization</h5>
+                <!-- Add options if necessary -->
+            </div>
+
+            <!-- Clustering the Neighborhood Graph -->
+            <div class="nav-item">
+                <h5>Step 7: Clustering</h5>
+                <div class="method-options" id="clustering">
+                    <div class="method-option selected" onclick="toggleSelect(this, 'clustering')">Leiden Clustering</div>
+                    <div class="method-option" onclick="toggleSelect(this, 'clustering')">Louvain Clustering</div>
+                </div>
+                <!-- Hidden input to store selected method -->
+                <input type="hidden" id="clustering-input" name="clustering" value="Leiden Clustering">
+            </div>
+            
+            <div class="nav-item">
+                <h5>Step 8: Differential Expression Analysis</h5>
+                <div class="method-options" id="diff-expr">
+                    <div class="method-option selected" onclick="toggleSelect(this, 'diff-expr')">Wilcoxon Rank-Sum Test</div>
+                    <div class="method-option" onclick="toggleSelect(this, 'diff-expr')">T-test</div>
+                    <div class="method-option" onclick="toggleSelect(this, 'diff-expr')">Logistic Regression</div>
+                </div>
+                <!-- Hidden input to store selected method -->
+                <input type="hidden" id="diff-expr-input" name="diff_expr" value="Wilcoxon Rank-Sum Test">
+            </div>
+
+            <div class="nav-item">
+                <h5>Step 9: Enrichment Analysis</h5>
+                <div class="method-options" id="enrichment-analysis">
+                    <div class="method-option selected" onclick="toggleSelect(this, 'enrichment-analysis')">GO Enrichment</div>
+                    <div class="method-option" onclick="toggleSelect(this, 'enrichment-analysis')">KEGG Pathway Analysis</div>
+                </div>
+                <!-- Hidden input to store selected method -->
+                <input type="hidden" id="enrichment-analysis-input" name="enrichment_analysis" value="GO Enrichment">
+            </div>
+
+            <div class="nav-item">
+                <h5>Step 10: Manual Gene Annotation</h5>
+                <!-- Add options if necessary -->
+            </div>
+            
+            <div class="nav-item">
+                <h5>Step 11: Trajectory Inference</h5>
+                <div class="method-options" id="trajectory-inference">
+                    <div class="method-option selected" onclick="toggleSelect(this, 'trajectory-inference')">Monocle</div>
+                    <div class="method-option" onclick="toggleSelect(this, 'trajectory-inference')">PAGA</div>
+                </div>
+                <!-- Hidden input to store selected method -->
+                <input type="hidden" id="trajectory-inference-input" name="trajectory_inference" value="Monocle">
+            </div>
+
+            <!-- Submit Button -->
+            <div class="action-buttons">
+                <button type="submit" class="btn btn-primary btn-custom">Submit Workflow</button>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        function toggleSelect(element, group) {
+            const options = document.querySelectorAll(`#${group} .method-option`);
+            options.forEach(option => {
+                option.classList.remove('selected');
+            });
+            element.classList.add('selected');
+
+            // 更新对应的隐藏输入框的值
+            const selectedValue = element.textContent.trim();
+            document.getElementById(`${group}-input`).value = selectedValue;
+        }
+    </script>
+
+    <script>
+        // 用于禁用/启用文件上传的函数
+        function toggleUpload() {
+            // 获取文件上传输入框和两个数据集选择框
+            const dataFilesInput = document.getElementById('dataFiles');
+            const dataset1 = document.getElementById('dataset1');
+            const dataset2 = document.getElementById('dataset2');
+
+            // 如果选择了任何一个数据集，则禁用文件上传
+            if (dataset1.checked || dataset2.checked) {
+                dataFilesInput.disabled = true;
+            } else {
+                dataFilesInput.disabled = false;
+            }
+        }
+
+        // 允许上传多个文件的同时禁用数据集选择的功能
+        document.getElementById('dataFiles').addEventListener('change', function() {
+            const dataset1 = document.getElementById('dataset1');
+            const dataset2 = document.getElementById('dataset2');
+            
+            // 如果用户上传了文件，则禁用数据集选择
+            if (this.files.length > 0) {
+                dataset1.disabled = true;
+                dataset2.disabled = true;
+            } else {
+                dataset1.disabled = false;
+                dataset2.disabled = false;
+            }
+        });
+    </script>
+
+</body>
+</html>

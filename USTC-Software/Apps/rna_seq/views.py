@@ -1,5 +1,6 @@
 import os
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
+from django.http import JsonResponse
 from django.contrib import messages
 from django.conf import settings
 from Apps.accounts.models import User
@@ -14,7 +15,7 @@ def rna_index(request):
 
     # 如果没有找到用户信息，重定向到登录页面
     if not user_id or not email:
-        messages.warning(request, '请先登录以继续操作')
+        messages.warning(request, 'Please login first for using scRNA-seq')
         return redirect('accounts:signup_login')
 
     # 检查用户是否存在于数据库中
@@ -22,7 +23,7 @@ def rna_index(request):
         user = User.get_user_by_email(email)
         if user and user.id == int(user_id):
             # 用户已登录，继续渲染页面
-            return render(request, 'rna_upload.html')
+            return render(request, 'upload.html')
         else:
             # 用户信息无效，重定向到登录页面
             messages.warning(request, '请重新登录以使用 RNA 实验工具')
@@ -34,6 +35,7 @@ def rna_index(request):
         # 异常处理，重定向到登录页面
         messages.error(request, '发生错误，请重试')
         return redirect('accounts:signup_login')
+
 
 
 def create_user_folder(user_id):
@@ -78,10 +80,6 @@ def upload_file(request):
                 # 读取上传的h5ad文件并添加到adata_list
                 adata_list.append(sc.read_h5ad(file_path))
 
-            # Proceed with processing the uploaded file
-            # [Continue with your data processing logic]
-
-            # return render(request, 'upload.html', {'file_url': file_url})
         else:
             selected_datasets = request.POST.getlist('datasets')
             if selected_datasets:
@@ -90,11 +88,63 @@ def upload_file(request):
                     adata_list.append(sc.datasets.pbmc3k())
                 if 'dataset2' in selected_datasets:
                     adata_list.append(sc.datasets.pbmc68k())
-
             else:
                 # 这个时候就默认使用第一个adata数据创建一个adata_list了
                 adata_list.append(sc.datasets.pbmc3k())
-        # 这里开始处理adata_list数据，直接实例化，然后计算完毕
+                
+        # 开始选取几个步骤的方法
+        batch_correction = request.POST.get('batch_correction')
+        clustering = request.POST.get('clustering')
+        enrichment_analysis = request.POST.get('enrichment_analysis')
+        diff_expr = request.POST.get('diff_expr')
+        trajectory_inference = request.POST.get('trajectory_inference')
+        
+        # 这里开始处理adata_list数据，直接实例化，然后计算所有内容
         
 
     return render(request, 'upload.html')
+
+
+
+def upload_view(request):
+    if request.method == 'POST':
+        # 获取上传的文件
+        files = request.FILES.getlist('data_files')
+        if files:
+            dataset_message = files[0].name
+        # 获取选择的数据集
+        else:
+            
+            datasets = request.POST.getlist('datasets')
+            
+            # 检查是否同时选中了两个数据集
+            if 'dataset1' in datasets and 'dataset2' in datasets:
+                dataset_message = "Both datasets selected: Dataset 1 and Dataset 2"
+            elif 'dataset1' in datasets:
+                dataset_message = "Dataset 1 selected"
+            elif 'dataset2' in datasets:
+                dataset_message = "Dataset 2 selected"
+            else:
+                dataset_message = "No dataset selected"
+        
+        # 获取用户选择的各步骤方法
+        batch_correction = request.POST.get('batch_correction')
+        clustering = request.POST.get('clustering')
+        enrichment_analysis = request.POST.get('enrichment_analysis')
+        diff_expr = request.POST.get('diff_expr')
+        trajectory_inference = request.POST.get('trajectory_inference')
+        
+        # 构建返回的结果字典
+        results = {
+            "dataset_message": dataset_message,
+            "batch_correction": batch_correction,
+            "clustering": clustering,
+            "enrichment_analysis": enrichment_analysis,
+            "differential_expression": diff_expr,
+            "trajectory_inference": trajectory_inference,
+        }
+        print(results)
+        # 返回 JsonResponse
+        return JsonResponse(results)
+
+    return JsonResponse({"error": "Invalid request method."}, status=400)

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workflow Step</title>
+    <!-- 引入 Bootstrap -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: url(../static/imgs/workflow-bg.png);
+        }
+
+        .workflow-container {
+            display: flex;
+            flex-direction: column;
+            width: 96%;
+            height: 95%;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .workflow-header {
+            text-align: center;
+            padding: 15px;
+            font-size: 24px;
+            background-color: #1ccccf;
+            color: white;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .workflow-body {
+            display: flex;
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .image-container {
+            width: 60%;
+            padding-right: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            max-height: 77vh;
+        }
+
+        .image-container img {
+            width: 90%;
+            max-height: 70%;
+            /* height: 100%; */
+            margin: 10px;
+            object-fit: contain;
+            border: solid rgba(0, 0 ,0 ,0.1);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .description-container {
+            width: 40%;
+            padding-left: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .description-container h5 {
+            margin-bottom: 10px;
+        }
+
+        .description-container p {
+            font-size: 16px;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .workflow-footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background-color: #f1f5f4;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        .btn-nav {
+            padding: 10px 20px;
+            background-color: #1ccccf;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-nav:hover {
+            background-color: #0b686e;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .workflow-body {
+                flex-direction: column;
+            }
+
+            .image-container, .description-container {
+                width: 100%;
+                padding: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="workflow-container">
+        <!-- 顶部标题 -->
+        <div class="workflow-header">
+            Step 6: Marker Gene Expression Visualization
+        </div>
+
+        <!-- 中间内容 -->
+        <div class="workflow-body">
+            <!-- 图片区域 -->
+            <div class="image-container">
+                <img src="https://static.igem.wiki/teams/5305/experiments/dotplot-pbmc3k-annotation-dotplot.webp">
+                <img src="https://static.igem.wiki/teams/5305/experiments/dotplot-pbmc3k-annotation-groups-dotplot.webp">
+                <img src="https://static.igem.wiki/teams/5305/experiments/umap-pbmc3k-annotation.webp">
+            </div>
+
+            <!-- 描述区域 -->
+            <div class="description-container">
+                <h5>Marker Gene Expression Visualization</h5>
+                <p>
+                    Finally, we visualized the expression of key marker genes across the identified clusters using violin plots and heatmaps.
+                </p>        
+            </div>
+        </div>
+
+        <!-- 底部导航按钮 -->
+        <div class="workflow-footer">
+            <button class="btn-nav" onclick="previousStep()">← Previous</button>
+            <button class="btn-nav" onclick="saveAndExit()">Save & Exit</button>
+            <button class="btn-nav" onclick="nextStep()">Next →</button>
+        </div>
+
+    </div>
+
+<script>
+    function previousStep() {
+        // 在这里添加你向前导航的逻辑
+        window.location.href = 'previous_step_url'; // 替换为实际的链接
+    }
+
+    function nextStep() {
+        // 在这里添加你向后导航的逻辑
+        window.location.href = 'next_step_url'; // 替换为实际的链接
+    }
+
+    function saveAndExit() {
+        // 在这里添加保存并退出的逻辑
+        alert("Changes saved! Exiting..."); // 示例提示，实际代码需替换
+        window.location.href = 'exit_url'; // 替换为实际的退出链接
+    }
+</script>
+    
+</body>
+</html>
