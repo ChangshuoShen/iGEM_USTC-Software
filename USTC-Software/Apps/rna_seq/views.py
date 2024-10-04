@@ -1,12 +1,14 @@
 import os
 from django.shortcuts import render, redirect, HttpResponse
-from django.http import JsonResponse
+from django.http import JsonResponse, StreamingHttpResponse
+import subprocess
 from django.contrib import messages
 from django.conf import settings
 from Apps.accounts.models import User
 from django.core.files.storage import FileSystemStorage
 import scanpy as sc
 import shutil
+from .utils import scRNAseqUtils
 
 def rna_index(request):
     # 检查用户的 session 或 cookie，验证是否已登录
@@ -35,8 +37,6 @@ def rna_index(request):
         # 异常处理，重定向到登录页面
         messages.error(request, '发生错误，请重试')
         return redirect('accounts:signup_login')
-
-
 
 def create_user_folder(user_id):
     """根据 user_id 创建专属的实验文件夹"""
@@ -87,7 +87,7 @@ def upload_file(request):
                 if 'dataset1' in selected_datasets:
                     adata_list.append(sc.datasets.pbmc3k())
                 if 'dataset2' in selected_datasets:
-                    adata_list.append(sc.datasets.pbmc68k())
+                    adata_list.append(sc.datasets.pbmc68k_reduced())
             else:
                 # 这个时候就默认使用第一个adata数据创建一个adata_list了
                 adata_list.append(sc.datasets.pbmc3k())
@@ -100,7 +100,31 @@ def upload_file(request):
         trajectory_inference = request.POST.get('trajectory_inference')
         
         # 这里开始处理adata_list数据，直接实例化，然后计算所有内容
-        
+        adata_process = scRNAseqUtils(
+            adata_list,
+            user_folder,
+            batch_correction,
+            clustering,
+            enrichment_analysis,
+            diff_expr,
+            trajectory_inference
+        )
+                
+        adata_process.execute_workflow()
+        # 构建返回的结果字典
+        results = {
+            # "dataset_message": dataset_message,
+            "batch_correction": batch_correction,
+            "clustering": clustering,
+            "enrichment_analysis": enrichment_analysis,
+            "differential_expression": diff_expr,
+            "trajectory_inference": trajectory_inference,
+            'working_dir': user_folder,
+        }
+        if adata_process:
+            results['adata_instance'] = 'adata process'
+        # 返回 JsonResponse
+        return JsonResponse(results)
 
     return render(request, 'upload.html')
 

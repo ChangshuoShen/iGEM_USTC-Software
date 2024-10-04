@@ -105,8 +105,22 @@
             text-align: center;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 增加阴影效果 */
         }
+
+        /* 加载指示器的样式 */
+        .loading {
+            display: none; /* 初始隐藏 */
+            position: fixed; /* 固定定位 */
+            left: 50%; /* 居中 */
+            top: 50%; /* 居中 */
+            transform: translate(-50%, -50%); /* 居中 */
+            z-index: 1000; /* 确保在最上层 */
+        }
+
+        .loading img {
+            width: 80vw;
+        }
     </style>
-    
+
 </head>
 <body>
     <header>
@@ -207,10 +221,11 @@
             </div>
 
             <div class="nav-item">
-                <h5>Step 9: Enrichment Analysis</h5>
+                <h5>Step 9: Enrichment Analysis(with Gene Ontology)</h5>
                 <div class="method-options" id="enrichment-analysis">
-                    <div class="method-option selected" onclick="toggleSelect(this, 'enrichment-analysis')">GO Enrichment</div>
-                    <div class="method-option" onclick="toggleSelect(this, 'enrichment-analysis')">KEGG Pathway Analysis</div>
+                    <div class="method-option selected" onclick="toggleSelect(this, 'enrichment-analysis')">GO Biological Process</div>
+                    <div class="method-option" onclick="toggleSelect(this, 'enrichment-analysis')">GO Molecular Function</div>
+                    <div class="method-option" onclick="toggleSelect(this, 'enrichment-analysis')">GO Cellular Component</div>
                 </div>
                 <!-- Hidden input to store selected method -->
                 <input type="hidden" id="enrichment-analysis-input" name="enrichment_analysis" value="GO Enrichment">
@@ -237,6 +252,11 @@
             </div>
         </div>
     </form>
+
+    <!-- 加载指示器 -->
+    <div class="loading">
+        <img src="../static/imgs/loading.gif" alt="Loading">
+    </div>
 
     <script>
         function toggleSelect(element, group) {
@@ -284,5 +304,11 @@
         });
     </script>
 
+    <script>
+        // 提交表单时显示加载指示器
+        document.getElementById('workflow-form').onsubmit = function() {
+            document.querySelector('.loading').style.display = 'block'; // 显示加载指示器
+        };
+    </script>
 </body>
 </html>
