@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-b962od5lzgau+yfd@u4k^6v2x_+8$ta*!n62mqy$r8430ln+q#
 # DEBUG = True
 DEBUG = False
 
-ALLOWED_HOSTS = ['121.40.141.182', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['8.155.2.239', '121.40.141.182', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -121,8 +121,7 @@ SAM_ROOT = '/var/www/sam'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        # "NAME": "iGEM",
-        "NAME": 'ec',
+        "NAME": 'iGEM',
         'USER': 'root',
         # 'PASSWORD': 'Czf341503',
         'PASSWORD': 'Scs31410.0',
