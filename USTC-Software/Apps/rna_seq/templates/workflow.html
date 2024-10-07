@@ -51,7 +51,7 @@
             max-height: 77vh;
         }
 
-        .image-container img {
+        .image-container img, iframe {
             width: 90%;
             max-height: 70%;
             /* height: 100%; */
@@ -117,38 +117,55 @@
     </style>
 </head>
 <body>
-
     <div class="workflow-container">
+        {% for result in page_obj %}
         <!-- 顶部标题 -->
         <div class="workflow-header">
-            Step 6: Marker Gene Expression Visualization
+            {{ result.name }}
         </div>
 
         <!-- 中间内容 -->
         <div class="workflow-body">
             <!-- 图片区域 -->
             <div class="image-container">
-                <img src="https://static.igem.wiki/teams/5305/experiments/dotplot-pbmc3k-annotation-dotplot.webp">
-                <img src="https://static.igem.wiki/teams/5305/experiments/dotplot-pbmc3k-annotation-groups-dotplot.webp">
-                <img src="https://static.igem.wiki/teams/5305/experiments/umap-pbmc3k-annotation.webp">
+                {% if result.img_path %}
+                    {% for path in img_path %}
+                        <img src="{{path}}" alt="111">
+                    {% endfor %}
+                {% endif %}
+                
+                {% if result.file_path %}
+                    <iframe src="{{ result.file_path }}" frameborder="0"></iframe>
+                {% endif %}
+            
+            
             </div>
 
             <!-- 描述区域 -->
             <div class="description-container">
-                <h5>Marker Gene Expression Visualization</h5>
-                <p>
-                    Finally, we visualized the expression of key marker genes across the identified clusters using violin plots and heatmaps.
-                </p>        
+                <h5>{{ result.name }}</h5>
+                <p>{{ result.description }}</p>        
             </div>
         </div>
 
         <!-- 底部导航按钮 -->
         <div class="workflow-footer">
-            <button class="btn-nav" onclick="previousStep()">← Previous</button>
-            <button class="btn-nav" onclick="saveAndExit()">Save & Exit</button>
-            <button class="btn-nav" onclick="nextStep()">Next →</button>
-        </div>
-
+            <div>
+                {% if page_obj.has_previous %}
+                <a class="btn-nav" href="?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+            </div>
+            <div>
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+            </div>
+            <div>
+                {% if page_obj.has_next %}
+                    <a class="btn-nav" href="?page={{ page_obj.next_page_number }}">next</a>
+                {% endif %}
+            </div>
+        {% endfor %}
     </div>
 
 <script>

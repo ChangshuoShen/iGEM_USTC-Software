@@ -2,6 +2,7 @@ import os
 from django.shortcuts import render, redirect, HttpResponse
 from django.http import JsonResponse, StreamingHttpResponse
 import subprocess
+from django.core.paginator import Paginator
 from django.contrib import messages
 from django.conf import settings
 from Apps.accounts.models import User
@@ -109,66 +110,14 @@ def upload_file(request):
             diff_expr,
             trajectory_inference
         )
-                
+        
         adata_process.execute_workflow()
-        # 构建返回的结果字典
-        results = {
-            # "dataset_message": dataset_message,
-            "batch_correction": batch_correction,
-            "clustering": clustering,
-            "enrichment_analysis": enrichment_analysis,
-            "differential_expression": diff_expr,
-            "trajectory_inference": trajectory_inference,
-            'working_dir': user_folder,
-        }
-        if adata_process:
-            results['adata_instance'] = 'adata process'
-        # 返回 JsonResponse
-        return JsonResponse(results)
-
+        results_per_page = 1
+        paginator = Paginator(adata_process.results, results_per_page)
+        # 获取当前页码
+        page_number = request.GET.get('page', 1)  # 默认为第1页
+        page_obj = paginator.get_page(page_number)
+        return render(request, 'workflow.html', {'page_obj': page_obj})
+        # return JsonResponse(adata_process.results, safe=False)
     return render(request, 'upload.html')
 
-
-
-def upload_view(request):
-    if request.method == 'POST':
-        # 获取上传的文件
-        files = request.FILES.getlist('data_files')
-        if files:
-            dataset_message = files[0].name
-        # 获取选择的数据集
-        else:
-            
-            datasets = request.POST.getlist('datasets')
-            
-            # 检查是否同时选中了两个数据集
-            if 'dataset1' in datasets and 'dataset2' in datasets:
-                dataset_message = "Both datasets selected: Dataset 1 and Dataset 2"
-            elif 'dataset1' in datasets:
-                dataset_message = "Dataset 1 selected"
-            elif 'dataset2' in datasets:
-                dataset_message = "Dataset 2 selected"
-            else:
-                dataset_message = "No dataset selected"
-        
-        # 获取用户选择的各步骤方法
-        batch_correction = request.POST.get('batch_correction')
-        clustering = request.POST.get('clustering')
-        enrichment_analysis = request.POST.get('enrichment_analysis')
-        diff_expr = request.POST.get('diff_expr')
-        trajectory_inference = request.POST.get('trajectory_inference')
-        
-        # 构建返回的结果字典
-        results = {
-            "dataset_message": dataset_message,
-            "batch_correction": batch_correction,
-            "clustering": clustering,
-            "enrichment_analysis": enrichment_analysis,
-            "differential_expression": diff_expr,
-            "trajectory_inference": trajectory_inference,
-        }
-        print(results)
-        # 返回 JsonResponse
-        return JsonResponse(results)
-
-    return JsonResponse({"error": "Invalid request method."}, status=400)
