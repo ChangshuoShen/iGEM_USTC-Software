@@ -121,7 +121,7 @@ class scRNAseqUtils:
         self.results.append(
             {
                 'name': 'QC Matrics Table',
-                'file_path': os.path.join(self.display_path, 'qc_metrics_table.csv'),
+                'csv_path': os.path.join(self.display_path, 'qc_metrics_table.csv'),
                 'description': 'CSV file containing QC metrics for each cell: n_genes_by_counts, total_counts, pct_counts_mt'
             }
         )
@@ -716,14 +716,14 @@ class scRNAseqUtils:
 
         self.results.append({
             'name': 'Enrichment Analysis Results',
-            'file_path': os.path.join(self.display_path, csv_filename),  # 基因富集得分文件路径
+            'csv_path': os.path.join(self.display_path, csv_filename),  # 基因富集得分文件路径
             'description': f"Top 30 enriched GO terms for {self.enrichment_analysis} with gene enrichment scores.",
         })
 
         # 第二次向 self.results 添加，使用 img_path
         self.results.append({
             'name': 'Enrichment Analysis Visualization',
-            'file_path': os.path.join(self.display_path, html_filename),  # 交互式图表路径
+            'html_path': os.path.join(self.display_path, html_filename),  # 交互式图表路径
             'description': f"Top 30 enriched GO terms for {self.enrichment_analysis} with interactive visualization.",
         })
         
@@ -800,7 +800,7 @@ class scRNAseqUtils:
             # 保存气泡图路径
             self.results.append({
                 'name': 'Bubble Plot of Enriched Genes',
-                'file_path': os.path.join(self.display_path, "bubble_plot_enriched_genes.html"),
+                'html_path': os.path.join(self.display_path, "bubble_plot_enriched_genes.html"),
                 'description': 'Bubble plot showing enriched gene expression across different clusters.',
             })
 

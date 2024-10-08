@@ -11,82 +11,96 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            height: 100vh;
+            background: url(../static/imgs/workflow-bg.png);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background: url(../static/imgs/workflow-bg.png);
         }
 
-        .workflow-container {
+        /* 隐藏所有页面，显示当前页面 */
+        .page {
+            display: none;
+        }
+        .active {
             display: flex;
+            height: 90vh;
             flex-direction: column;
-            width: 96%;
-            height: 95%;
+            width: 98%;
             border-radius: 20px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .workflow-header {
-            text-align: center;
-            padding: 15px;
-            font-size: 24px;
-            background-color: #1ccccf;
-            color: white;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-        }
-
         .workflow-body {
             display: flex;
-            flex-grow: 1;
+            flex-grow: 1; /* 让中间的内容区域占据可用的剩余空间 */
             padding: 20px;
         }
 
         .image-container {
-            width: 60%;
+            width: 80%;
             padding-right: 20px;
             box-sizing: border-box;
             overflow-y: auto;
-            max-height: 77vh;
+            height: 100%;
         }
 
-        .image-container img, iframe {
-            width: 90vw;
-            max-height: 70vh;
-            /* height: 100%; */
+        .image-container img, iframe, .show-csv {
+            width: 98%;
             margin: 10px;
             object-fit: contain;
-            border: solid rgba(0, 0 ,0 ,0.1);
+            border: solid rgba(0, 0, 0, 0.1);
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
+        .image-container iframe, .show-csv {
+            height: 95%;
+        }
+
         .description-container {
-            width: 40%;
-            padding-left: 20px;
+            width: 20%;
+            padding: 0;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
 
-        .description-container h5 {
-            margin-bottom: 10px;
-        }
-
         .description-container p {
-            font-size: 16px;
+            font-size: 21px;
             color: #333;
             line-height: 1.5;
         }
 
-        .workflow-footer {
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px 20px;
+            background-color: #1ccccf;
+            color: white;    
+            border-bottom: solid 1px #ccc;
+            box-shadow: 0 2px -5px rgba(0, 0, 0, 0.1);
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
             display: flex;
             justify-content: space-between;
             padding: 10px 20px;
             background-color: #f1f5f4;
-            border-bottom-left-radius: 10px;
-            border-bottom-right-radius: 10px;
+            border-top: solid 1px #ccc;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
         }
 
         .btn-nav {
@@ -114,57 +128,93 @@
                 padding: 10px 0;
             }
         }
-        /* 隐藏所有页面，显示当前页面 */
-        .page {
-            display: none;
-        }
-        .active {
-            display: flex;
-        }
+        
     </style>
 </head>
 <body>
-    <div class="workflow-container">
-        <!-- 遍历每个result，并为其分配唯一的ID -->
-        {% for result in results %}
-        <div class="'page" id="page-{{ forloop.counter }}">
-            <!-- 顶部标题 -->
-            <div class="workflow-header">
-                {{ result.name }}
+    <!-- 顶部标题 -->
+    <div class="header"></div>
+    <!-- 遍历每个result，并为其分配唯一的ID -->
+    {% for result in results %}
+    <div class="page" id="page-{{ forloop.counter }}">
+        <span id="name-{{ forloop.counter }}" style="display: none;">Step {{ forloop.counter }}: {{ result.name }}</span>
+        <!-- 中间内容 -->
+        <div class="workflow-body">
+            <!-- 图片区域 -->
+            <div class="image-container">
+                {% if result.img_path %}
+                    {% for path in img_path %}
+                        <img src="{{path}}" alt="111">
+                    {% endfor %}
+                
+                {% elif result.html_path %}
+                    <iframe src="{{ result.html_path }}" frameborder="0"></iframe>
+
+                {% elif result.csv_path %}
+                    <div class="show-csv">
+                        <div id="csv-grid-{{ forloop.counter }}"></div>
+                        <a href="{{ result.csv_path }}">{{ result.csv_path }}</a>    
+                    </div>
+                    <script>
+                        fetch("{{ result.csv_path }}")
+                        .then(response => response.text())
+                        .then(csvData => {
+                            // 将 CSV 数据按行分割
+                            const rows = csvData.split("\n").map(row => row.split(","));
+
+                            // 获取前十行
+                            const firstTenRows = rows.slice(0, 20);
+
+                            // 创建表格并插入到页面中
+                            const table = document.createElement('table');
+                            const headerRow = document.createElement('tr');
+
+                            // 如果有数据，添加表头
+                            if (firstTenRows.length > 0) {
+                                firstTenRows[0].forEach(header => {
+                                    const th = document.createElement('th');
+                                    th.innerText = header;
+                                    headerRow.appendChild(th);
+                                });
+                                table.appendChild(headerRow);
+                            }
+
+                            // 添加前十行数据
+                            firstTenRows.slice(1).forEach(row => {
+                                const tr = document.createElement('tr');
+                                row.forEach(cell => {
+                                    const td = document.createElement('td');
+                                    td.innerText = cell;
+                                    tr.appendChild(td);
+                                });
+                                table.appendChild(tr);
+                            });
+
+                            document.getElementById("csv-grid-{{ forloop.counter }}").appendChild(table);
+                        })
+                        .catch(error => console.error('Error fetching the CSV:', error));
+                    </script>
+                {% endif %}
+                
             </div>
-            <!-- 中间内容 -->
-            <div class="workflow-body">
-                <!-- 图片区域 -->
-                <div class="image-container">
-                    {% if result.img_path %}
-                        {% for path in img_path %}
-                            <img src="{{path}}" alt="111">
-                        {% endfor %}
-                    {% endif %}
-                    {% if result.file_path %}
-                        <iframe src="{{ result.file_path }}" frameborder="0"></iframe>
-                    {% endif %}
-                </div>
 
-                <!-- 描述区域 -->
-                <div class="description-container">
-                    <h5>{{ result.name }}</h5>
-                    <p>{{ result.description }}</p>        
-                </div>
+            <!-- 描述区域 -->
+            <div class="description-container">
+                <p>{{ result.description }}</p>        
             </div>
-
-        </div>
-        {% endfor %}
-
-        <!-- 底部导航按钮 -->
-        <div class="workflow-footer">
-            <button class="btn-nav" id="prev-btn">Previous</button>
-            <span class="current">
-                <span id="current-page"></span> of {{ results|length }}.
-            </span>
-            <button class="btn-nav" id="next-btn">Next</button>
         </div>
     </div>
+    {% endfor %}
+
+    <!-- 底部导航按钮 -->
+    <div class="footer">
+        <button class="btn-nav" id="prev-btn">Previous</button>
+        <span class="current">
+            <span id="current-page"></span> of {{ results|length }}.
+        </span>
+        <button class="btn-nav" id="next-btn">Next</button>
+    </div>
+
     <!-- 换页功能 -->
     <script> 
         let currentPage = 1;
@@ -178,6 +228,9 @@
             document.getElementById(`page-${currentPage}`).classList.add('active');
             // 更新页面数显示
             document.getElementById('current-page').textContent = currentPage;
+            // 获取并更新 header 的内容
+            const currentName = document.getElementById(`name-${currentPage}`).textContent;
+            document.querySelector('.header').textContent = currentName;
         }
 
         // 上一页
