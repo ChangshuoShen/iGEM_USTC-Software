@@ -52,8 +52,8 @@
         }
 
         .image-container img, iframe {
-            width: 90%;
-            max-height: 70%;
+            width: 90vw;
+            max-height: 70vh;
             /* height: 100%; */
             margin: 10px;
             object-fit: contain;
@@ -114,59 +114,90 @@
                 padding: 10px 0;
             }
         }
+        /* 隐藏所有页面，显示当前页面 */
+        .page {
+            display: none;
+        }
+        .active {
+            display: flex;
+        }
     </style>
 </head>
 <body>
     <div class="workflow-container">
-        {% for result in page_obj %}
-        <!-- 顶部标题 -->
-        <div class="workflow-header">
-            {{ result.name }}
-        </div>
+        <!-- 遍历每个result，并为其分配唯一的ID -->
+        {% for result in results %}
+        <div class="'page" id="page-{{ forloop.counter }}">
+            <!-- 顶部标题 -->
+            <div class="workflow-header">
+                {{ result.name }}
+            </div>
+            <!-- 中间内容 -->
+            <div class="workflow-body">
+                <!-- 图片区域 -->
+                <div class="image-container">
+                    {% if result.img_path %}
+                        {% for path in img_path %}
+                            <img src="{{path}}" alt="111">
+                        {% endfor %}
+                    {% endif %}
+                    {% if result.file_path %}
+                        <iframe src="{{ result.file_path }}" frameborder="0"></iframe>
+                    {% endif %}
+                </div>
 
-        <!-- 中间内容 -->
-        <div class="workflow-body">
-            <!-- 图片区域 -->
-            <div class="image-container">
-                {% if result.img_path %}
-                    {% for path in img_path %}
-                        <img src="{{path}}" alt="111">
-                    {% endfor %}
-                {% endif %}
-                
-                {% if result.file_path %}
-                    <iframe src="{{ result.file_path }}" frameborder="0"></iframe>
-                {% endif %}
-            
-            
+                <!-- 描述区域 -->
+                <div class="description-container">
+                    <h5>{{ result.name }}</h5>
+                    <p>{{ result.description }}</p>        
+                </div>
             </div>
 
-            <!-- 描述区域 -->
-            <div class="description-container">
-                <h5>{{ result.name }}</h5>
-                <p>{{ result.description }}</p>        
-            </div>
         </div>
+        {% endfor %}
 
         <!-- 底部导航按钮 -->
         <div class="workflow-footer">
-            <div>
-                {% if page_obj.has_previous %}
-                <a class="btn-nav" href="?page={{ page_obj.previous_page_number }}">previous</a>
-                {% endif %}
-            </div>
-            <div>
-                <span class="current">
-                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                </span>
-            </div>
-            <div>
-                {% if page_obj.has_next %}
-                    <a class="btn-nav" href="?page={{ page_obj.next_page_number }}">next</a>
-                {% endif %}
-            </div>
-        {% endfor %}
+            <button class="btn-nav" id="prev-btn">Previous</button>
+            <span class="current">
+                <span id="current-page"></span> of {{ results|length }}.
+            </span>
+            <button class="btn-nav" id="next-btn">Next</button>
+        </div>
     </div>
-    
+    <!-- 换页功能 -->
+    <script> 
+        let currentPage = 1;
+        const totalPages = {{ results|length }};
+
+        // 更新当前显示的页面和按钮状态
+        function updatePage() {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            // 显示当前页面
+            document.getElementById(`page-${currentPage}`).classList.add('active');
+            // 更新页面数显示
+            document.getElementById('current-page').textContent = currentPage;
+        }
+
+        // 上一页
+        document.getElementById('prev-btn').addEventListener('click', function() {
+            if (currentPage > 1) {
+                currentPage--;
+                updatePage();
+            }
+        });
+
+        // 下一页
+        document.getElementById('next-btn').addEventListener('click', function() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                updatePage();
+            }
+        });
+
+        // 初始加载时显示第一个页面
+        updatePage();
+    </script>
 </body>
 </html>
