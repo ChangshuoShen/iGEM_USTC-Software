@@ -36,7 +36,8 @@ class scRNAseqUtils:
     def __init__(
         self, 
         adata_list, 
-        working_dir, 
+        save_path,
+        display_path,
         batch_correction='BBKNN',
         clustering='Leiden Clustering',
         enrichment_analysis='GO Enrichment',
@@ -45,10 +46,11 @@ class scRNAseqUtils:
     ):
         """ 初始化类时，传入 AnnData 对象（scanpy 的核心数据结构）和工作目录 """
         self.adata_list = adata_list
-        self.working_dir = working_dir
+        self.save_path = save_path 
+        self.display_path = display_path
         # 确保工作目录存在
-        if not os.path.exists(self.working_dir):
-            os.makedirs(self.working_dir)
+        if not os.path.exists(self.save_path):
+            os.makedirs(self.save_path)
         
         # 存储和验证分析方法参数
         # self.batch_correction = self.validate_method(batch_correction, 'batch_correction')
@@ -113,12 +115,13 @@ class scRNAseqUtils:
             - 过滤在少于min_cells个细胞中表达的基因。
             - 过滤表达低于min_genes或高于max_genes的细胞，以及线粒体基因表达高于max_mito的细胞。
         """
-        qc_table_path = os.path.join(self.working_dir, 'qc_metrics_table.csv')
-        self.adata.obs[['n_genes_by_counts', 'total_counts', 'pct_counts_mt']].to_csv(qc_table_path)
+        self.adata.obs[['n_genes_by_counts', 'total_counts', 'pct_counts_mt']].to_csv(
+            os.path.join(self.save_path, 'qc_metrics_table.csv')
+        )
         self.results.append(
             {
                 'name': 'QC Matrics Table',
-                'file_path': qc_table_path,
+                'file_path': os.path.join(self.display_path, 'qc_metrics_table.csv'),
                 'description': 'CSV file containing QC metrics for each cell: n_genes_by_counts, total_counts, pct_counts_mt'
             }
         )
@@ -141,7 +144,6 @@ class scRNAseqUtils:
     def violin_plots(self, save_name):
         """ 使用小提琴图可视化基因数、UMI counts 和线粒体基因比例，并保存图片。 """
         default_save_path = 'figures/violin.png'
-        save_path = os.path.join(self.working_dir, save_name)
         sc.pl.violin(
             self.adata, 
             ['n_genes_by_counts', 'total_counts', 'pct_counts_mt'], 
@@ -151,11 +153,11 @@ class scRNAseqUtils:
             show=False
         )
         # 移动图像到工作目录
-        shutil.move(default_save_path, save_path)
+        shutil.move(default_save_path, os.path.join(self.save_path, save_name))
         self.results.append(
             {
                 'name': save_name.split('.')[0],
-                'img_path': [save_path],
+                'img_path': [os.path.join(self.display_path, save_name)],
                 'description': 'Violin plot visualizing the distribution of the number of genes per cell (n_genes_by_counts), total UMI counts (total_counts), and the percentage of mitochondrial counts (pct_counts_mt) across all cells. This helps assess the quality of the dataset.'
             }
         )
@@ -163,20 +165,17 @@ class scRNAseqUtils:
     def plot_highest_expr_genes(self, save_name, n_top_genes=20):
         """ 可视化表达最高的前 n 个基因，并保存图片。 """
         default_save_path = 'figures/highest_expr_genes.png'
-        save_path = os.path.join(
-            self.working_dir, save_name
-        )
         sc.pl.highest_expr_genes(
             self.adata, 
             n_top=n_top_genes, 
             save='.png',
             show=False
         )
-        shutil.move(default_save_path, save_path)
+        shutil.move(default_save_path, os.path.join(self.save_path, save_name))
         self.results.append(
             {
                 'name': save_name.split('.')[0],
-                'img_path': [save_path],
+                'img_path': [os.path.join(self.display_path, save_name)],
                 'description': f'Bar plot showing the top {n_top_genes} most highly expressed genes. This plot highlights the most abundant genes in the dataset, which can provide insights into major biological processes or technical artifacts.'
             }
         )
@@ -194,10 +193,9 @@ class scRNAseqUtils:
             }
         )
 
-    def find_highly_variable_genes(self, save_name):
+    def find_highly_variable_genes(self, save_name='hvg.png'):
         """ 找出高变异基因，用于后续分析。 """
         default_save_path = 'figures/filter_genes_dispersion.png'
-        save_path = os.path.join(self.working_dir, save_name )
         sc.pp.highly_variable_genes(
             self.adata, 
             min_mean=0.0125, 
@@ -208,12 +206,12 @@ class scRNAseqUtils:
             save='.png',
             show=False
         )
-        shutil.move(default_save_path, save_path)
+        shutil.move(default_save_path, os.path.join(self.save_path, save_name))
         # 将结果添加到 self.results
         self.results.append(
             {
                 'name': 'Highly Variable Genes (HVG)',
-                'img_path': [save_path],  # 图像保存路径
+                'img_path': [os.path.join(self.display_path, save_name)],  # 图像保存路径
                 'description': f'A plot showing the highly variable genes detected in the dataset. <br>'
                             f'These genes have high variance across cells, and they are crucial <br>'
                             f'for downstream analysis such as dimensionality reduction and clustering.'
@@ -258,10 +256,6 @@ class scRNAseqUtils:
 
     def pca(self, n_comps=50):
         """ 进行主成分分析(PCA)，并将结果保存在adata对象中。 """
-        save_path = [
-            os.path.join(self.working_dir, 'pca.png'),
-            os.path.join(self.working_dir, 'pca_variance_ratio.png')
-        ]
         sc.tl.pca(
             self.adata, 
             n_comps=n_comps,
@@ -280,19 +274,19 @@ class scRNAseqUtils:
             show=False,
             save='.png')
         
-        shutil.move('figures/pca.png', save_path[0])
-        shutil.move('figures/pca_variance_ratio.png', save_path[1])
+        shutil.move('figures/pca.png', os.path.join(self.save_path, 'pca.png'))
+        shutil.move('figures/pca_variance_ratio.png', os.path.join(self.save_path, 'pca_variance_ratio.png'))
         # 将结果添加到self.results
         self.results.append(
             {
                 'name': 'PCA Analysis',
-                'img_path': save_path,  # PCA图像保存路径
+                'img_path': [os.path.join(self.display_path, 'pca.png'), 
+                             os.path.join(self.display_path, 'pca_variance_ratio.png')],  # PCA图像保存路径
                 'description': f'Performed PCA on the dataset with {n_comps} components.<br>'
                             f'Visualized the first three highly variable genes: {", ".join(hvg_genes)}.<br>'
                             f'Explained variance ratio plot saved as well.'
             }
         )
-        return save_path
 
     def neighbors(self, n_neighbors=10, n_pcs=40):
         """ 计算邻居，用于后续降维（如UMAP和t-SNE）和聚类。 """
@@ -332,13 +326,12 @@ class scRNAseqUtils:
             save='.png',
             show=False
         )
-        save_path = os.path.join(self.working_dir, f'tsne{suffix}.png')
-        shutil.move('figures/tsne.png', save_path)
+        shutil.move('figures/tsne.png', os.path.join(self.save_path, f'tsne{suffix}.png'))
          # 将结果添加到 self.results
         self.results.append(
             {
                 'name': f't-SNE Visualization suffix',
-                'img_path': [save_path],
+                'img_path': [os.path.join(self.display_path, f'tsne{suffix}.png')],
                 'description': 't-SNE plot visualizing the data in lower dimensions. The colors represent the top variable genes.'
             }
         )
@@ -352,13 +345,12 @@ class scRNAseqUtils:
             save='.png',
             show=False
         )
-        save_path = os.path.join(self.working_dir, f'umap{suffix}.png')
-        shutil.move('figures/umap.png', save_path)
+        shutil.move('figures/umap.png', os.path.join(self.save_path, f'umap{suffix}.png'))
         # 将结果添加到 self.results
         self.results.append(
             {
                 'name': f'UMAP Visualization {suffix}',
-                'img_path': [save_path],
+                'img_path': [os.path.join(self.display_path, f'umap{suffix}.png')],
                 'description': 'UMAP plot visualizing the data in lower dimensions. The colors represent the top variable genes.'
             }
         )
@@ -376,9 +368,8 @@ class scRNAseqUtils:
                 save='_leiden.png',
                 show=False
             )
-            save_path = os.path.join(self.working_dir, f'umap_leiden_res{resolution}{suffix}.png')
-            shutil.move('figures/umap_leiden.png', save_path)
-            save_path_list.append(save_path)
+            shutil.move('figures/umap_leiden.png', os.path.join(self.save_path, f'umap_leiden_res{resolution}{suffix}.png'))
+            save_path_list.append(os.path.join(self.display_path, f'umap_leiden_res{resolution}{suffix}.png'))
 
         self.results.append(
             {
@@ -403,9 +394,8 @@ class scRNAseqUtils:
                 show=False
             )
             # 移动保存的文件
-            save_path = os.path.join(self.working_dir, 'umap_louvain_res{resolution}{suffix}.png')
-            shutil.move('figures/umap_louvain.png', save_path)
-            save_path_list.append(save_path)
+            shutil.move('figures/umap_louvain.png', os.path.join(self.save_path, 'umap_louvain_res{resolution}{suffix}.png'))
+            save_path_list.append(os.path.join(self.display_path, 'umap_louvain_res{resolution}{suffix}.png'))
         # 将结果添加到 self.results    
         self.results.append(
             {
@@ -431,13 +421,12 @@ class scRNAseqUtils:
             save='_bbknn.png',
             show=False
         )
-        save_path = os.path.join(self.working_dir, 'umap_bbknn.png')
-        shutil.move('figures/umap_bbknn.png', save_path)
+        shutil.move('figures/umap_bbknn.png', os.path.join(self.save_path, 'umap_bbknn.png'))
         
         self.results.append(
             {
                 'name': 'BBKNN Batch Correction',
-                'img_path': [save_path],
+                'img_path': [os.path.join(self.display_path, 'umap_bbknn.png')],
                 'description': f'UMAP visualization after BBKNN batch correction using {cluster_method} clustering.'
             }
         )
@@ -455,13 +444,12 @@ class scRNAseqUtils:
             save='_combat.png',
             show=False
         )
-        save_path = os.path.join(self.working_dir, 'umap_combat.png')
-        shutil.move('figures/umap_combat.png', save_path)
+        shutil.move('figures/umap_combat.png', os.path.join(self.save_path, 'umap_combat.png'))
         
         self.results.append(
             {
                 'name': 'Combat Batch Correction',
-                'img_path': [save_path],
+                'img_path': [os.path.join(self.display_path, 'umap_combat.png')],
                 'description': f'UMAP visualization after Combat batch correction using {cluster_method} clustering.'
             }
         )
@@ -482,13 +470,12 @@ class scRNAseqUtils:
             show=False
         )
         # 移动保存的图片到工作目录
-        save_path = os.path.join(self.working_dir, filename_umap)
-        shutil.move(f'figures/{filename_umap}', save_path)
+        shutil.move(f'figures/{filename_umap}', os.path.join(self.save_path, filename_umap))
         
         self.results.append(
             {
                 'name': 'Harmony Batch Correction',
-                'img_path': [save_path],
+                'img_path': [os.path.join(self.display_path, filename_umap)],
                 'description': f'UMAP visualization after Harmony batch correction using {cluster_method} clustering.'
             }
         )
@@ -568,13 +555,11 @@ class scRNAseqUtils:
             show=False,
             save=filename
         )
-        save_path = os.path.join(self.working_dir, 
-                                 f'rank_genes_group_{groupby}' + filename)
-        shutil.move(f'figures/rank_genes_groups_{groupby}'+filename, save_path)
+        shutil.move(f'figures/rank_genes_groups_{groupby}'+filename, os.path.join(self.save_path, f'rank_genes_group_{groupby}' + filename))
         
         self.results.append({
             'name': f'Differential Expression ({method})',
-            'img_path': [save_path],
+            'img_path': [os.path.join(self.display_path, f'rank_genes_group_{groupby}' + filename)],
             'description': f'Top {n_genes} differentially expressed genes using {method} method and grouped by {groupby}.'
         })
         
@@ -684,7 +669,7 @@ class scRNAseqUtils:
         enr = gp.enrichr(gene_list=top_genes,
                         gene_sets=gene_set,
                         organism='Human',
-                        outdir=os.path.join(self.working_dir, 'enrichr_results'),
+                        outdir=os.path.join(self.save_path, 'enrichr_results'),
                         cutoff=0.05)
 
         results_df = enr.results # 获取结果
@@ -712,9 +697,8 @@ class scRNAseqUtils:
 
         # 保存交互式图表
         html_filename = "top_30_enrichment_interactive.html"
-        html_path = os.path.join(self.working_dir, html_filename)
-        fig.write_html(html_path)
-        print(f"Interactive plot saved as '{html_path}'")
+        fig.write_html(os.path.join(self.save_path, html_filename))
+        print(f"Interactive plot saved as '{os.path.join(self.display_path, html_filename)}'")
 
         # 创建并保存基因和富集得分的列表
         gene_enrichment_scores = pd.DataFrame({
@@ -727,20 +711,19 @@ class scRNAseqUtils:
         
         # 保存基因富集得分列表
         csv_filename = 'gene_enrichment_scores.csv'
-        csv_path = os.path.join(self.working_dir, csv_filename)
-        gene_enrichment_scores.to_csv(csv_path)
+        gene_enrichment_scores.to_csv(os.path.join(self.save_path, csv_filename))
         print(f"Gene enrichment scores saved as '{csv_filename}'")
 
         self.results.append({
             'name': 'Enrichment Analysis Results',
-            'file_path': csv_path,  # 基因富集得分文件路径
+            'file_path': os.path.join(self.display_path, csv_filename),  # 基因富集得分文件路径
             'description': f"Top 30 enriched GO terms for {self.enrichment_analysis} with gene enrichment scores.",
         })
 
         # 第二次向 self.results 添加，使用 img_path
         self.results.append({
             'name': 'Enrichment Analysis Visualization',
-            'file_path': html_path,  # 交互式图表路径
+            'file_path': os.path.join(self.display_path, html_filename),  # 交互式图表路径
             'description': f"Top 30 enriched GO terms for {self.enrichment_analysis} with interactive visualization.",
         })
         
@@ -761,13 +744,12 @@ class scRNAseqUtils:
                 show=False, 
                 save='_enriched_genes.png')
             # 移动并重命名图片
-            heatmap_path = os.path.join(self.working_dir, 'enriched_genes_heatmap.png')
-            shutil.move('figures/heatmap_enriched_genes.png', heatmap_path)
-            print(f"Heatmap saved as '{heatmap_path}'")
+            shutil.move('figures/heatmap_enriched_genes.png', os.path.join(self.save_path, 'enriched_genes_heatmap.png'))
+            print("Heatmap saved as enriched_genes_heatmap.png")
             
             self.results.append({
                 'name': 'Heatmap of Enriched Genes',
-                'img_path': [heatmap_path],
+                'img_path': [os.path.join(self.display_path, 'enriched_genes_heatmap.png')],
                 'description': 'Heatmap showing expression of enriched genes across different clusters.',
             })
 
@@ -812,14 +794,13 @@ class scRNAseqUtils:
             )
 
             # 保存气泡图
-            bubble_plot_path = os.path.join(self.working_dir, "bubble_plot_enriched_genes.html")
-            fig.write_html(bubble_plot_path)
-            print(f"Bubble plot saved as '{bubble_plot_path}'")
+            fig.write_html(os.path.join(self.save_path, "bubble_plot_enriched_genes.html"))
+            print("Bubble plot saved as bubble_plot_enriched_genes.html")
 
             # 保存气泡图路径
             self.results.append({
                 'name': 'Bubble Plot of Enriched Genes',
-                'file_path': bubble_plot_path,
+                'file_path': os.path.join(self.display_path, "bubble_plot_enriched_genes.html"),
                 'description': 'Bubble plot showing enriched gene expression across different clusters.',
             })
 
@@ -829,15 +810,15 @@ class scRNAseqUtils:
                 color=enriched_genes[:5], 
                 save='_enriched_genes_expression.png', 
                 show=False)
-            umap_plot_path = os.path.join(self.working_dir, 'umap_enriched_genes_expression.png')
-            shutil.move('figures/umap_enriched_genes_expression.png',umap_plot_path)
+            shutil.move('figures/umap_enriched_genes_expression.png',
+                        os.path.join(self.save_path, 'umap_enriched_genes_expression.png'))
             # 打印保存结果
-            print(f"UMAP plot saved as {umap_plot_path}")
+            print(f"UMAP plot saved")
 
             # 将结果保存到self.results中
             self.results.append({
                 'name': 'UMAP Plot of Enriched Genes',
-                'img_path': [umap_plot_path],
+                'img_path': [os.path.join(self.display_path, 'umap_enriched_genes_expression.png')],
                 'description': 'UMAP plot showing expression distribution of the top 5 enriched genes.',
             })
 
@@ -872,16 +853,15 @@ class scRNAseqUtils:
             
             plt.title('Network of Enriched GO Terms')
             plt.axis('off')
-            network_plot_path = os.path.join(self.working_dir, 'enriched_go_terms_network.png')
-            plt.savefig(network_plot_path)
+            plt.savefig(os.path.join(self.save_path, 'enriched_go_terms_network.png'))
             plt.close()
             
-            print(f"Network plot saved as '{network_plot_path}'")
+            print(f"Network plot saved")
 
             # 保存网络图路径到self.results
             self.results.append({
                 'name': 'Network of Enriched GO Terms',
-                'img_path': network_plot_path,
+                'img_path': [os.path.join(self.display_path, 'enriched_go_terms_network.png')],
                 'description': 'Network plot showing connections between enriched GO terms based on shared genes.',
             })
             

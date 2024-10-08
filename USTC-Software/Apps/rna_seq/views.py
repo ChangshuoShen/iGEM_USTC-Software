@@ -42,9 +42,10 @@ def rna_index(request):
 def create_user_folder(user_id):
     """根据 user_id 创建专属的实验文件夹"""
     user_folder = os.path.join(settings.MEDIA_ROOT, 'rna_seq', str(user_id))
+    display_path = os.path.join(settings.MEDIA_URL, 'rna_seq', str(user_id))
     if not os.path.exists(user_folder):
         os.makedirs(user_folder)
-    return user_folder
+    return user_folder, display_path
 
 def clear_directory(directory):
     """清除指定目录中的所有文件和子目录"""
@@ -65,7 +66,7 @@ def upload_file(request):
             messages.warning(request, 'Please login before uploading images.')
             return redirect('accounts:signup_login')
         
-        user_folder = create_user_folder(user_id)
+        user_folder, display_path = create_user_folder(user_id)
         clear_directory(user_folder)
         uploaded_files = request.FILES.getlist('data_files')
         adata_list = []
@@ -92,7 +93,7 @@ def upload_file(request):
             else:
                 # 这个时候就默认使用第一个adata数据创建一个adata_list了
                 adata_list.append(sc.datasets.pbmc3k())
-                
+
         # 开始选取几个步骤的方法
         batch_correction = request.POST.get('batch_correction')
         clustering = request.POST.get('clustering')
@@ -104,6 +105,7 @@ def upload_file(request):
         adata_process = scRNAseqUtils(
             adata_list,
             user_folder,
+            display_path,
             batch_correction,
             clustering,
             enrichment_analysis,
@@ -112,12 +114,20 @@ def upload_file(request):
         )
         
         adata_process.execute_workflow()
-        results_per_page = 1
-        paginator = Paginator(adata_process.results, results_per_page)
+        # results_per_page = 1
+        # paginator = Paginator(adata_process.results, results_per_page)
         # 获取当前页码
-        page_number = request.GET.get('page', 1)  # 默认为第1页
-        page_obj = paginator.get_page(page_number)
-        return render(request, 'workflow.html', {'page_obj': page_obj})
+        # page_number = request.GET.get('page', 1)  # 默认为第1页
+        # page_obj = paginator.get_page(page_number)
+        # return render(request, 'workflow.html', {'page_obj': page_obj})
         # return JsonResponse(adata_process.results, safe=False)
+        
+        return render(
+            request,
+            'workflow.html',
+            {
+                'results': adata_process.results
+            }
+        )
     return render(request, 'upload.html')
 
