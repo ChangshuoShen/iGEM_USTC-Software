@@ -143,8 +143,8 @@
             <!-- 图片区域 -->
             <div class="image-container">
                 {% if result.img_path %}
-                    {% for path in img_path %}
-                        <img src="{{path}}" alt="111">
+                    {% for path in result.img_path %}
+                        <img src="{{ path }}" alt="111">
                     {% endfor %}
                 
                 {% elif result.html_path %}
