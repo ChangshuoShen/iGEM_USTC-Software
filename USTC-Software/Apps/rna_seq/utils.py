@@ -842,8 +842,9 @@ class scRNAseqUtils:
                         G.add_edge(term1, term2, weight=len(shared_genes))
 
             # 绘制网络图
-            plt.figure(figsize=(12, 12))
-            pos = nx.spring_layout(G, k=0.5)
+            plt.figure(figsize=(24, 24))
+            # pos = nx.spring_layout(G, k=0.5)
+            pos = nx.circular_layout(G)  # 使用圆形布局
             node_sizes = [len(G.nodes[node]['genes']) * 100 for node in G.nodes()]
             nx.draw_networkx_nodes(G, pos, node_size=node_sizes, node_color='lightblue')
             nx.draw_networkx_labels(G, pos, font_size=8)
