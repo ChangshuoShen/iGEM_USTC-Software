@@ -16,7 +16,6 @@ def index(request):
                 request.session['user_id'] = user.id
                 request.session['email'] = user.email
                 login_status =user.name
-                print(login_status)
                 return render(request, 'index.html', {
                     'login_status': login_status
                 })

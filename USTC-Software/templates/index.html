@@ -215,16 +215,16 @@
                                 <div class="col 2">
                                     <a id="link-url-2" href="#">
                                         <div class="link-card cards">
-                                            <i id="link-icon-1" class="fas fa-dna"></i>
-                                            <span class="link-name" id="link-name-2">ATAC-seq</span>
+                                            <i class="fa-solid fa-atom"></i>
+                                            <span class="link-name" id="link-name-2">PyMOL Teaching</span>
                                         </div>
                                     </a>
                                 </div>
                                 <div class="col">
-                                    <a id="link-url-3" href="#">
+                                    <a id="link-url-3" href="{% url 'forum:course_resources'%}">
                                         <div class="link-card cards">
-                                            <i id="link-icon-1" class="fas fa-dna"></i>
-                                            <span class="link-name" id="link-name-3">PyMOL Teaching</span>
+                                            <i class="fa-brands fa-sourcetree"></i>
+                                            <span class="link-name" id="link-name-3">Course Resources</span>
                                         </div>
                                     </a>
                                 </div>
@@ -232,29 +232,31 @@
                             <!--第二组-->
                             <div class="row" style="margin-top: 1.5rem;">
                                 <div class="col">
-                                    <a id="link-url-4" href="{% url 'forum:course_resources'%}">
+                                    <a id="link-url-4" href="{% url 'experiment:exp_index'%}">
                                         <div class="link-card cards">
-                                            <i id="link-icon-1" class="fas fa-dna"></i>
-                                            <span class="link-name" id="link-name-4">Course Resources</span>
+                                            <i class="fa-solid fa-screwdriver-wrench"></i>
+                                            <span class="link-name" id="link-name-4">PCET<br>
+                                                <span style="font-size: 0.6rem;">(Physical Chemistry <br>Experimental Tool.)</span>
+                                            </span>
                                         </div>
                                     </a>
                                 </div>
                                 <div class="col 2">
-                                    <a id="link-url-5" href="{% url 'experiment:exp_index'%}">
+                                    <a id="link-url-5" href="{% url 'image_segment:sam_index'%}">
                                         <div class="link-card cards">
-                                            <i id="link-icon-1" class="fas fa-dna"></i>
-                                            <span class="link-name" id="link-name-5">PCET<br>
-                                                <span style="font-size: 0.6rem;">(Physical Chemistry <br>Experimental Tool.)</span>
-                                                </span>
+                                            <i class="fa-solid fa-image"></i>
+                                            <span class="link-name" id="link-name-5">
+                                                Image Segment Model(2D)
+                                            </span>
                                         </div>
                                     </a>
                                 </div>
                                 <div class="col">
-                                    <a id="link-url-6" href="{% url 'image_segment:sam_index'%}">
+                                    <a id="link-url-6" href="">
                                         <div class="link-card cards text-center">
-                                            <i id="link-icon-1" class="fas fa-dna"></i>
+                                            <i class="fa-regular fa-image"></i>
                                             <span class="link-name" id="link-name-6">
-                                                Image Segment Model
+                                                Image Segment Model(3D)
                                             </span>
                                         </div>
                                     </a>

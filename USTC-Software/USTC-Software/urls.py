@@ -21,7 +21,6 @@ from . import views
 from django.conf.urls.static import static
 from django.conf import settings
 
-
 urlpatterns = [
     path('', views.index, name='home'), # 这是一个主页
     path("admin/", admin.site.urls),
