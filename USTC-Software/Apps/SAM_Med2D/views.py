@@ -24,7 +24,7 @@ def sam_index(request):
         user = User.get_user_by_email(email)
         if user and user.id == int(user_id):
             # 用户已登录，继续渲染页面
-            return render(request, 'image_segment.html')
+            return render(request, 'sam.html')
         else:
             # 用户信息无效，重定向到登录页面
             messages.warning(request, 'Please login before using Physical Chemistry Experiment Tools')
@@ -34,7 +34,7 @@ def sam_index(request):
             return response
     except Exception as e:
         # 异常处理，重定向到登录页面
-        messages.error(request, 'Error occured!!! Please try again')
+        messages.error(request, f'Error occured!!!:{e}: Please try again')
         return redirect('accounts:signup_login')
     # return HttpResponse('this is the sam index')
     
@@ -142,7 +142,7 @@ def upload_image(request):
         else:
             error_message = 'No image file was selected.'
 
-    return render(request, 'image_segment.html', {
+    return render(request, 'sam', {
         'result_image_url': result_image_url,
         'error_message': error_message
     })

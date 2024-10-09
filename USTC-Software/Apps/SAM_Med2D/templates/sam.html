@@ -1,0 +1,115 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Segment</title>
+    <!-- 引入 Bootstrap CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <style>
+        *{
+            margin: 0;
+            padding: 20px;
+        }
+        body {
+            background-image: url("{% static 'imgs/sam-bg.png' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            width: 100vw;
+            height: 100vh;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            width: 100%;
+        }
+        .form-container {
+            width: 35%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border: 2px solid #007bff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .result-container {
+            flex: 1;
+            height: 100%;
+            border-radius: 10px;
+            border: 2px solid #007bff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-control-file {
+            border: 1px solid #ced4da;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        .img-fluid {
+            border-radius: 10px;
+            border: 1px solid #1d1a1a;
+        }
+
+        .text-danger {
+            margin-top: 10px;
+        }
+
+        .result-image-container {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h2>Upload an Image</h2>
+            <form method="post" action="{% url 'image_segment:upload' %}" enctype="multipart/form-data" class="mb-3">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="image">Choose an image to upload:</label>
+                    <input type="file" class="form-control-file" id="image" name="image" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Upload and Process</button>
+            </form>
+            {% if error_message %}
+                <p class="text-danger">{{ error_message }}</p>
+            {% endif %}
+        </div>
+        
+        <div class="result-container">
+            <h2>Processed Image</h2>
+            <div id="result-image-container" class="result-image-container mt-3">
+                {% if result_image_url %}
+                    <img src="{{ result_image_url }}" alt="Processed Image" class="img-fluid">
+                {% else %}
+                    <p>No image processed yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入 Bootstrap JS 和依赖 -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

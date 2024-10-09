@@ -225,7 +225,7 @@ class scRNAseqUtils:
         """
         self.adata.raw = self.adata  # 保留原始数据
         self.adata = self.adata[:, self.adata.var['highly_variable']]  # 选择高变异基因
-        print(self.adata.raw.shape, self.adata.shape)
+        # print(self.adata.raw.shape, self.adata.shape)
         # 将筛选高变异基因的结果添加到 self.results
         self.results.append(
             {
@@ -262,26 +262,30 @@ class scRNAseqUtils:
             svd_solver='arpack' # SVD求解器，'arpack' 适用于大型稀疏矩阵
             )
         hvg_genes = self.find_top_genes()
-        sc.pl.pca(
-            self.adata, 
-            color=hvg_genes, # 选择三个高变异基因（这里以HVG基因列表为例）
-            save='.png',
-            show=False
-        )
+        img_path_list = []
+        for i, gene in enumerate(hvg_genes):
+            img_name = f'pca_gene_{i+1}.png'
+            sc.pl.pca(
+                self.adata, 
+                color=[gene], # 选择三个高变异基因（这里以HVG基因列表为例）
+                save='.png',
+                show=False
+            )
+            shutil.move('figures/pca.png', os.path.join(self.save_path, img_name))
+            img_path_list.append(os.path.join(self.display_path, img_name))
         sc.pl.pca_variance_ratio(
             self.adata, 
             log=True, 
             show=False,
             save='.png')
-        
-        shutil.move('figures/pca.png', os.path.join(self.save_path, 'pca.png'))
-        shutil.move('figures/pca_variance_ratio.png', os.path.join(self.save_path, 'pca_variance_ratio.png'))
+        shutil.move('figures/pca_variance_ratio.png', 
+                    os.path.join(self.save_path, 'pca_variance_ratio.png'))
+        img_path_list.append(os.path.join(self.display_path, 'pca_variance_ratio.png'))
         # 将结果添加到self.results
         self.results.append(
             {
                 'name': 'PCA Analysis',
-                'img_path': [os.path.join(self.display_path, 'pca.png'), 
-                             os.path.join(self.display_path, 'pca_variance_ratio.png')],  # PCA图像保存路径
+                'img_path': img_path_list,  # PCA图像保存路径
                 'description': f'Performed PCA on the dataset with {n_comps} components.<br>'
                             f'Visualized the first three highly variable genes: {", ".join(hvg_genes)}.<br>'
                             f'Explained variance ratio plot saved as well.'
@@ -339,18 +343,24 @@ class scRNAseqUtils:
     def umap(self, suffix=''):
         """ 使用 UMAP 方法对数据进行降维。 """
         sc.tl.umap(self.adata)
-        sc.pl.umap(
-            self.adata, 
-            color=self.find_top_genes(),  # 可根据数据选择颜色参考的基因
-            save='.png',
-            show=False
-        )
-        shutil.move('figures/umap.png', os.path.join(self.save_path, f'umap{suffix}.png'))
+        img_path_list = []
+        top_genes = self.find_top_genes()
+        for i, gene in enumerate(top_genes):
+            img_name = f'umap{suffix}{i+1}.png'
+            sc.pl.umap(
+                self.adata, 
+                color=[gene],  # 可根据数据选择颜色参考的基因
+                save='.png',
+                show=False
+            )
+            shutil.move('figures/umap.png', os.path.join(self.save_path, img_name))
+            img_path_list.append(os.path.join(self.display_path, img_name))
+            
         # 将结果添加到 self.results
         self.results.append(
             {
                 'name': f'UMAP Visualization {suffix}',
-                'img_path': [os.path.join(self.display_path, f'umap{suffix}.png')],
+                'img_path': img_path_list,
                 'description': 'UMAP plot visualizing the data in lower dimensions. The colors represent the top variable genes.'
             }
         )
@@ -430,7 +440,7 @@ class scRNAseqUtils:
                 'description': f'UMAP visualization after BBKNN batch correction using {cluster_method} clustering.'
             }
         )
-        print("BBKNN correction finished")
+        # print("BBKNN correction finished")
 
     def combat_correction(self, cluster_method='leiden'):
         """ 使用 Combat 方法进行批次效应矫正。 """
@@ -454,7 +464,7 @@ class scRNAseqUtils:
             }
         )
         
-        print("Combat Correction finished")
+        # print("Combat Correction finished")
     
     def harmony_correction(self, cluster_method='leiden'):
         """ 使用 Scanpy 内置的 Harmony 方法进行批次效应校正。 """
@@ -479,7 +489,7 @@ class scRNAseqUtils:
                 'description': f'UMAP visualization after Harmony batch correction using {cluster_method} clustering.'
             }
         )
-        print("Harmony Correction Finished")
+        # print("Harmony Correction Finished")
 
     # 添加比较有无批次矫正的可视化方法
     def compare_batch_correction(self):
@@ -698,7 +708,7 @@ class scRNAseqUtils:
         # 保存交互式图表
         html_filename = "top_30_enrichment_interactive.html"
         fig.write_html(os.path.join(self.save_path, html_filename))
-        print(f"Interactive plot saved as '{os.path.join(self.display_path, html_filename)}'")
+        # print(f"Interactive plot saved as '{os.path.join(self.display_path, html_filename)}'")
 
         # 创建并保存基因和富集得分的列表
         gene_enrichment_scores = pd.DataFrame({
@@ -712,7 +722,7 @@ class scRNAseqUtils:
         # 保存基因富集得分列表
         csv_filename = 'gene_enrichment_scores.csv'
         gene_enrichment_scores.to_csv(os.path.join(self.save_path, csv_filename))
-        print(f"Gene enrichment scores saved as '{csv_filename}'")
+        # print(f"Gene enrichment scores saved as '{csv_filename}'")
 
         self.results.append({
             'name': 'Enrichment Analysis Results',
@@ -745,7 +755,7 @@ class scRNAseqUtils:
                 save='_enriched_genes.png')
             # 移动并重命名图片
             shutil.move('figures/heatmap_enriched_genes.png', os.path.join(self.save_path, 'enriched_genes_heatmap.png'))
-            print("Heatmap saved as enriched_genes_heatmap.png")
+            # print("Heatmap saved as enriched_genes_heatmap.png")
             
             self.results.append({
                 'name': 'Heatmap of Enriched Genes',
@@ -795,7 +805,7 @@ class scRNAseqUtils:
 
             # 保存气泡图
             fig.write_html(os.path.join(self.save_path, "bubble_plot_enriched_genes.html"))
-            print("Bubble plot saved as bubble_plot_enriched_genes.html")
+            # print("Bubble plot saved as bubble_plot_enriched_genes.html")
 
             # 保存气泡图路径
             self.results.append({
@@ -805,21 +815,24 @@ class scRNAseqUtils:
             })
 
             # 3. 绘制富集基因在 UMAP 上的表达分布，选择前5个基因进行可视化
-            sc.pl.umap(
-                self.adata, 
-                color=enriched_genes[:5], 
-                save='_enriched_genes_expression.png', 
-                show=False)
-            shutil.move('figures/umap_enriched_genes_expression.png',
-                        os.path.join(self.save_path, 'umap_enriched_genes_expression.png'))
-            # 打印保存结果
-            print(f"UMAP plot saved")
+            img_path_list = []
+            top_5_enriched_genes = enriched_genes[:5]
+            for i, gene in enumerate(top_5_enriched_genes):
+                sc.pl.umap(
+                    self.adata, 
+                    color=[gene], 
+                    save='_enriched_genes_expression.png', 
+                    show=False)
+                img_name = f'umap_enriched_gene_{i+1}_expression.png'
+                shutil.move('figures/umap_enriched_genes_expression.png',
+                            os.path.join(self.save_path, img_name))
+                img_path_list.append(os.path.join(self.display_path, img_name))
 
             # 将结果保存到self.results中
             self.results.append({
                 'name': 'UMAP Plot of Enriched Genes',
-                'img_path': [os.path.join(self.display_path, 'umap_enriched_genes_expression.png')],
-                'description': 'UMAP plot showing expression distribution of the top 5 enriched genes.',
+                'img_path': img_path_list,
+                'description': f'UMAP plot showing expression distribution of the top 5 enriched genes: {top_5_enriched_genes}.',
             })
 
             # 4. 绘制富集 GO 术语的网络图
@@ -842,22 +855,23 @@ class scRNAseqUtils:
                         G.add_edge(term1, term2, weight=len(shared_genes))
 
             # 绘制网络图
-            plt.figure(figsize=(24, 24))
+            plt.figure(figsize=(40, 40))
             # pos = nx.spring_layout(G, k=0.5)
             pos = nx.circular_layout(G)  # 使用圆形布局
-            node_sizes = [len(G.nodes[node]['genes']) * 100 for node in G.nodes()]
+            node_sizes = [len(G.nodes[node]['genes']) * 200 for node in G.nodes()]
             nx.draw_networkx_nodes(G, pos, node_size=node_sizes, node_color='lightblue')
-            nx.draw_networkx_labels(G, pos, font_size=8)
+            nx.draw_networkx_labels(G, pos, font_size=24)
             edges = G.edges()
-            weights = [G[u][v]['weight'] for u, v in edges]
+            weights = [G[u][v]['weight']/2 for u, v in edges]
             nx.draw_networkx_edges(G, pos, width=weights)
             
             plt.title('Network of Enriched GO Terms')
             plt.axis('off')
+            plt.tight_layout()
             plt.savefig(os.path.join(self.save_path, 'enriched_go_terms_network.png'))
             plt.close()
             
-            print(f"Network plot saved")
+            # print(f"Network plot saved")
 
             # 保存网络图路径到self.results
             self.results.append({
@@ -867,7 +881,7 @@ class scRNAseqUtils:
             })
             
         else:
-            print("No enriched genes found in the dataset for further visualization.")
+            # print("No enriched genes found in the dataset for further visualization.")
             self.results.append(
                 {
                     'name': 'Enrichment Genes Analysis Vasualization',
@@ -878,51 +892,51 @@ class scRNAseqUtils:
     # 执行所有方法
     def execute_workflow(self):
         # 首先计算 QC 指标
-        print('Calculating QC metrics...')
+        # print('Calculating QC metrics...')
         self.calculate_qc_metrics()
         
-        print('Filtering cells and genes...')
+        # print('Filtering cells and genes...')
         self.filter_cells_and_genes()
         
-        print('Normalizing data...')
+        # print('Normalizing data...')
         self.normalize_data()
         
-        print('Identifying highly variable genes...')
+        # print('Identifying highly variable genes...')
         self.adata.X = np.nan_to_num(self.adata.X)
         self.find_highly_variable_genes('hvg.png')
         
-        print('Filtering highly variable genes...')
+        # print('Filtering highly variable genes...')
         self.filter_hvg()
         
-        print('Scaling data...')
+        # print('Scaling data...')
         self.scale_data()
         
-        print('Performing PCA...')
+        # print('Performing PCA...')
         self.pca()
         
-        print('Computing neighbors...')
+        # print('Computing neighbors...')
         self.neighbors()
         
         # bacth correction
-        print('Applying batch correction...')
+        # print('Applying batch correction...')
         self.compare_batch_correction()
         
-        print('Running UMAP...')
+        # print('Running UMAP...')
         self.umap()
         
-        print(f'clustering with {self.clustering}...')
+        # print(f'clustering with {self.clustering}...')
         if self.clustering == 'Leiden Clustering':
             self.leiden()
         elif self.clustering == 'Louvain Clustering':
             self.louvain()
             
-        print(f'Differential Expression Analysis with {self.diff_expr}...')
+        # print(f'Differential Expression Analysis with {self.diff_expr}...')
         self.calculate_diff_expr()
         
-        print(f'Enrichment Analysis with {self.enrichment_analysis}...')
+        # print(f'Enrichment Analysis with {self.enrichment_analysis}...')
         self.perform_enrichment_and_annotation()
         
-        print('Workflow Completed...') 
+        # print('Workflow Completed...') 
 
 
 
