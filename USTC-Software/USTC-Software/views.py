@@ -16,7 +16,7 @@ def index(request):
                 request.session['user_id'] = user.id
                 request.session['email'] = user.email
                 login_status =user.name
-                print('yes')
+                print(login_status)
                 return render(request, 'index.html', {
                     'login_status': login_status
                 })
@@ -28,7 +28,8 @@ def index(request):
                 return response
         except Exception as e:
             # 其他异常情况，重定向到登录页面
-            return redirect('accounts:signup_login')
+            # return redirect('accounts:signup_login')
+            response = render(request, 'index.html')
     return render(request, 'index.html', {
         'login_status': login_status,
     })

@@ -112,37 +112,34 @@ def upload_image(request):
         if uploaded_image:
             # 创建用户的专属文件夹
             user_folder = create_user_folder(user_id)
-
             # 确保 temp 和 output 目录存在
-            temp_dir = os.path.join(user_folder, 'sam_temp')
+            input_dir = os.path.join(user_folder, 'sam_input')
             output_dir = os.path.join(user_folder, 'sam_output')
-            os.makedirs(temp_dir, exist_ok=True)
+            os.makedirs(input_dir, exist_ok=True)
             os.makedirs(output_dir, exist_ok=True)
-            
             # 先清除 temp 和 output 目录中的所有文件
-            clear_directory(temp_dir)
+            clear_directory(input_dir)
             clear_directory(output_dir)
 
             # 保存上传的文件到临时位置
-            temp_input_path = os.path.join(temp_dir, uploaded_image.name)
-            with open(temp_input_path, 'wb+') as destination:
+            input_path = os.path.join(input_dir, uploaded_image.name)
+            with open(input_path, 'wb+') as destination:
                 for chunk in uploaded_image.chunks():
                     destination.write(chunk)
-
             # 处理图像
-            temp_output_path = os.path.join(output_dir, uploaded_image.name)
-            if process_image(temp_input_path, temp_output_path):
-                # 删除临时输入文件
-                os.remove(temp_input_path)
+            output_path = os.path.join(output_dir, uploaded_image.name)
+            if process_image(input_path, output_path):
                 # 设置结果图像 URL
-                result_image_url = f'/media/{user_id}/sam_output/{uploaded_image.name}'
+                input_image_url = f'/media/{user_id}/sam_input/{uploaded_image.name}'
+                output_image_url = f'/media/{user_id}/sam_output/{uploaded_image.name}'
                 # result_image_url = temp_output_path
             else:
                 error_message = 'Image processing failed.'
         else:
             error_message = 'No image file was selected.'
 
-    return render(request, 'sam', {
-        'result_image_url': result_image_url,
+    return render(request, 'sam.html', {
+        'input_image_url': input_image_url,
+        'output_image_url': output_image_url,
         'error_message': error_message
     })
