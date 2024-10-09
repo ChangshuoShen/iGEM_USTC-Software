@@ -68,11 +68,10 @@
                         <h2 class="fixed-title">Forum</h2>
                         {% if posts_data.posts %}
                             {% for post_page in posts_data.posts %}
-                            
                                 <div class="card mb-3 card-custom">
                                     <div class="card-body row">
                                         <div class="col-md-9">
-                                            <a href="{% url 'forum:post_detail' post_id=post_page.post_id %}" class="text-decoration-none">
+                                            <a href="{% url 'forum:post_detail' post_id=post_page.post_id %}" class="text-decoration-none text-dark">
                                                 <h5 class="card-title">{{ post_page.post_title }}</h5>
                                                 <!-- 这个地方使用truncatechars:100进行字符限制，放置现实的内容过多，导致页面变奇怪 -->
                                                 <p class="card-text">{{ post_page.post_detail|safe}}</p> 

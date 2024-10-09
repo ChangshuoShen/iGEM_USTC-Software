@@ -3,6 +3,7 @@ from django.contrib import messages
 from .models import post, Comment, Reply, Like, TeachingMaterial, CourseResource, DevelopmentLog
 from Apps.accounts.models import User
 from django.core.paginator import Paginator
+from django.urls import reverse
 
 
 def forum_index(request):
@@ -101,7 +102,7 @@ def teaching_detail(request, material_id):
 
 def course_resources_index(request):
     resources_list = CourseResource.objects.all()
-    paginator = Paginator(resources_list, 10)  # 每页显示10条记录
+    paginator = Paginator(resources_list, 8)  # 每页显示10条记录
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
 
@@ -183,7 +184,13 @@ def upload_development_log(request, log_id=None):
 
 # 将所有的上传综合到一个页面
 def to_upload(request):
-    return render(request, 'to_upload.html')
+    if request.session.get('email') == 'super@mail':
+        return render(request, 'to_upload.html')
+    else:
+        # 如果不是 "super@mail"，返回一个带有定时重定向的 HttpResponse
+        response = HttpResponse("You are not authorized to access this page. You will be redirected to the home page in 5 seconds.")
+        response['refresh'] = '3;url=' + reverse('forum:forum_index')  # 设置定时器
+        return response
 
 def submit_sharing(request):
     if request.method == 'POST':
@@ -191,7 +198,7 @@ def submit_sharing(request):
         user = User.get_user_by_id(user_id=user_id)
         title = request.POST.get('title')
         content = request.POST.get('content_copy')  # 确保与表单中的隐藏字段名称一致
-        print(f"Title: {title}, Content: {content}")  # 调试打印语句
+        # print(f"Title: {title}, Content: {content}")  # 调试打印语句
         new_post = post.create_post(publisher_id=user, post_title=title, post_content=content)
         messages.success(request, 'Post successfully')
         return show_post_detail(request=request, post_id=new_post.id)
@@ -282,7 +289,7 @@ def like_post(request):
 def comment_or_reply(request):
     if request.method == 'POST':
         # 检查用户是否已登录
-        print(request.session.__dict__)
+        # print(request.session.__dict__)
         if 'user_id' not in request.session or 'email' not in request.session:
             # 用户未登录，重定向到登录页面
             messages.error(request, 'Please log in to leave a comment or reply.')
@@ -291,7 +298,7 @@ def comment_or_reply(request):
         user_id = request.session.get('user_id')
         post_id = request.session.get('present_post_id')
         # 用户已登录
-        print(request.POST)
+        # print(request.POST)
         comment_or_reply = request.POST.get('comment_or_reply')
         reply = request.POST.get('reply')
         comment_id = request.POST.get('comment_id')

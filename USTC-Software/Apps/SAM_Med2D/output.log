@@ -44,3 +44,7 @@ point_coords=[[[129.6      112.110344]]], point_labels=[[1.]]
 INFO:     127.0.0.1:50580 - "POST /infer HTTP/1.1" 200 OK
 point_coords=[[[129.6      112.110344]]], point_labels=[[1.]]
 INFO:     127.0.0.1:39812 - "POST /infer HTTP/1.1" 200 OK
+point_coords=[[[81.  63.5]]], point_labels=[[1.]]
+INFO:     127.0.0.1:50404 - "POST /infer HTTP/1.1" 200 OK
+point_coords=[[[129.6      112.110344]]], point_labels=[[1.]]
+INFO:     127.0.0.1:38332 - "POST /infer HTTP/1.1" 200 OK
