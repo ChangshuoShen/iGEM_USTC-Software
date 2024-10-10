@@ -73,8 +73,8 @@
                                 <div class="card mb-3 card-custom">
                                     <a href="{% url 'forum:teaching_detail' material_id=material.id %}" class="text-decoration-none text-dark">
                                         <div class="card-body">
-                                            <h5 class="card-title">Title: {{ material.title }}</h5>
-                                            <p class="card-text">Description: {{ material.description|slice:":100" }}{% if material.description|length > 100 %}...{% endif %}</p> <!-- 简要描述 -->
+                                            <h5 class="card-title">{{ material.title }}</h5>
+                                            <p class="card-text">{{ material.description|slice:":100" }}{% if material.description|length > 100 %}...{% endif %}</p> <!-- 简要描述 -->
                                             <hr>
                                             <p class="card-text"><small class="text-muted">Uploaded on {{ material.publish_date }}</small></p>
                                             </div>

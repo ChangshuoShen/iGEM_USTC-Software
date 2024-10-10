@@ -13,7 +13,6 @@ import os
 
 app = FastAPI()
 
-
 def show_mask(mask, ax, random_color=False):
     '''
     在轴上绘制mask

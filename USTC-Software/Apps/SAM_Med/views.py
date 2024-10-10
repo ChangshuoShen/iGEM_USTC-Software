@@ -126,15 +126,17 @@ def upload_image(request):
                 for chunk in uploaded_image.chunks():
                     destination.write(chunk)
             # 处理图像
+            input_image_url = f'/media/{user_id}/sam_input/{uploaded_image.name}'
             output_path = os.path.join(output_dir, uploaded_image.name)
             if process_image_2d(input_path, output_path):
                 # 设置结果图像 URL
-                input_image_url = f'/media/{user_id}/sam_input/{uploaded_image.name}'
                 output_image_url = f'/media/{user_id}/sam_output/{uploaded_image.name}'
                 # result_image_url = temp_output_path
             else:
+                output_image_url = None
                 error_message = 'Image processing failed.'
         else:
+            
             error_message = 'No image file was selected.'
 
     return render(request, 'sam.html', {

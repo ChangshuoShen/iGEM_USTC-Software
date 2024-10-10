@@ -22,11 +22,27 @@
             height: 90vh;
             border: none;
         }
+        .breadcrumb {
+            white-space: nowrap; /* 防止换行 */
+            overflow-x: auto; /* 允许横向滚动 */
+            display: block; /* 确保元素可以滚动 */
+        }
+        
+        .breadcrumb li {
+            display: inline-block; /* 让li元素在一行内排列 */
+        }
+        .custom-nav {
+            background-color: rgba(0, 123, 255, 0.8); /* 蓝色，透明度80% */
+            border-bottom-left-radius: 25px;
+            border-bottom-right-radius: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 添加轻微阴影 */
+        }
+        
     </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+    <nav class="navbar custom-nav navbar-expand-lg navbar-light bg-light fixed-top">
         <div class="container-fluid">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
@@ -51,7 +67,6 @@
                 {% endif %}
             </div>
             <div class="col-md-2">
-                <h2>{{ resource.title }}</h2>
                 <p><strong>Published on:</strong> {{ resource.publish_date }}</p>
                 <p><strong>Description:</strong> {{ resource.description }}</p>
             </div>

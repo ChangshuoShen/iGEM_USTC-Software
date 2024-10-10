@@ -60,8 +60,8 @@
                                 <div class="card card-custom mb-3">
                                     <a href="{% url 'forum:course_resource_detail' resource_id=resource.id %}" class="text-decoration-none text-dark">
                                         <div class="card-body">
-                                            <h5 class="card-title">Title: {{ resource.title }}</h5>
-                                            <p class="card-text">Description: {{ resource.description|slice:":100" }}{% if resource.description|length > 100 %}...{% endif %}</p>
+                                            <h5 class="card-title">{{ resource.title }}</h5>
+                                            <p class="card-text">{{ resource.description|slice:":100" }}{% if resource.description|length > 100 %}...{% endif %}</p>
                                             <hr>
                                             <p class="card-text"><small class="text-muted">Uploaded on {{ resource.publish_date }}</small></p>
                                         </div>

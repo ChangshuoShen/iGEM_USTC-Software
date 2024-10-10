@@ -20,6 +20,33 @@
     <script type="text/javascript" src="{% static 'js/iziToast.min.js'%}"></script>
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+    <style>
+        .link-dropdown {
+            display: none;
+            position: absolute;
+            padding: 10px;
+            border-radius: 10px;
+            z-index: 10;
+            background-color: rgba(11, 34, 7, 0.8); 
+        }
+
+        #pymol-card:hover .link-dropdown {
+            display: block;
+        }
+
+        /* 添加链接样式 */
+        .link-dropdown a {
+            display: block;
+            border-radius: 5px;
+            padding: 5px 10px;
+            text-decoration: none;
+            color: #f5f6f6;
+        }
+
+        .link-dropdown a:hover {
+            background-color: rgba(14, 55, 75, 0.5); /* 悬停时的背景颜色 */
+        }
+    </style>
 </head>
 
 <body>
@@ -212,13 +239,17 @@
                                         </div>
                                     </a>
                                 </div>
-                                <div class="col 2">
-                                    <a id="link-url-2" href="#">
-                                        <div class="link-card cards">
-                                            <i class="fa-solid fa-atom"></i>
-                                            <span class="link-name" id="link-name-2">PyMOL Teaching</span>
-                                        </div>
-                                    </a>
+                                <div class="col 2" id="pymol-card">
+                                    <div class="link-card cards">
+                                        <i class="fa-solid fa-atom"></i>
+                                        <span class="link-name" id="link-name-2">PyMOL Teaching</span>
+                                    </div>
+                                    <div class="link-dropdown">
+                                        <a href="{% url 'forum:teaching_detail' material_id=28 %}">Intro to PyMOL</a>
+                                        <a href="{% url 'forum:teaching_detail' material_id=29 %}">An Example of PyMOL's Application</a>
+                                        <a href="{% url 'forum:teaching_detail' material_id=31 %}">An Example of AlphaFold3's Application</a>
+                                        <a href="{% url 'forum:teaching_detail' material_id=32 %}">Cutting-Edge Introduction to PyMOL</a>
+                                    </div>
                                 </div>
                                 <div class="col">
                                     <a id="link-url-3" href="{% url 'forum:course_resources'%}">
