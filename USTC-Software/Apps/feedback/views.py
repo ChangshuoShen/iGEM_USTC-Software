@@ -10,7 +10,7 @@ def feedback_page(request):
     user_id = request.session.get('user_id')
     email = request.session.get('email')
     
-    print(request.session.__dict__)
+    # print(request.session.__dict__)
     if not user_id or not email:
         messages.error(request, "Please Login before sending a feedback")
         return redirect('accounts:signup_login')

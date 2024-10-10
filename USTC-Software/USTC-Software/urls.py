@@ -26,8 +26,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('accounts/', include('Apps.accounts.urls', namespace='accounts')),
     path('forum/', include('Apps.forum.urls', namespace='forum')),
-    path('chat_image/', include('Apps.chat_image.urls', namespace='chat_image')),
-    path('raffle/', include('Apps.raffle.urls', namespace='raffle')),
+    # path('chat_image/', include('Apps.chat_image.urls', namespace='chat_image')),
+    # path('raffle/', include('Apps.raffle.urls', namespace='raffle')),
     path('admin_panel/', include('Apps.admin_panel.urls', namespace='admin_panel')),
     
     # path('activities/', include('Apps.activities.urls', namespace='activities')),
@@ -36,9 +36,9 @@ urlpatterns = [
     # path('mystery_hunt/', include('Apps.mystery_hunt.urls', namespace='mystery_hunt')),
     # path('settings/', include('Apps.settings.urls', namespace='settings')),
     # path('socialize/', include('Apps.socialize.urls', namespace='socialize')),
-    path('works/', include('Apps.works.urls', namespace='works')),
+    # path('works/', include('Apps.works.urls', namespace='works')),
     path('experiment/', include("Apps.experiment.urls", namespace='experiment')),
-    path('image_segment/', include("Apps.SAM_Med2D.urls", namespace='image_segment')),
+    path('image_segment/', include("Apps.SAM_Med.urls", namespace='image_segment')),
     path('rna_seq/', include("Apps.rna_seq.urls", namespace='rna_seq')),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

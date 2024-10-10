@@ -43,7 +43,7 @@ def exp_index(request):
 
 def specific_exp(request, exp_name):
     experiment_title = exp_name
-    print('exp title', experiment_title)
+    # print('exp title', experiment_title)
     return render(request, 'experiment_process.html', 
                   {
                     'title': experiment_title,
@@ -86,7 +86,7 @@ def create_user_folder(user_id):
 def upload(request):
     if request.method == 'POST':
         experiment_title = request.POST.get('file_title')
-        print('experiment title', experiment_title)
+        # print('experiment title', experiment_title)
         try:
             user_id = request.session.get('user_id')
             if not user_id:
@@ -151,7 +151,7 @@ def upload(request):
             })
         except Exception as e:
             # 捕获异常并记录错误
-            print(f"Error occurred: {e}")
+            # print(f"Error occurred: {e}")
             return render(request, 'experiment_process.html', {
                 'title': experiment_title,
                 'success': '数据处理失败，发生异常。',
@@ -187,5 +187,5 @@ def download(request):
             return response
     except Exception as e:
         # 捕获所有异常并返回错误信息
-        print(f"Error occurred during download: {e}")
+        # print(f"Error occurred during download: {e}")
         return HttpResponse("An error occurred during the download process.", content_type="text/plain")

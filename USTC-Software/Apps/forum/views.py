@@ -48,7 +48,7 @@ def share(request):
         messages.error(request, 'Please log in to leave a comment or reply.')
         return redirect('accounts:signup_login')
     
-    print(request.session.__dict__)
+    # print(request.session.__dict__)
     return render(request, 'share.html')
 
 def teaching_material_index(request):

@@ -116,7 +116,7 @@ def send_verification_code(request, action='register'):
         if email:
             # 生成随机验证码
             code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
-            print('code: ', code)
+            # print('code: ', code)
             # 发送邮件
             send_mail(
                 'Verification Code',
@@ -146,7 +146,7 @@ def send_verification_code(request, action='register'):
 
 def verify_verification_code(request, verification_code):
     saved_code = request.session.get('verification_code')
-    print('saved code:', saved_code)
+    # print('saved code:', saved_code)
     if saved_code == verification_code:
         # del request.session['verification_code']
         user_data = request.session.get('user_data')
@@ -175,7 +175,7 @@ def change_pwd(request):
 
             if user:
                 # 重置用户密码
-                print('User Found')
+                # print('User Found')
                 user.update_password(new_password)
                 # 清除验证码和email的session信息
                 del request.session['verification_code']
@@ -196,7 +196,7 @@ def confirm_signup(request):
         # password = request.POST.get('password')
         # email = request.POST.get('email')
         verification_code = request.POST.get('verification_code')
-        print('verification code input: ', verification_code)
+        # print('verification code input: ', verification_code)
         user_data = verify_verification_code(request, verification_code)
 
         if user_data:

@@ -40,7 +40,7 @@ def sam_index(request):
     
 
 # 调用SAM_Med2D的模型
-def process_image(
+def process_image_2d(
     input_image_path: str,
     output_image_path: str,
     api_url: str='http://127.0.0.1:8002/infer'
@@ -76,7 +76,7 @@ def process_image(
 # 使用示例
 # input_image_path = "./SAM-Med2D/data_demo/images/amos_0507_31.png"
 # output_image_path = "/home/shenc/Desktop/result.png"
-# process_image(input_image_path, output_image_path)
+# process_image_2d(input_image_path, output_image_path)
 
 def create_user_folder(user_id):
     """根据 user_id 创建专属的实验文件夹"""
@@ -98,7 +98,6 @@ def clear_directory(directory):
             print(f'Failed to delete {file_path}. Reason: {e}')
 
 def upload_image(request):
-    result_image_url = None
     error_message = None
 
     if request.method == 'POST':
@@ -128,7 +127,7 @@ def upload_image(request):
                     destination.write(chunk)
             # 处理图像
             output_path = os.path.join(output_dir, uploaded_image.name)
-            if process_image(input_path, output_path):
+            if process_image_2d(input_path, output_path):
                 # 设置结果图像 URL
                 input_image_url = f'/media/{user_id}/sam_input/{uploaded_image.name}'
                 output_image_url = f'/media/{user_id}/sam_output/{uploaded_image.name}'

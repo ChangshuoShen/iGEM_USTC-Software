@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     "Apps.raffle.apps.RaffleConfig",
     "Apps.works.apps.WorksConfig",
     "Apps.experiment.apps.ExperimentConfig",
-    "Apps.SAM_Med2D.apps.SamMed2DConfig",
+    "Apps.SAM_Med.apps.SamMedConfig",
     "Apps.rna_seq.apps.RnaSeqConfig", 
     'django_extensions', # 这个用于后面内嵌Jupyter
 ]
