@@ -7,4 +7,5 @@ urlpatterns = [
     path('', views.rna_index, name='rna_seq_index'),
     # path('upload/', views.upload_file, name='upload'),
     path('upload/', views.upload_file, name='upload'),
+    path('download/<int:user_id>', views.download_user_folder, name='download'),
 ]

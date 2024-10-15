@@ -1,6 +1,6 @@
 import os
 from django.shortcuts import render, redirect, HttpResponse
-from django.http import JsonResponse, StreamingHttpResponse
+from django.http import JsonResponse, StreamingHttpResponse, FileResponse
 import subprocess
 from django.core.paginator import Paginator
 from django.contrib import messages
@@ -10,6 +10,8 @@ from django.core.files.storage import FileSystemStorage
 import scanpy as sc
 import shutil
 from .utils import scRNAseqUtils
+import zipfile
+
 
 def rna_index(request):
     # 检查用户的 session 或 cookie，验证是否已登录
@@ -81,18 +83,20 @@ def upload_file(request):
                         destination.write(chunk)
                 # 读取上传的h5ad文件并添加到adata_list
                 adata_list.append(sc.read_h5ad(file_path))
-
         else:
+            DATASET_PATHS = {
+                'dataset1': '/var/www/media/rna_seq/public/pbmc3k_raw.h5ad',
+                'dataset2': '/var/www/media/rna_seq/public/pbmc68k_reduced.h5ad',
+            }
             selected_datasets = request.POST.getlist('datasets')
             if selected_datasets:
                 # 根据选中的数据集加载相应的示例数据并添加到 adata_list
-                if 'dataset1' in selected_datasets:
-                    adata_list.append(sc.datasets.pbmc3k())
-                if 'dataset2' in selected_datasets:
-                    adata_list.append(sc.datasets.pbmc68k_reduced())
+                for dataset in selected_datasets:
+                    if dataset in DATASET_PATHS:
+                        adata_list.append(sc.read_h5ad(DATASET_PATHS[dataset]))
             else:
                 # 这个时候就默认使用第一个adata数据创建一个adata_list了
-                adata_list.append(sc.datasets.pbmc3k())
+                adata_list.append(sc.read_h5ad(DATASET_PATHS['dataset1']))
 
         # 开始选取几个步骤的方法
         batch_correction = request.POST.get('batch_correction')
@@ -126,8 +130,37 @@ def upload_file(request):
             request,
             'workflow.html',
             {
-                'results': adata_process.results
+                'results': adata_process.results,
+                'user_id': user_id,
             }
         )
     return render(request, 'upload.html')
 
+def zip_user_folder(user_folder_path, zip_file_path):
+    with zipfile.ZipFile(zip_file_path, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+        for foldername, subfolders, filenames in os.walk(user_folder_path):
+            for filename in filenames:
+                file_path = os.path.join(foldername, filename)
+                arcname = os.path.relpath(file_path, user_folder_path)  # 压缩时保留相对路径
+                zip_file.write(file_path, arcname)
+                
+def download_user_folder(request, user_id):
+    user_folder_path = f'/var/www/media/rna_seq/{user_id}/'
+    zip_file_path = f'/var/www/media/rna_seq/{user_id}/user_folder.zip'
+
+    # 如果文件夹不存在，返回错误信息
+    if not os.path.exists(user_folder_path):
+        return HttpResponse("The folder does not exist.", status=404)
+
+    # 压缩文件夹
+    zip_user_folder(user_folder_path, zip_file_path)
+
+    # 检查压缩文件是否成功生成
+    if not os.path.exists(zip_file_path):
+        return HttpResponse("Failed to create zip file.", status=500)
+
+    # 发送文件作为下载响应
+    response = FileResponse(open(zip_file_path, 'rb'))
+    response['Content-Disposition'] = f'attachment; filename={user_id}_folder.zip'
+    
+    return response

@@ -182,6 +182,15 @@
                 padding: 10px 0;
             }
         }
+
+        .btn-download{
+            border-radius: 10px;
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            background-color: rgba(13, 93, 31, 0.434);
+            color: rgb(0, 0, 0);
+        }
         
     </style>
 </head>
@@ -269,7 +278,7 @@
         </span>
         <button class="btn-nav" id="next-btn">Next</button>
     </div>
-
+    <a href="{% url 'rna_seq:download' user_id=user_id %}" class="btn-download text-decoration-none">Download All</a>
     <!-- 换页功能 -->
     <script> 
         let currentPage = 1;
