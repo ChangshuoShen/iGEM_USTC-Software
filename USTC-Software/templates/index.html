@@ -84,7 +84,7 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto justify-content-between">
                         <li class="nav-item">
-                            <a class="nav-link nav-item-spaced" href="https://2023.igem.wiki/ustc-software/results" data-block="block-1" target="_blank">Prot-DAP</a>
+                            <a class="nav-link nav-item-spaced" href="https://2023.igem.wiki/ustc-software/results" target="_blank">Prot-DAP</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link nav-item-spaced" href="{% url 'rna_seq:rna_seq_index' %}" data-block="block-1">Workflow</a>
@@ -246,7 +246,10 @@
                                 <div class="col 2" id="pymol-card">
                                     <div class="link-card cards">
                                         <i class="fa-solid fa-atom"></i>
-                                        <span class="link-name" id="link-name-2">PyMOL Teaching</span>
+                                        
+                                        <span class="link-name" id="link-name-2">
+                                            <a href="{% url 'forum:teaching_detail' material_id=28 %}">PyMOL Teaching</a>
+                                        </span>
                                     </div>
                                     <div class="link-dropdown">
                                         <a href="{% url 'forum:teaching_detail' material_id=28 %}">Intro to PyMOL</a>
