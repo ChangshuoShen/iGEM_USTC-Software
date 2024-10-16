@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Bar</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Progress Bar Example</h2>
+        <button class="btn btn-primary" id="start-process">开始处理数据</button>
+        <div class="progress mt-3">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;" id="progress-bar">
+                0%
+            </div>
+        </div>
+        <div id="progress-log" class="mt-2"></div>
+    </div>
+
+    <script>
+        $(function() {
+            var isRequesting = false; // 标志变量
+            $('#start-process').on('click', function() {
+                console.log("开始数据处理");
+    
+                // 开始数据处理
+                $.getJSON("{% url 'rna_seq:process_data' %}", function(res) {
+                    if (res.status === 'completed') {
+                        console.log("处理完成");
+                    }
+                });
+    
+                // 定时获取进度
+                var interval = setInterval(function() {
+                    if (!isRequesting) { // 检查是否正在请求
+                        isRequesting = true; // 设置请求标志
+                        $.getJSON("{% url 'rna_seq:show_progress' %}", function(data) {
+                            var progress = data.progress;
+                            $('#progress-bar').css('width', progress + '%');
+                            $('#progress-bar').text(progress.toFixed(2) + '%');
+                            $('#progress-log').text('当前进度: ' + progress.toFixed(2) + '%');
+    
+                            // 进度完成时清除定时器
+                            if (progress >= 100) {
+                                clearInterval(interval);
+                            }
+                            isRequesting = false; // 重置请求标志
+                        });
+                    }
+                }, 2000); // 每2000毫秒查询一次后台进度
+            });
+        });
+    </script>
+    
+</body>
+</html>

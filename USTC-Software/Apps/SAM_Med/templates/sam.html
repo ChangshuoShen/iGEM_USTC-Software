@@ -104,7 +104,7 @@
     <div class="main">
         <div class="form-container">
             <h2>Upload an Image</h2>
-            <form method="post" action="{% url 'image_segment:upload' %}" enctype="multipart/form-data" class="mb-3">
+            <form method="post" action="{% url 'image_segment:upload_2d' %}" enctype="multipart/form-data" class="mb-3">
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="image">Choose an image to upload:</label>

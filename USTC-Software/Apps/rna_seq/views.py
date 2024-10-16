@@ -146,12 +146,10 @@ def zip_user_folder(user_folder_path, zip_file_path):
                 
 def download_user_folder(request, user_id):
     user_folder_path = f'/var/www/media/rna_seq/{user_id}/'
-    zip_file_path = f'/var/www/media/rna_seq/{user_id}/user_folder.zip'
-
+    zip_file_path = f'/var/www/media/rna_seq/zip_folder/User{user_id}_folder.zip'
     # 如果文件夹不存在，返回错误信息
     if not os.path.exists(user_folder_path):
         return HttpResponse("The folder does not exist.", status=404)
-
     # 压缩文件夹
     zip_user_folder(user_folder_path, zip_file_path)
 
@@ -164,3 +162,32 @@ def download_user_folder(request, user_id):
     response['Content-Disposition'] = f'attachment; filename={user_id}_folder.zip'
     
     return response
+
+
+# 试一下流式响应
+import time
+
+# 全局变量，记录处理进度
+num_progress = 0
+
+# 显示进度条页面
+def show_progress1(request):
+    return render(request, 'progress.html')
+
+# 后台实际处理程序
+def process_data(request):
+    global num_progress
+    num_progress = 0
+
+    total = 10  # 模拟总任务数
+    for i in range(total):
+        # 模拟任务处理逻辑
+        num_progress = (i + 1) * 100 / total  # 更新进度（百分比）
+        time.sleep(3)  # 模拟耗时操作
+        
+    return JsonResponse({'status': 'completed'})
+
+# 前端获取进度
+def show_progress(request):
+    global num_progress
+    return JsonResponse({'progress': num_progress})

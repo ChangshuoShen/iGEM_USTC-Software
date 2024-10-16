@@ -254,6 +254,7 @@
     <!-- 加载指示器 -->
     <div class="loading">
         <img src="/static/imgs/loading.gif" alt="Loading">
+        <p>Please be patient, as the execution may take some time.</p>
     </div>
 
     <script>
@@ -271,36 +272,43 @@
     </script>
 
     <script>
-        // 用于禁用/启用文件上传的函数
-        function toggleUpload() {
-            // 获取文件上传输入框和两个数据集选择框
-            const dataFilesInput = document.getElementById('dataFiles');
-            const dataset1 = document.getElementById('dataset1');
-            const dataset2 = document.getElementById('dataset2');
-
-            // 如果选择了任何一个数据集，则禁用文件上传
-            if (dataset1.checked || dataset2.checked) {
-                dataFilesInput.disabled = true;
-            } else {
-                dataFilesInput.disabled = false;
-            }
-        }
-
         // 允许上传多个文件的同时禁用数据集选择的功能
         document.getElementById('dataFiles').addEventListener('change', function() {
             const dataset1 = document.getElementById('dataset1');
             const dataset2 = document.getElementById('dataset2');
-            
-            // 如果用户上传了文件，则禁用数据集选择
-            if (this.files.length > 0) {
-                dataset1.disabled = true;
-                dataset2.disabled = true;
-            } else {
-                dataset1.disabled = false;
-                dataset2.disabled = false;
+            const maxFileSize = 10 * 1024 * 1024; // 10MB
+    
+            // 清除之前的错误消息
+            const errorMessage = document.getElementById('error-message');
+            if (errorMessage) {
+                errorMessage.remove();
             }
+    
+            // 检查上传的文件大小
+            const files = this.files;
+            for (let i = 0; i < files.length; i++) {
+                if (files[i].size > maxFileSize) {
+                    // 显示错误消息
+                    const error = document.createElement('div');
+                    error.id = 'error-message';
+                    error.style.color = 'red';
+                    error.textContent = 'For a better user experience, please ensure that each uploaded file does not exceed 10MB in size. Check your files, please.';
+                    this.parentNode.insertBefore(error, this.nextSibling); // 在文件上传输入框后插入错误消息
+    
+                    // 清空文件输入
+                    this.value = '';
+                    dataset1.disabled = false;
+                    // dataset2.disabled = false;
+                    return; // 结束函数，避免继续执行
+                }
+            }
+    
+            // 如果用户上传了文件，则禁用数据集选择
+            dataset1.disabled = true;
+            // dataset2.disabled = true;
         });
     </script>
+    
 
     <script>
         // 提交表单时显示加载指示器

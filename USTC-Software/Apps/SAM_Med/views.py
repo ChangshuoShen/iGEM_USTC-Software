@@ -73,10 +73,38 @@ def process_image_2d(
             print(f"request error: {e}")
             return False
 
-# 使用示例
-# input_image_path = "./SAM-Med2D/data_demo/images/amos_0507_31.png"
-# output_image_path = "/home/shenc/Desktop/result.png"
-# process_image_2d(input_image_path, output_image_path)
+# 类似的，添加一个处理3D图像的方法
+def process_image_3d(
+    input_image_path: str,
+    output_image_path: str,
+    roi_index: int,
+    api_url: str = 'http://127.0.0.3:8003/infer'
+):
+    input_file = Path(input_image_path)
+    if not input_file.is_file():
+        raise FileNotFoundError(f'File {input_file} not found')
+
+    # 构建请求数据
+    data = {
+        "input_path": str(input_file),  # 传递输入图像路径
+        "output_path": output_image_path,  # 传递输出图像路径
+        "roi_index": roi_index  # 传递 ROI 索引
+    }
+    
+    try:
+        # 发送 POST 请求
+        response = requests.post(api_url, json=data)
+        
+        # 检查响应状态码
+        if response.status_code == 200:
+            print(f"The processed 3D image has been saved at {output_image_path}")
+            return True
+        else:
+            print(f"Request Error, code: {response.status_code}, response: {response.text}")
+            return False
+    except requests.RequestException as e:
+        print(f"Request error: {e}")
+        return False
 
 def create_user_folder(user_id):
     """根据 user_id 创建专属的实验文件夹"""
@@ -97,7 +125,7 @@ def clear_directory(directory):
         except Exception as e:
             print(f'Failed to delete {file_path}. Reason: {e}')
 
-def upload_image(request):
+def upload_image2d(request):
     error_message = None
 
     if request.method == 'POST':
@@ -137,6 +165,54 @@ def upload_image(request):
                 error_message = 'Image processing failed.'
         else:
             
+            error_message = 'No image file was selected.'
+
+    return render(request, 'sam.html', {
+        'input_image_url': input_image_url,
+        'output_image_url': output_image_url,
+        'error_message': error_message
+    })
+    
+def upload_image3d(request):
+    error_message = None
+
+    if request.method == 'POST':
+        # 检查用户是否已登录
+        user_id = request.session.get('user_id')
+        if not user_id:
+            messages.warning(request, 'Please login before uploading images.')
+            return redirect('accounts:signup_login')
+
+        uploaded_image = request.FILES.get('image')
+        roi_index = request.POST.get('roi_index', 0)  # 从表单中获取 ROI 索引
+
+        if uploaded_image:
+            # 创建用户的专属文件夹
+            user_folder = create_user_folder(user_id)
+            # 确保 temp 和 output 目录存在
+            input_dir = os.path.join(user_folder, 'sam_input')
+            output_dir = os.path.join(user_folder, 'sam_output')
+            os.makedirs(input_dir, exist_ok=True)
+            os.makedirs(output_dir, exist_ok=True)
+            # 先清除 temp 和 output 目录中的所有文件
+            clear_directory(input_dir)
+            clear_directory(output_dir)
+
+            # 保存上传的文件到临时位置
+            input_path = os.path.join(input_dir, uploaded_image.name)
+            with open(input_path, 'wb+') as destination:
+                for chunk in uploaded_image.chunks():
+                    destination.write(chunk)
+            
+            # 处理图像
+            input_image_url = f'/media/{user_id}/sam_input/{uploaded_image.name}'
+            output_path = os.path.join(output_dir, uploaded_image.name)
+            if process_image_3d(input_path, output_path, roi_index):
+                # 设置结果图像 URL
+                output_image_url = f'/media/{user_id}/sam_output/{uploaded_image.name}'
+            else:
+                error_message = '3D image processing failed.'
+        else:
             error_message = 'No image file was selected.'
 
     return render(request, 'sam.html', {

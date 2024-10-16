@@ -143,17 +143,20 @@ class scRNAseqUtils:
 
     def violin_plots(self, save_name):
         """ 使用小提琴图可视化基因数、UMI counts 和线粒体基因比例，并保存图片。 """
-        default_save_path = 'figures/violin.png'
         sc.pl.violin(
             self.adata, 
             ['n_genes_by_counts', 'total_counts', 'pct_counts_mt'], 
             jitter=0.4, 
             multi_panel=True,
-            save='.png',
+            save=False,
             show=False
         )
+        # 使用 plt.savefig 保存到指定路径
+        plt.savefig(os.path.join(self.save_path, save_name))
+        # 关闭当前图像，释放内存
+        plt.close()
         # 移动图像到工作目录
-        shutil.move(default_save_path, os.path.join(self.save_path, save_name))
+        # shutil.move(default_save_path, )
         self.results.append(
             {
                 'name': save_name.split('.')[0],
@@ -164,14 +167,15 @@ class scRNAseqUtils:
 
     def plot_highest_expr_genes(self, save_name, n_top_genes=20):
         """ 可视化表达最高的前 n 个基因，并保存图片。 """
-        default_save_path = 'figures/highest_expr_genes.png'
+        # default_save_path = 'figures/highest_expr_genes.png'
         sc.pl.highest_expr_genes(
             self.adata, 
             n_top=n_top_genes, 
-            save='.png',
+            save=False,
             show=False
         )
-        shutil.move(default_save_path, os.path.join(self.save_path, save_name))
+        plt.savefig(os.path.join(self.save_path, save_name))
+        plt.close()
         self.results.append(
             {
                 'name': save_name.split('.')[0],
@@ -195,7 +199,7 @@ class scRNAseqUtils:
 
     def find_highly_variable_genes(self, save_name='hvg.png'):
         """ 找出高变异基因，用于后续分析。 """
-        default_save_path = 'figures/filter_genes_dispersion.png'
+        # default_save_path = 'figures/filter_genes_dispersion.png'
         sc.pp.highly_variable_genes(
             self.adata, 
             min_mean=0.0125, 
@@ -203,10 +207,12 @@ class scRNAseqUtils:
             min_disp=0.5)
         sc.pl.highly_variable_genes(
             self.adata, 
-            save='.png',
+            save=False,
             show=False
         )
-        shutil.move(default_save_path, os.path.join(self.save_path, save_name))
+        plt.savefig(os.path.join(self.save_path, save_name))
+        plt.close()
+        # shutil.move(default_save_path, os.path.join(self.save_path, save_name))
         # 将结果添加到 self.results
         self.results.append(
             {
@@ -268,18 +274,24 @@ class scRNAseqUtils:
             sc.pl.pca(
                 self.adata, 
                 color=[gene], # 选择三个高变异基因（这里以HVG基因列表为例）
-                save='.png',
+                save=False,
                 show=False
             )
-            shutil.move('figures/pca.png', os.path.join(self.save_path, img_name))
+            plt.savefig(os.path.join(self.save_path, img_name))
+            plt.close()
+            # shutil.move('figures/pca.png', os.path.join(self.save_path, img_name))
             img_path_list.append(os.path.join(self.display_path, img_name))
+            
         sc.pl.pca_variance_ratio(
             self.adata, 
             log=True, 
             show=False,
-            save='.png')
-        shutil.move('figures/pca_variance_ratio.png', 
-                    os.path.join(self.save_path, 'pca_variance_ratio.png'))
+            save=False)
+        plt.savefig(os.path.join(self.save_path, 'pca_variance_ratio.png'))
+        plt.close()
+        # shutil.move('figures/pca_variance_ratio.png', 
+        #             os.path.join(self.save_path, 'pca_variance_ratio.png'))
+        
         img_path_list.append(os.path.join(self.display_path, 'pca_variance_ratio.png'))
         # 将结果添加到self.results
         self.results.append(
@@ -327,10 +339,12 @@ class scRNAseqUtils:
         sc.pl.tsne(
             self.adata, 
             color=self.find_top_genes(),  # 可根据数据选择颜色参考的基因
-            save='.png',
+            save=False,
             show=False
         )
-        shutil.move('figures/tsne.png', os.path.join(self.save_path, f'tsne{suffix}.png'))
+        plt.savefig(os.path.join(self.save_path, f'tsne{suffix}.png'))
+        plt.close()
+        # shutil.move('figures/tsne.png', os.path.join(self.save_path, f'tsne{suffix}.png'))
          # 将结果添加到 self.results
         self.results.append(
             {
@@ -350,10 +364,12 @@ class scRNAseqUtils:
             sc.pl.umap(
                 self.adata, 
                 color=[gene],  # 可根据数据选择颜色参考的基因
-                save='.png',
+                save=False,
                 show=False
             )
-            shutil.move('figures/umap.png', os.path.join(self.save_path, img_name))
+            plt.savefig(os.path.join(self.save_path, img_name))
+            plt.close()
+            # shutil.move('figures/umap.png', os.path.join(self.save_path, img_name))
             img_path_list.append(os.path.join(self.display_path, img_name))
             
         # 将结果添加到 self.results
@@ -375,10 +391,12 @@ class scRNAseqUtils:
             sc.pl.umap(
                 self.adata, 
                 color=['leiden'], 
-                save='_leiden.png',
+                save=False,
                 show=False
             )
-            shutil.move('figures/umap_leiden.png', os.path.join(self.save_path, f'umap_leiden_res{resolution}{suffix}.png'))
+            plt.savefig(os.path.join(self.save_path, f'umap_leiden_res{resolution}{suffix}.png'))
+            plt.close()
+            # shutil.move('figures/umap_leiden.png', os.path.join(self.save_path, f'umap_leiden_res{resolution}{suffix}.png'))
             save_path_list.append(os.path.join(self.display_path, f'umap_leiden_res{resolution}{suffix}.png'))
 
         self.results.append(
@@ -400,11 +418,13 @@ class scRNAseqUtils:
             sc.pl.umap(
                 self.adata, 
                 color=['louvain'], 
-                save='_louvain.png',
+                save=False,
                 show=False
             )
             # 移动保存的文件
-            shutil.move('figures/umap_louvain.png', os.path.join(self.save_path, 'umap_louvain_res{resolution}{suffix}.png'))
+            plt.savefig(os.path.join(self.save_path, 'umap_louvain_res{resolution}{suffix}.png'))
+            plt.close()
+            # shutil.move('figures/umap_louvain.png', os.path.join(self.save_path, 'umap_louvain_res{resolution}{suffix}.png'))
             save_path_list.append(os.path.join(self.display_path, 'umap_louvain_res{resolution}{suffix}.png'))
         # 将结果添加到 self.results    
         self.results.append(
@@ -428,10 +448,12 @@ class scRNAseqUtils:
         sc.pl.umap(
             self.adata, 
             color=['batch', cluster_method], 
-            save='_bbknn.png',
+            save=False,
             show=False
         )
-        shutil.move('figures/umap_bbknn.png', os.path.join(self.save_path, 'umap_bbknn.png'))
+        plt.savefig(os.path.join(self.save_path, 'umap_bbknn.png'))
+        plt.close()
+        # shutil.move('figures/umap_bbknn.png', os.path.join(self.save_path, 'umap_bbknn.png'))
         
         self.results.append(
             {
@@ -451,10 +473,12 @@ class scRNAseqUtils:
         sc.pl.umap(
             self.adata, 
             color=['batch', cluster_method], 
-            save='_combat.png',
+            save=False,
             show=False
         )
-        shutil.move('figures/umap_combat.png', os.path.join(self.save_path, 'umap_combat.png'))
+        plt.savefig(os.path.join(self.save_path, 'umap_combat.png'))
+        plt.close()
+        # shutil.move('figures/umap_combat.png', os.path.join(self.save_path, 'umap_combat.png'))
         
         self.results.append(
             {
@@ -476,11 +500,13 @@ class scRNAseqUtils:
         sc.pl.umap(
             self.adata, 
             color=['batch', cluster_method], 
-            save='_harmony.png', 
+            save=False, 
             show=False
         )
+        plt.savefig(os.path.join(self.save_path, filename_umap))
+        plt.close()
         # 移动保存的图片到工作目录
-        shutil.move(f'figures/{filename_umap}', os.path.join(self.save_path, filename_umap))
+        # shutil.move(f'figures/{filename_umap}', os.path.join(self.save_path, filename_umap))
         
         self.results.append(
             {
@@ -563,9 +589,11 @@ class scRNAseqUtils:
             n_genes=n_genes, 
             sharey=False, # 决定不同子图的y轴是否共享
             show=False,
-            save=filename
+            save=False
         )
-        shutil.move(f'figures/rank_genes_groups_{groupby}'+filename, os.path.join(self.save_path, f'rank_genes_group_{groupby}' + filename))
+        plt.savefig(os.path.join(self.save_path, f'rank_genes_group_{groupby}' + filename))
+        plt.close()
+        # shutil.move(f'figures/rank_genes_groups_{groupby}'+filename, os.path.join(self.save_path, f'rank_genes_group_{groupby}' + filename))
         
         self.results.append({
             'name': f'Differential Expression ({method})',
@@ -752,9 +780,11 @@ class scRNAseqUtils:
                 var_names=enriched_genes, 
                 groupby=groupby,
                 show=False, 
-                save='_enriched_genes.png')
+                save=False)
             # 移动并重命名图片
-            shutil.move('figures/heatmap_enriched_genes.png', os.path.join(self.save_path, 'enriched_genes_heatmap.png'))
+            plt.savefig(os.path.join(self.save_path, 'enriched_genes_heatmap.png'))
+            plt.close()
+            # shutil.move('figures/heatmap_enriched_genes.png', os.path.join(self.save_path, 'enriched_genes_heatmap.png'))
             # print("Heatmap saved as enriched_genes_heatmap.png")
             
             self.results.append({
@@ -821,11 +851,13 @@ class scRNAseqUtils:
                 sc.pl.umap(
                     self.adata, 
                     color=[gene], 
-                    save='_enriched_genes_expression.png', 
+                    save=False, 
                     show=False)
                 img_name = f'umap_enriched_gene_{i+1}_expression.png'
-                shutil.move('figures/umap_enriched_genes_expression.png',
-                            os.path.join(self.save_path, img_name))
+                plt.savefig(os.path.join(self.save_path, img_name))
+                plt.close()
+                # shutil.move('figures/umap_enriched_genes_expression.png',
+                #             os.path.join(self.save_path, img_name))
                 img_path_list.append(os.path.join(self.display_path, img_name))
 
             # 将结果保存到self.results中
@@ -891,52 +923,53 @@ class scRNAseqUtils:
         
     # 执行所有方法
     def execute_workflow(self):
+        
         # 首先计算 QC 指标
-        # print('Calculating QC metrics...')
+        print('Calculating QC metrics...')
         self.calculate_qc_metrics()
         
-        # print('Filtering cells and genes...')
+        print('Filtering cells and genes...')
         self.filter_cells_and_genes()
         
-        # print('Normalizing data...')
+        print('Normalizing data...')
         self.normalize_data()
         
-        # print('Identifying highly variable genes...')
+        print('Identifying highly variable genes...')
         self.adata.X = np.nan_to_num(self.adata.X)
         self.find_highly_variable_genes('hvg.png')
         
-        # print('Filtering highly variable genes...')
+        print('Filtering highly variable genes...')
         self.filter_hvg()
         
-        # print('Scaling data...')
+        print('Scaling data...')
         self.scale_data()
         
-        # print('Performing PCA...')
+        print('Performing PCA...')
         self.pca()
         
-        # print('Computing neighbors...')
+        print('Computing neighbors...')
         self.neighbors()
         
         # bacth correction
-        # print('Applying batch correction...')
+        print('Applying batch correction...')
         self.compare_batch_correction()
         
-        # print('Running UMAP...')
+        print('Running UMAP...')
         self.umap()
         
-        # print(f'clustering with {self.clustering}...')
+        print(f'clustering with {self.clustering}...')
         if self.clustering == 'Leiden Clustering':
             self.leiden()
         elif self.clustering == 'Louvain Clustering':
             self.louvain()
             
-        # print(f'Differential Expression Analysis with {self.diff_expr}...')
+        print(f'Differential Expression Analysis with {self.diff_expr}...')
         self.calculate_diff_expr()
         
-        # print(f'Enrichment Analysis with {self.enrichment_analysis}...')
+        print(f'Enrichment Analysis with {self.enrichment_analysis}...')
         self.perform_enrichment_and_annotation()
         
-        # print('Workflow Completed...') 
+        print('Workflow Completed...') 
 
 
 

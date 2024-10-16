@@ -93,7 +93,12 @@ def upload_teaching_material(request, material_id=None):
 
 
 def teaching_detail(request, material_id):
-    material = TeachingMaterial.objects.get(pk=material_id)
+    try:
+        material = TeachingMaterial.objects.get(pk=material_id)
+    except TeachingMaterial.DoesNotExist:
+        return HttpResponse("Not Found", status=404)
+
+    # 如果 material 存在，则渲染模板
     response = render(request, 'teaching_detail.html', {'material': material})
     response['Content-Security-Policy'] = "frame-ancestors 'self' http://127.0.0.1:8000"
     return response
@@ -140,7 +145,10 @@ def upload_course_resource(request, resource_id=None):
     return HttpResponse("What???")
 
 def course_resource_detail(request, resource_id):
-    resource = CourseResource.objects.get(pk=resource_id)
+    try:
+        resource = CourseResource.objects.get(pk=resource_id)
+    except CourseResource.DoesNotExist:
+        return HttpResponse("Not Found", status=404)
     response = render(request, 'course_resource_detail.html', {'resource': resource})
     response['Content-Security-Policy'] = "frame-ancestors 'self' http://127.0.0.1:8000"
     return response

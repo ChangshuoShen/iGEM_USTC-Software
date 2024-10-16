@@ -5,12 +5,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel = 'stylesheet' type = 'text/css' href = "{% static 'css/date_pro.css' %}">
+    <!-- <link rel = 'stylesheet' type = 'text/css' href = "{% static 'css/date_pro.css' %}"> -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url("{% static 'img/background.png' %}") no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            margin: 0;
+        }
+        
+        p.title {
+            letter-spacing:10px;
+            display: grid;
+            place-items: center;
+            font-weight: bold;
+            font-size: 43px;
+            position: absolute;
+            left: 50%;
+            top:7%;
+            transform: translate(-50%, -50%);
+        }
+        
+        div.main {        
+            display:grid;
+            place-items:center;
+            position:absolute;
+            width: 100%;
+            height: 100%;
+            border:5px solid #989ea7;
+            box-shadow:1px 1px 4px #9baabc;
+            border-radius:15px;
+            font-weight:bold;
+            font-size:20px;
+        }
+        
+        li.list {
+            padding-top:25px;
+        }
+        
+        a {
+            position: relative; /* 设置相对定位以容纳伪元素 */
+            text-decoration: none;
+            color:black;
+        }
+        
+        /* 使用伪元素：：before创建透明边框 */
+        a::before {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            width: 0;
+            height: 2px; /* 设置边框高度 */
+            background-color: #2363af; /* 设置边框颜色 */
+            transition: width 0.3s ease-in-out; /* 添加过渡效果 */
+        }
+        
+        /* 定义鼠标悬停时的样式 */
+        a:hover::before {
+            width: 100%; /* 设置边框宽度为100% */
+        }
+        
+        form.lan {
+            position:relative;
+            right:5px;
+            top:5px;
+            border-radius:5px;
+        }
+        
+        div.upper{
+            position:absolute;
+        }
+    </style>
     <title>物化实验</title>
     
 </head>
 <body>
-    <img src="{% static 'img/background.png' %}" class='background'></img>
+    <!-- <img src="{% static 'img/background.png' %}" class='background'></img> -->
     <div calss='upper'>
     <p class = 'title'>物化实验</p>
     <div class='main'>
