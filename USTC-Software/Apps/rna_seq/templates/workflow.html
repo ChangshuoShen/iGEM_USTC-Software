@@ -185,11 +185,13 @@
 
         .btn-download{
             border-radius: 10px;
+            padding: 11px;
             position: fixed;
-            right: 20px;
-            top: 20px;
+            right: 0;
+            top: 0;
             background-color: rgba(13, 93, 31, 0.434);
-            color: rgb(0, 0, 0);
+            color: white;
+            font-weight: bold;
         }
         
     </style>
@@ -218,7 +220,7 @@
             <div class="image-container">
                 <div class="show-csv">
                     <div id="csv-grid-{{ forloop.counter }}" class="csv-table-container"></div>
-                    <a href="{{ result.csv_path }}">{{ result.csv_path }}</a>    
+                    <a href="{{ result.csv_path }}" style="text-decoration: none;">Download the csv file</a>    
                 </div>
             </div>
             <script>

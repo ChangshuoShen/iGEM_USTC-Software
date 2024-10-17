@@ -10,12 +10,12 @@
     <title>Post Detail</title>
     
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css'%}" type="text/css">
-    <!-- <link rel="stylesheet" href="{% static 'css/style.css' %}"  type="text/css"> -->
     <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'css/responsive.css'%}" type="text/css">
     
     <style>
         .show-comment-box {
+            width: 66%;
             position: fixed;
             bottom: 20px;
             left: 50%;
@@ -64,6 +64,9 @@
             margin-top: 20px;
             padding: 10px;
         }
+        .comment-reply-button:hover{
+            background-color: rgba(63, 98, 159, 0.9);
+        }
         .comment-input {
             margin-top: 30px;
             height: 203px;
@@ -89,6 +92,7 @@
             height: 50px;
             width: 50px;
             border-radius: 50%;
+            margin-right: 30px;
         }
         
         .comments-list {
@@ -153,34 +157,6 @@
             margin-top: 15px;
         }
 
-
-        /**
-        * Avatar
-        ---------------------------*/
-
-        .comments-list .comment-avatar {
-            width: 65px;
-            height: 65px;
-            position: relative;
-            z-index: 99;
-            float: left;
-            border: 3px solid #FFF;
-            border-radius: 4px;
-            -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-        }
-
-        .comments-list .comment-avatar img {
-            width: 100%;
-            height: 100%;
-        }
-
-        .reply-list .comment-avatar {
-            width: 50px;
-            height: 50px;
-        }
-
         .comment-main-level:after {
             content: '';
             width: 0;
@@ -189,10 +165,8 @@
             clear: both;
         }
 
-
-
         .comments-list .comment-box {
-            width: 62%;
+            width: 82%;
             float: left;
             position: relative;
             -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
@@ -220,7 +194,7 @@
         }
 
         .reply-list .comment-box {
-            width: 60%;
+            width: 80%;
         }
 
         .comment-box .comment-head {
@@ -351,8 +325,8 @@
                 <img src="{{ MEDIA_URL }}avators/for_male.png" alt="Avator" class="avator">
             {% endif %}
 
-            <h5>{{publisher.username}}</h5>
-            <p>{{publisher.bio}}</p>
+            <h5>Author: {{publisher.username}}</h5>
+            <p>bio: {{publisher.bio}}</p>
         </div>
             
         <div class="card-custom">

@@ -920,11 +920,59 @@ class scRNAseqUtils:
                     'description': 'No enriched genes found in the dataset for further visualization.',
                 }
             )
+    
+    # 简单的质量控制方法
+    def qc_and_preprocessing(self):
+        print('Calculating QC metrics...')
+        self.calculate_qc_metrics()
+        print('Filtering cells and genes...')
+        self.filter_cells_and_genes()
+        print('Normalizing data...')
+        self.normalize_data()
+        print('Identifying highly variable genes...')
+        self.adata.X = np.nan_to_num(self.adata.X)
+        self.find_highly_variable_genes('hvg.png')
+        print('Filtering highly variable genes...')
+        self.filter_hvg()
+        print('Workflow for Simple QC completed.')
+        print('Scaling data...')
+        self.scale_data()
+        print('Performing PCA...')
+        self.pca()
         
+    # 质量控制和基础分析
+    def qc_and_analysis_workflow(self):
+        print('Calculating QC metrics...')
+        self.calculate_qc_metrics()
+        print('Filtering cells and genes...')
+        self.filter_cells_and_genes()
+        print('Normalizing data...')
+        self.normalize_data()
+        print('Identifying highly variable genes...')
+        self.find_highly_variable_genes('hvg.png')
+        print('Filtering highly variable genes...')
+        self.filter_hvg()
+        print('Scaling data...')
+        self.scale_data()
+        print('Performing PCA...')
+        self.pca()
+        
+        print('Computing neighbors...')
+        self.neighbors()
+        # bacth correction
+        print('Applying batch correction...')
+        self.compare_batch_correction()
+        print('Running UMAP...')
+        self.umap()
+        print(f'clustering with {self.clustering}...')
+        if self.clustering == 'Leiden Clustering':
+            self.leiden()
+        elif self.clustering == 'Louvain Clustering':
+            self.louvain()
+        print('Workflow for QC and Analysis completed.')
+    
     # 执行所有方法
-    def execute_workflow(self):
-        
-        # 首先计算 QC 指标
+    def full_workflow(self):
         print('Calculating QC metrics...')
         self.calculate_qc_metrics()
         

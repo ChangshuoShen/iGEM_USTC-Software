@@ -62,7 +62,7 @@ def clear_directory(directory):
             print(f'Failed to delete {file_path}. Reason: {e}')
 
 def upload_file(request):
-    if request.method == 'POST':
+    if request.method == 'POST':    
         user_id = request.session.get('user_id')
         if not user_id:
             messages.warning(request, 'Please login before uploading images.')
@@ -116,16 +116,19 @@ def upload_file(request):
             diff_expr,
             trajectory_inference
         )
+        workflow_option = request.POST.get('workflow_option')
+        if workflow_option == "qc_and_dim_reduction":
+            # 执行简单的质量控制
+            adata_process.qc_and_preprocessing()
         
-        adata_process.execute_workflow()
-        # results_per_page = 1
-        # paginator = Paginator(adata_process.results, results_per_page)
-        # 获取当前页码
-        # page_number = request.GET.get('page', 1)  # 默认为第1页
-        # page_obj = paginator.get_page(page_number)
-        # return render(request, 'workflow.html', {'page_obj': page_obj})
-        # return JsonResponse(adata_process.results, safe=False)
-        
+        elif workflow_option == "cluster_analysis_and_annotation":
+            # 执行质量控制和数据分析
+            adata_process.qc_and_analysis_workflow()
+            
+        elif workflow_option == "full_workflow":
+            # 执行完整的workflow
+            adata_process.full_workflow()
+                
         return render(
             request,
             'workflow.html',
