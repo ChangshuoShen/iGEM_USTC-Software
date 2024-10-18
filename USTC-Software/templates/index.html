@@ -10,6 +10,7 @@
     <!-- jQuery -->
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <!-- 引入样式 -->
+    <link rel="icon" href="{% static 'imgs/favicon.ico' %}" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="{% static 'home-css/bootstrap.min.css'%}">
     <link rel="stylesheet" type="text/css" href="{% static 'home-css/mobile.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'home-css/style.css' %}">
@@ -26,7 +27,7 @@
             position: absolute;
             padding: 10px;
             border-radius: 10px;
-            z-index: 10;
+            z-index: 999;
             background-color: rgba(11, 34, 7, 0.8); 
         }
 
@@ -34,6 +35,9 @@
             display: block;
         }
 
+        #image-segment:hover .link-dropdown {
+            display: block;
+        }
         /* 添加链接样式 */
         .link-dropdown a {
             display: block;
@@ -163,7 +167,7 @@
 
                         <!--社交链接-->
                         <div class="social" id="social">
-                            <a href="https://github.com/changshuoshen" class="link" id="github" style="margin-left: 4px"
+                            <a href="https://github.com/ChangshuoShen/iGEM_USTC-Software" class="link" id="github" style="margin-left: 4px"
                                target="_blank">
                                 <i class="fa-brands fa-github"></i>
                             </a>
@@ -200,7 +204,6 @@
                                                     <i class="fas fa-flask"></i>
                                                     Single-Cell Analysis Workflow
                                                 </a>
-                                                
                                             </span>
                                     </div>
                                     </div>
@@ -246,7 +249,6 @@
                                 <div class="col 2" id="pymol-card">
                                     <div class="link-card cards">
                                         <i class="fa-solid fa-atom"></i>
-                                        
                                         <span class="link-name" id="link-name-2">
                                             <a href="{% url 'forum:teaching_detail' material_id=28 %}">PyMOL Teaching</a>
                                         </span>
@@ -279,22 +281,24 @@
                                         </div>
                                     </a>
                                 </div>
-                                <div class="col 2">
-                                    <a id="link-url-5" href="{% url 'image_segment:sam_index'%}">
-                                        <div class="link-card cards">
-                                            <i class="fa-solid fa-image"></i>
-                                            <span class="link-name" id="link-name-5">
-                                                Image Segment Model(2D)
-                                            </span>
-                                        </div>
-                                    </a>
+                                <div class="col 2" id="image-segment">
+                                    <div class="link-dropdown">
+                                        <a href="{% url 'image_segment:2d'%}">2D Segmentation</a>
+                                        <a href="{% url 'image_segment:3d'%}">3D Segmentation</a>
+                                    </div>
+                                    <div class="link-card cards">
+                                        <i class="fa-solid fa-image"></i>
+                                        <span class="link-name" id="link-name-5">
+                                            <a href="{% url 'image_segment:2d'%}">Image Segment Model (SAM)</a>
+                                        </span>
+                                    </div>
                                 </div>
                                 <div class="col">
                                     <a id="link-url-6" href="">
                                         <div class="link-card cards text-center">
                                             <i class="fa-regular fa-image"></i>
                                             <span class="link-name" id="link-name-6">
-                                                Image Segment Model(3D)
+                                                Image Segment Model (UNeXt)
                                             </span>
                                         </div>
                                     </a>

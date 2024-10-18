@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Image Segment</title>
+    <!-- 引入 Bootstrap CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+        }
+        body {
+            background-image: url("{% static 'imgs/sam-bg.png' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+        }
+        .main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            margin: 10px;
+        }
+        .form-container {
+            width: 35%;
+            height: 100%;
+            margin-right: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 居中对齐 */
+            justify-content: flex-start; /* 向上对齐 */
+        }
+        .form-container form {
+            width: 90%;
+        }
+        .result-container {
+            flex: 1;
+            height: 100%;
+            border-radius: 10px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 居中对齐 */
+            justify-content: flex-start; /* 向上对齐 */
+        }
+        h2 {
+            font-size: 2.4rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .form-control-file {
+            border: 1px solid #ced4da;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #7a8b9e;
+            border-color: #708193;
+        }
+        .img-fluid {
+            border-radius: 20px;
+            height: 70vh;
+        }
+        .text-danger {
+            margin-top: 10px;
+        }
+        .result-image-container {
+            text-align: center;
+        }
+        .preview-image {
+            display: none; /* 隐藏预览图像，直到选择图片后显示 */
+            width: 80%;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .uploaded-image {
+            display: block; /* 隐藏预览图像，直到选择图片后显示 */
+            width: 80%;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div class="form-container">
+            <h2>Upload Files</h2>
+            <h3 style="width: 100%; text-align: right;">for 3D Segmentation</h3>
+            
+            <form method="post" action="{% url 'image_segment:upload_3d' %}" enctype="multipart/form-data" class="mb-3">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="input">Choose the Input File (.nii.gz):</label>
+                    <input type="file" class="form-control-file" id="input" accept=".nii.gz" name="input" required>
+                </div>
+                <div class="form-group">
+                    <label for="gt">Choose the Ground Truth (GT) File (.nii.gz):</label>
+                    <input type="file" class="form-control-file" accept=".nii.gz" id="gt" name="gt" required>
+                </div>
+                <div class="form-group">
+                    <label for="roi_index">Choose the ROI Index:</label>
+                    <input type="number" class="form-control" id="roi_index" name="roi_index" min="0" required>
+                </div>
+
+                <!-- 预览区域，暂时不需要用于3D图像的预览 -->
+                <img id="image-preview" class="preview-image image-fluid" alt="" src="">
+                <button type="submit" class="btn btn-primary btn-block">Upload and Process</button>
+            </form>
+
+            {% if input_image_url %}
+                <img id="image-uploaded" class="uploaded-image image-fluid" alt="" src="{{ input_image_url }}">
+            {% endif %}
+            
+            {% if error_message %}
+                <p class="text-danger">{{ error_message }}</p>
+            {% endif %}
+        </div>
+        
+        <div class="result-container">
+            <h2>Processed Image</h2>
+            <div id="result-image-container" class="result-image-container mt-3">
+                {% if output_image_url %}
+                    <img src="{{ output_image_url }}" alt="Processed Image" class="img-fluid">
+                    <br>
+                    <a href="{{ output_image_url }}" download="processed_image.nii.gz" class="text-decoration-none">Download Processed Image</a>
+                {% else %}
+                    <p>No image processed yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 暂时隐藏预览功能，3D图像不需要前端预览
+    </script>
+    <!-- 引入 Bootstrap JS 和依赖 -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

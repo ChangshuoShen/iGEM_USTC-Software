@@ -12,7 +12,6 @@ import shutil
 from .utils import scRNAseqUtils
 import zipfile
 
-
 def rna_index(request):
     # 检查用户的 session 或 cookie，验证是否已登录
     user_id = request.COOKIES.get('user_id')

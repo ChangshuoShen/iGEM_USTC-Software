@@ -1,5 +1,5 @@
 body {
-    font-family: Arial, sans-serif; /* 使用Arial字体，如果无法加载则使用系统默认无衬线字体 */
+    font-family: Arial, sans-serif;
 }
 
 p.title {

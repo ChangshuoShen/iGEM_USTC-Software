@@ -357,16 +357,9 @@
         // 提交表单时显示加载指示器
         document.getElementById('workflow-form').onsubmit = function() {
             const loadingIndicator = document.getElementById('loadingIndicator');
-            loadingIndicator.classList.add('loading'); // 添加 loading 类
             loadingIndicator.classList.remove('loading-none'); // 移除 loading-none 类
+            loadingIndicator.classList.add('loading'); // 添加 loading 类
         };
-
-         // 在用户离开页面时隐藏加载指示器
-        window.addEventListener('beforeunload', function() {
-            const loadingIndicator = document.getElementById('loadingIndicator');
-            loadingIndicator.classList.add('loading-none'); // 添加 loading-none 类
-            loadingIndicator.classList.remove('loading'); // 移除 loading 类
-        });
     </script>
     
     <script>

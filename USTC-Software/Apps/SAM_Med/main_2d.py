@@ -10,8 +10,8 @@ from typing import Any, Union # 类型提示
 from copy import deepcopy
 import matplotlib.pyplot as plt
 import os
+import uvicorn
 
-app = FastAPI()
 
 def show_mask(mask, ax, random_color=False):
     '''
@@ -313,27 +313,48 @@ class SamDecoder:
         boxes = self.apply_coords(boxes.reshape(-1, 2, 2), original_size, new_size)
         return boxes.reshape(-1, 4)
 
+app = FastAPI()
 
+# 初始化全局变量
+encoder_session = SamEncoder(model_path="/home/shenc/onnx_model/sam-med2d_b.encoder.onnx", device="cuda", warmup_epoch=3)
+decoder_session = SamDecoder(model_path="/home/shenc/onnx_model/sam-med2d_b.decoder.onnx")
 
+from pydantic import BaseModel
+# 定义请求体模型
+class ImagePaths(BaseModel):
+    input_path: str
+    output_path: str
+    
+    
 @app.get("/") # 这一句是FastAPI框架中用于定义路由route的装饰器语法
 async def read_root():
-    # async是python中定义异步函数的方式，异步编程是一种允许程序在等待某些操作完成的同时继续执行其他任务的编程范式
+    '''
+    返回欢迎信息
+    async是python中定义异步函数的方式，异步编程是一种允许程序在等待某些操作完成的同时继续执行其他任务的编程范式
+    '''
     return {"message": "Welcome to the FastAPI server!"}
 
 # FastAPI 路由
 @app.post("/infer")
-async def infer(image: UploadFile = File(...)):
+async def infer(paths: ImagePaths):
+    input_path = paths.input_path
+    output_path = paths.output_path
+    
     # 读取上传文件并解码为OpenCV图像
-    file_bytes = np.frombuffer(await image.read(), np.uint8)
-    img_file = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+    # file_bytes = np.frombuffer(await image.read(), np.uint8)
+    # img_file = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+    img_file = cv2.imread(input_path)
+    if img_file is None:
+        return {"error": "Failed to load image. Please check the input path."}
     # 使用编码器绘画获取图像嵌入
     img_embeddings = encoder_session(img_file)
     # 原始图像尺寸
     origin_image_size = img_file.shape[:2]
     # 定义点坐标和标签
     point_coords = np.array([[162, 127]], dtype=np.float32)
-    # 执行解码器会话
     point_labels = np.array([1], dtype=np.float32)
+    
+    # 执行解码器会话
     masks, _, logits = decoder_session.run(
         img_embeddings=img_embeddings,
         origin_image_size=origin_image_size,
@@ -347,67 +368,24 @@ async def infer(image: UploadFile = File(...)):
     show_points(point_coords, point_labels, plt.gca())
     plt.axis('off')
     # 保存图像到内存缓冲区
-    buf = io.BytesIO()
-    plt.savefig(buf, format='png')
-    buf.seek(0)
+    # buf = io.BytesIO()
+    # plt.savefig(buf, format='png')
+    # buf.seek(0)
+    plt.tight_layout()
+    plt.savefig(output_path, format='png')
     plt.close()
-
+    return {"message": f"Processed image saved at {output_path}"}
     # 作为PNG图像流式响应返回
-    return StreamingResponse(buf, media_type="image/png")
-"""
-    plt.show()
+    # return StreamingResponse(buf, media_type="image/png")
 
-    '''Optimizing Segmentation Results by Point Interaction'''
-    new_point_coords = np.array([[169, 140]], dtype=np.float32)
-    new_point_labels = np.array([0], dtype=np.float32)
-    point_coords = np.concatenate((point_coords, new_point_coords))
-    point_labels = np.concatenate((point_labels, new_point_labels))
-    mask_inputs = 1. / (1. + np.exp(-logits.astype(np.float32)))
 
-    masks, _, logits = decoder_session.run(
-        img_embeddings=img_embeddings,
-        origin_image_size=origin_image_size,
-        point_coords=point_coords,
-        point_labels=point_labels,
-        mask_input=mask_inputs,
-    )
-
-    plt.figure(figsize=(10, 10))
-    plt.imshow(img_file)
-    show_mask(masks, plt.gca())
-    show_points(point_coords, point_labels, plt.gca())
-    plt.axis('off')
-
-    plt.show()
-
-    '''Specifying a specific object with a bounding box'''
-    boxes = np.array([135, 100, 180, 150])
-    masks, _, _ = decoder_session.run(
-        img_embeddings=img_embeddings,
-        origin_image_size=origin_image_size,
-        boxes=boxes,
-    )
-    plt.figure(figsize=(10, 10))
-    plt.imshow(img_file)
-    show_mask(masks, plt.gca())
-    show_box(boxes, plt.gca())
-    plt.axis('off')
-
-    plt.show()
-
-"""
 # 运行 FastAPI
 if __name__ == "__main__":
     save_path = os.path.join("work_dir", 'ort_demo_results')
     if not os.path.exists(save_path):
         os.makedirs(save_path)
+    
+    # encoder_session = SamEncoder(model_path="/home/shenc/onnx_model/sam-med2d_b.encoder.onnx", device="cuda", warmup_epoch=3)
+    # decoder_session = SamDecoder(model_path="/home/shenc/onnx_model/sam-med2d_b.decoder.onnx")
 
-    # encoder_session = SamEncoder(model_path="./onnx_model/sam-med2d_b.encoder.onnx", device="cuda", warmup_epoch=3)
-    encoder_session = SamEncoder(model_path="/home/shenc/onnx_model/sam-med2d_b.encoder.onnx", device="cuda", warmup_epoch=3)
-
-    decoder_session = SamDecoder(model_path="/home/shenc/onnx_model/sam-med2d_b.decoder.onnx")
-
-    import uvicorn
-
-    # uvicorn.run(app, host="172.17.0.6", port=36505)
-    uvicorn.run(app, host='127.0.0.1', port=8002)
+    uvicorn.run(app, host='127.0.0.2', port=8000)
