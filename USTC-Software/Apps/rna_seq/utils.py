@@ -38,6 +38,7 @@ class scRNAseqUtils:
         adata_list, 
         save_path,
         display_path,
+        progress_path,
         batch_correction='BBKNN',
         clustering='Leiden Clustering',
         enrichment_analysis='GO Enrichment',
@@ -51,6 +52,11 @@ class scRNAseqUtils:
         # 确保工作目录存在
         if not os.path.exists(self.save_path):
             os.makedirs(self.save_path)
+            
+        self.progress_path = progress_path
+        # 每次以写模式打开文件，写入文件头
+        with open(self.progress_path, 'w') as f:  # 使用 'w' 模式创建文件
+            f.write("~~~~~scRNA-seq Analysis Workflow Running~~~~~\n")  # 写入文件头
         
         # 存储和验证分析方法参数
         # self.batch_correction = self.validate_method(batch_correction, 'batch_correction')
@@ -75,6 +81,11 @@ class scRNAseqUtils:
     #         raise ValueError(f"Invalid method '{method}' for {method_type}. Allowed methods: {ALLOWED_METHODS[method_type]}")
     #     return method
 
+    def update_progress(self, *content):
+        with open(self.progress_path, 'a') as f:
+            # 将元组中的每个元素转换为字符串，并连接成一行
+            f.write(' '.join(str(item) for item in content) + '\n')
+    
     def merge_data(self):
         '''合并多个AnnData对象'''
         # 如果传入的list只有一个元素，直接返回好吧
@@ -82,25 +93,31 @@ class scRNAseqUtils:
             raise ValueError("adata_list cannot be empty.")
         elif len(self.adata_list) == 1:
             self.adata = self.adata_list[0]
+            self.update_progress('Only one adata object found, skipping merging.')
         else:
+            self.update_progress('Multiple adata objects detected. Proceeding with merging process.\nAdding `batch` column to each adata object.')
             # 需要确保所有数据的基因名称一致
-            var_names = set(self.adata_list[0].var_names)
-            for adata in self.adata_list[1:]:
-                var_names = var_names.intersection(set(adata.var_names))
-            var_names = list(var_names)
+            # var_names = set(self.adata_list[0].var_names)
+            # for adata in self.adata_list[1:]:
+            #     var_names = var_names.intersection(set(adata.var_names))
+            # var_names = list(var_names)
             # 只保留共有的基因
             for i, adata in enumerate(self.adata_list):
-                self.adata_list[i] = adata[:, var_names]
+                # self.adata_list[i] = adata[:, var_names]
                 adata.obs['batch'] = f'batch{i + 1}'  # 添加批次信息
             # 合并数据集
+            # self.adata = sc.concat(self.adata_list, merge='same')
             self.adata = sc.concat(self.adata_list, merge='same')
-
+            batch_counts = self.adata.obs['batch'].value_counts()
+            self.update_progress(f'Merged dataset batch counts:\n{batch_counts}')
+            
     def calculate_qc_metrics(self):
         """ 计算质量控制所需的指标，如总 counts、基因数和线粒体基因比例 """
         # 标记线粒体基因
         self.adata.var['mt'] = self.adata.var_names.str.startswith('MT-')
-        
+
         # 计算质量控制指标
+        self.update_progress('Calculating QC metrics (total counts, gene counts, mitochondrial gene percentage)...')
         sc.pp.calculate_qc_metrics(
             self.adata, 
             qc_vars=['mt'], 
@@ -115,6 +132,7 @@ class scRNAseqUtils:
             - 过滤在少于min_cells个细胞中表达的基因。
             - 过滤表达低于min_genes或高于max_genes的细胞，以及线粒体基因表达高于max_mito的细胞。
         """
+        self.update_progress('Exporting QC metrics table to CSV...')
         self.adata.obs[['n_genes_by_counts', 'total_counts', 'pct_counts_mt']].to_csv(
             os.path.join(self.save_path, 'qc_metrics_table.csv')
         )
@@ -126,6 +144,7 @@ class scRNAseqUtils:
             }
         )
         # 过滤之前可视化一遍
+        self.update_progress('Visualizing data before filtering...')
         self.violin_plots('violin_before_filtering.png')
         self.plot_highest_expr_genes('highest_expr_genes_before_filtering.png')
         
@@ -136,8 +155,10 @@ class scRNAseqUtils:
         # self.adata = self.adata[self.adata.obs['pct_counts_mt'] < max_mito, :]
         
         # 更新 QC 指标
+        self.update_progress('Visualizing data after filtering...')
         self.calculate_qc_metrics()
         # 过滤之后可视化一遍
+        
         self.violin_plots('violin_after_filtering.png')
         self.plot_highest_expr_genes('highest_expr_genes_after_filtering.png')
 
@@ -167,7 +188,7 @@ class scRNAseqUtils:
 
     def plot_highest_expr_genes(self, save_name, n_top_genes=20):
         """ 可视化表达最高的前 n 个基因，并保存图片。 """
-        # default_save_path = 'figures/highest_expr_genes.png'
+        self.update_progress(f'Plotting the top {n_top_genes} most highly expressed genes...')
         sc.pl.highest_expr_genes(
             self.adata, 
             n_top=n_top_genes, 
@@ -186,6 +207,7 @@ class scRNAseqUtils:
 
     def normalize_data(self):
         """ 对数据进行标准化处理，每个细胞归一化到相同的总表达量，并对数转换。 """
+        self.update_progress('Starting normalization of data (Total expression normalization & Log1p transformation)...')
         sc.pp.normalize_total(self.adata, target_sum=1e4)
         sc.pp.log1p(self.adata)
         self.results.append(
@@ -199,7 +221,7 @@ class scRNAseqUtils:
 
     def find_highly_variable_genes(self, save_name='hvg.png'):
         """ 找出高变异基因，用于后续分析。 """
-        # default_save_path = 'figures/filter_genes_dispersion.png'
+        self.update_progress('Identifying highly variable genes...')
         sc.pp.highly_variable_genes(
             self.adata, 
             min_mean=0.0125, 
@@ -229,9 +251,10 @@ class scRNAseqUtils:
         选择高变异基因并保留原始数据。
         该方法只能执行一次，因为它会修改 adata 对象。
         """
+        self.update_progress('Filtering highly variable genes and retaining original data...')
         self.adata.raw = self.adata  # 保留原始数据
         self.adata = self.adata[:, self.adata.var['highly_variable']]  # 选择高变异基因
-        # print(self.adata.raw.shape, self.adata.shape)
+        # self.update_progress(self.adata.raw.shape, self.adata.shape)
         # 将筛选高变异基因的结果添加到 self.results
         self.results.append(
             {
@@ -245,6 +268,7 @@ class scRNAseqUtils:
     
     def scale_data(self):
         """ 对数据进行标准化，使得每个基因的表达量具有均值为0、方差为1。 """
+        self.update_progress('Starting data scaling...')
         # 将数据缩放到单位方差
         sc.pp.regress_out(
             self.adata, 
@@ -262,6 +286,7 @@ class scRNAseqUtils:
 
     def pca(self, n_comps=50):
         """ 进行主成分分析(PCA)，并将结果保存在adata对象中。 """
+        self.update_progress(f'Starting PCA (with {n_comps} components)analysis ...')
         sc.tl.pca(
             self.adata, 
             n_comps=n_comps,
@@ -306,6 +331,7 @@ class scRNAseqUtils:
 
     def neighbors(self, n_neighbors=10, n_pcs=40):
         """ 计算邻居，用于后续降维（如UMAP和t-SNE）和聚类。 """
+        self.update_progress(f'Calculating neighbors with {n_neighbors} neighbors and {n_pcs} PCs...')
         sc.pp.neighbors(
             self.adata, 
             n_neighbors=n_neighbors, 
@@ -335,6 +361,7 @@ class scRNAseqUtils:
 
     def tsne(self, suffix=''):
         """ 使用 t-SNE 方法对数据进行降维。 """
+        self.update_progress('Starting t-SNE...')
         sc.tl.tsne(self.adata)
         sc.pl.tsne(
             self.adata, 
@@ -356,6 +383,7 @@ class scRNAseqUtils:
 
     def umap(self, suffix=''):
         """ 使用 UMAP 方法对数据进行降维。 """
+        self.update_progress('Starting UMAP...')
         sc.tl.umap(self.adata)
         img_path_list = []
         top_genes = self.find_top_genes()
@@ -381,16 +409,19 @@ class scRNAseqUtils:
             }
         )
 
-    def leiden(self, resolutions=[0.25, 0.5, 0.75, 1.0], suffix=''):
+    def leiden(self, resolutions=[0.25, 0.5, 0.75, 1.0], color=['leiden'], suffix=''):
         '''
         使用不同分辨率的Leiden聚类
         '''
+        self.update_progress('Start Leiden Clustering...')
+        if 'leiden' not in color:
+            color.append('leiden')
         save_path_list = []
         for resolution in resolutions:
             sc.tl.leiden(self.adata, resolution=resolution)
             sc.pl.umap(
                 self.adata, 
-                color=['leiden'], 
+                color=color, 
                 save=False,
                 show=False
             )
@@ -398,6 +429,8 @@ class scRNAseqUtils:
             plt.close()
             # shutil.move('figures/umap_leiden.png', os.path.join(self.save_path, f'umap_leiden_res{resolution}{suffix}.png'))
             save_path_list.append(os.path.join(self.display_path, f'umap_leiden_res{resolution}{suffix}.png'))
+            self.update_progress(f'Leiden clustering at resolution {resolution}.')
+        
 
         self.results.append(
             {
@@ -407,25 +440,29 @@ class scRNAseqUtils:
             }
         )
     
-    def louvain(self, resolutions=[0.25, 0.5, 0.75, 1.0], suffix=''):
+    def louvain(self, resolutions=[0.25, 0.5, 0.75, 1.0], color=['louvain'], suffix=''):
         '''
         使用Louvain聚类
         '''
+        self.update_progress('Start Louvain Clustering...')
+        if 'louvain' not in color:
+            color.append('louvain')
         save_path_list = []
         for resolution in resolutions:
             sc.tl.louvain(self.adata, resolution=resolution)
             # 可视化结果
             sc.pl.umap(
                 self.adata, 
-                color=['louvain'], 
+                color=color, 
                 save=False,
                 show=False
             )
             # 移动保存的文件
             plt.savefig(os.path.join(self.save_path, 'umap_louvain_res{resolution}{suffix}.png'))
             plt.close()
-            # shutil.move('figures/umap_louvain.png', os.path.join(self.save_path, 'umap_louvain_res{resolution}{suffix}.png'))
             save_path_list.append(os.path.join(self.display_path, 'umap_louvain_res{resolution}{suffix}.png'))
+            self.update_progress(f'Louvain clustering at resolution {resolution}.')
+        
         # 将结果添加到 self.results    
         self.results.append(
             {
@@ -438,6 +475,7 @@ class scRNAseqUtils:
     ###################下面是几个批次矫正方法###################
     def bbknn_correction(self, neighbors_within_batch=3, n_pcs=50, cluster_method='leiden'):
         """ 使用 BBKNN 方法进行批次效应矫正。 """
+        self.update_progress("BBKNN batch correction started...")
         bbknn.bbknn(
             self.adata, 
             batch_key='batch', 
@@ -462,10 +500,11 @@ class scRNAseqUtils:
                 'description': f'UMAP visualization after BBKNN batch correction using {cluster_method} clustering.'
             }
         )
-        # print("BBKNN correction finished")
+        # self.update_progress("BBKNN correction finished")
 
     def combat_correction(self, cluster_method='leiden'):
         """ 使用 Combat 方法进行批次效应矫正。 """
+        self.update_progress("Combat batch correction started...")
         sc.pp.combat(self.adata, key='batch')
         self.pca()
         self.neighbors()
@@ -488,10 +527,11 @@ class scRNAseqUtils:
             }
         )
         
-        # print("Combat Correction finished")
+        # self.update_progress("Combat Correction finished")
     
     def harmony_correction(self, cluster_method='leiden'):
         """ 使用 Scanpy 内置的 Harmony 方法进行批次效应校正。 """
+        self.update_progress("Harmony batch correction started...")
         # 使用 Scanpy 的 Harmony 接口进行批次效应矫正
         sc.external.pp.harmony_integrate(self.adata, key='batch')
         sc.pp.neighbors(self.adata, use_rep='X_pca') # 重新计算邻居
@@ -515,13 +555,14 @@ class scRNAseqUtils:
                 'description': f'UMAP visualization after Harmony batch correction using {cluster_method} clustering.'
             }
         )
-        # print("Harmony Correction Finished")
+        # self.update_progress("Harmony Correction Finished")
 
     # 添加比较有无批次矫正的可视化方法
     def compare_batch_correction(self):
         """ 比较合并数据在有无批次矫正情况下的结果。 """
         # 先行判断是否需要做批次矫正
         if 'batch' not in self.adata.obs:
+            self.update_progress('no batch information, skip batch correction')
             self.results.append(
                 {
                     'name': 'Batch Correction',
@@ -531,25 +572,52 @@ class scRNAseqUtils:
             return
         
         # 下面就是有批次信息，那就做批次矫正
+        self.update_progress('Starting batch correction...')
         # 批次矫正之前的 UMAP
+        self.update_progress('Visualization before batch correction...')
         sc.tl.umap(self.adata)
         if self.clustering == 'Leiden Clustering':
-            self.leiden(suffix='_before_batch_correction')  # 先进行 Leiden 聚类
+            self.leiden(resolutions=[0.5, 1.0],
+                        color=['batch', 'leiden'],
+                        suffix='_before_batch_correction')  # 先进行 Leiden 聚类
             cluster_method = 'leiden'
         elif self.clustering == 'Louvain Clustering':
-            self.louvain(suffix='_before_batch_correction')  # 或进行 Louvain 聚类
+            self.louvain(resolutions=[0.5, 1.0],
+                        color=['batch', 'louvain'],
+                        suffix='_before_batch_correction')  # 或进行 Louvain 聚类
             cluster_method = 'louvain'
         # 使用self.聚类和self.umap方法均会向self.results中添加内容，无需再写
         self.umap(suffix='_before_batch_correction')
         
         # 开始做批次矫正
         if self.batch_correction == 'BBKNN':
-            self.bbknn_correction(cluster_method=cluster_method)
+            bbknn.bbknn(
+                self.adata, 
+                batch_key='batch', 
+                neighbors_within_batch=3,
+                n_pcs=50
+            )
+            # self.bbknn_correction(cluster_method=cluster_method)
         elif self.batch_correction == "Combat":
-            self.combat_correction(cluster_method=cluster_method)
+            sc.pp.combat(self.adata, key='batch')
+            # self.combat_correction(cluster_method=cluster_method)
         else:
-            self.harmony_correction(cluster_method=cluster_method)
+            sc.external.pp.harmony_integrate(self.adata, key='batch')
+            # self.harmony_correction(cluster_method=cluster_method)
         
+        # 在此之后，重新计算umap
+        self.update_progress('Visualization after batch correction...')
+        sc.tl.umap(self.adata)
+        if self.clustering == 'Leiden Clustering':
+            self.leiden(resolutions=[0.5, 1.0],
+                        color=['batch', 'leiden'],
+                        suffix='_after_batch_correction')  # 先进行 Leiden 聚类
+        elif self.clustering == 'Louvain Clustering':
+            self.louvain(resolutions=[0.5, 1.0],
+                        color=['batch', 'louvain'],
+                        suffix='_after_batch_correction')  # 或进行 Louvain 聚类
+        # 使用self.聚类和self.umap方法均会向self.results中添加内容，无需再写
+        self.umap(suffix='_after_batch_correction')
         
     ###################添加差异表达分析方法及可视化方法############################
     def calculate_diff_expr(self, n_genes=25):
@@ -575,7 +643,8 @@ class scRNAseqUtils:
             groupby = 'leiden'
         else:
             groupby = 'louvain'
-        
+            
+        self.update_progress(f"Calculating differential expression using {method} and grouping by {groupby}")
         # 计算差异表达基因
         sc.tl.rank_genes_groups(
             self.adata, 
@@ -682,13 +751,16 @@ class scRNAseqUtils:
     ######################富集分析，其中已经实现了基因注释######################
     def perform_enrichment_and_annotation(self):
         """富集分析和基因注释，并生成多种可视化结果。"""
+        self.update_progress('Starting Enrichment Analysis & Gene Annotation')
         # 获取表达矩阵
+        self.update_progress("Retrieving expression matrix.")
         if scipy.sparse.issparse(self.adata.X):
             X = self.adata.X.toarray()
         else:
             X = self.adata.X
 
         # 计算所有细胞的平均表达
+        self.update_progress("Calculating mean expression and Identifying top 5000 expressed genes.")
         mean_expression = np.mean(X, axis=0)
         # 获取表达的基因（平均表达量大于0的基因）
         expressed_genes = self.adata.var_names[mean_expression > 0]
@@ -696,6 +768,7 @@ class scRNAseqUtils:
         top_genes = self.adata.var_names[np.argsort(mean_expression)[-5000:]].tolist()
 
         # 根据用户选择的富集分析类型，设置基因集
+        self.update_progress(f"Selecting gene set: {self.enrichment_analysis}...")
         if self.enrichment_analysis == 'GO Biological Process':
             gene_set = ['GO_Biological_Process_2021']
         elif self.enrichment_analysis == 'GO Molecular Function':
@@ -704,6 +777,7 @@ class scRNAseqUtils:
             gene_set = ['GO_Cellular_Component_2021']
 
         # 使用 Enrichr 进行富集分析
+        self.update_progress("Performing enrichment analysis...")
         enr = gp.enrichr(gene_list=top_genes,
                         gene_sets=gene_set,
                         organism='Human',
@@ -713,9 +787,11 @@ class scRNAseqUtils:
         results_df = enr.results # 获取结果
 
         # 按 Adjusted P-value 排序并获取前 30 个结果
+        self.update_progress("Extracting top 30 enriched GO terms...")
         top_30_results = results_df.sort_values('Adjusted P-value').head(30)
 
         # 创建交互式条形图，显示富集分析结果
+        self.update_progress("Creating interactive plot...")
         fig = make_subplots(rows=1, cols=1)
         fig.add_trace(
             go.Bar(
@@ -736,9 +812,9 @@ class scRNAseqUtils:
         # 保存交互式图表
         html_filename = "top_30_enrichment_interactive.html"
         fig.write_html(os.path.join(self.save_path, html_filename))
-        # print(f"Interactive plot saved as '{os.path.join(self.display_path, html_filename)}'")
-
+        
         # 创建并保存基因和富集得分的列表
+        self.update_progress(f"Calculating Gene enrichment scores...")
         gene_enrichment_scores = pd.DataFrame({
             'Gene': results_df['Genes'].str.split(';').explode(),
             'Enrichment Score': -np.log10(
@@ -750,8 +826,7 @@ class scRNAseqUtils:
         # 保存基因富集得分列表
         csv_filename = 'gene_enrichment_scores.csv'
         gene_enrichment_scores.to_csv(os.path.join(self.save_path, csv_filename))
-        # print(f"Gene enrichment scores saved as '{csv_filename}'")
-
+        
         self.results.append({
             'name': 'Enrichment Analysis Results',
             'csv_path': os.path.join(self.display_path, csv_filename),  # 基因富集得分文件路径
@@ -774,6 +849,7 @@ class scRNAseqUtils:
         
         if enriched_genes:
             # 1. 绘制富集基因在各个聚类中的表达热图
+            self.update_progress('Plotting Heatmap...')
             groupby = 'leiden' if self.clustering == "Leiden Clustering" else 'louvain'
             sc.pl.heatmap(
                 self.adata, 
@@ -784,8 +860,6 @@ class scRNAseqUtils:
             # 移动并重命名图片
             plt.savefig(os.path.join(self.save_path, 'enriched_genes_heatmap.png'))
             plt.close()
-            # shutil.move('figures/heatmap_enriched_genes.png', os.path.join(self.save_path, 'enriched_genes_heatmap.png'))
-            # print("Heatmap saved as enriched_genes_heatmap.png")
             
             self.results.append({
                 'name': 'Heatmap of Enriched Genes',
@@ -795,6 +869,7 @@ class scRNAseqUtils:
 
             # 2. 绘制富集基因在各个聚类中的气泡图
             # 获取聚类信息
+            self.update_progress('Plotting Buuble Plot...')
             clusters = self.adata.obs[groupby]
             # 获取富集基因的表达数据
             expr_data = self.adata[:, enriched_genes].to_df()
@@ -823,7 +898,6 @@ class scRNAseqUtils:
                 hovertemplate='Cluster: %{x}<br>Gene: %{y}<br>Expression: %{text:.2f}<br>Enrichment Score: %{marker.color:.2f}<extra></extra>',
             ))
 
-
             fig.update_layout(
                 title='Bubble Plot of Enriched Genes Across Clusters',
                 xaxis_title='Cluster',
@@ -835,7 +909,7 @@ class scRNAseqUtils:
 
             # 保存气泡图
             fig.write_html(os.path.join(self.save_path, "bubble_plot_enriched_genes.html"))
-            # print("Bubble plot saved as bubble_plot_enriched_genes.html")
+            # self.update_progress("Bubble plot saved as bubble_plot_enriched_genes.html")
 
             # 保存气泡图路径
             self.results.append({
@@ -845,6 +919,7 @@ class scRNAseqUtils:
             })
 
             # 3. 绘制富集基因在 UMAP 上的表达分布，选择前5个基因进行可视化
+            self.update_progress('Plotting UMAP on top 5 enriched genes')
             img_path_list = []
             top_5_enriched_genes = enriched_genes[:5]
             for i, gene in enumerate(top_5_enriched_genes):
@@ -856,8 +931,6 @@ class scRNAseqUtils:
                 img_name = f'umap_enriched_gene_{i+1}_expression.png'
                 plt.savefig(os.path.join(self.save_path, img_name))
                 plt.close()
-                # shutil.move('figures/umap_enriched_genes_expression.png',
-                #             os.path.join(self.save_path, img_name))
                 img_path_list.append(os.path.join(self.display_path, img_name))
 
             # 将结果保存到self.results中
@@ -868,6 +941,7 @@ class scRNAseqUtils:
             })
 
             # 4. 绘制富集 GO 术语的网络图
+            self.update_progress(f"Creating Network plot...")
             G = nx.Graph() # 创建图对象
 
             # 添加节点（GO 术语）
@@ -902,8 +976,6 @@ class scRNAseqUtils:
             plt.tight_layout()
             plt.savefig(os.path.join(self.save_path, 'enriched_go_terms_network.png'))
             plt.close()
-            
-            # print(f"Network plot saved")
 
             # 保存网络图路径到self.results
             self.results.append({
@@ -913,7 +985,7 @@ class scRNAseqUtils:
             })
             
         else:
-            # print("No enriched genes found in the dataset for further visualization.")
+            self.update_progress("No enriched genes found in the dataset for further visualization.")
             self.results.append(
                 {
                     'name': 'Enrichment Genes Analysis Vasualization',
@@ -923,103 +995,68 @@ class scRNAseqUtils:
     
     # 简单的质量控制方法
     def qc_and_preprocessing(self):
-        print('Calculating QC metrics...')
         self.calculate_qc_metrics()
-        print('Filtering cells and genes...')
         self.filter_cells_and_genes()
-        print('Normalizing data...')
         self.normalize_data()
-        print('Identifying highly variable genes...')
         self.adata.X = np.nan_to_num(self.adata.X)
         self.find_highly_variable_genes('hvg.png')
-        print('Filtering highly variable genes...')
         self.filter_hvg()
-        print('Workflow for Simple QC completed.')
-        print('Scaling data...')
         self.scale_data()
-        print('Performing PCA...')
         self.pca()
+        self.update_progress('Workflow Completed...') 
         
     # 质量控制和基础分析
     def qc_and_analysis_workflow(self):
-        print('Calculating QC metrics...')
         self.calculate_qc_metrics()
-        print('Filtering cells and genes...')
         self.filter_cells_and_genes()
-        print('Normalizing data...')
         self.normalize_data()
-        print('Identifying highly variable genes...')
         self.find_highly_variable_genes('hvg.png')
-        print('Filtering highly variable genes...')
         self.filter_hvg()
-        print('Scaling data...')
         self.scale_data()
-        print('Performing PCA...')
         self.pca()
         
-        print('Computing neighbors...')
         self.neighbors()
-        # bacth correction
-        print('Applying batch correction...')
         self.compare_batch_correction()
-        print('Running UMAP...')
         self.umap()
-        print(f'clustering with {self.clustering}...')
         if self.clustering == 'Leiden Clustering':
             self.leiden()
         elif self.clustering == 'Louvain Clustering':
             self.louvain()
-        print('Workflow for QC and Analysis completed.')
-    
+        self.update_progress('Workflow Completed...') 
+        
     # 执行所有方法
     def full_workflow(self):
-        print('Calculating QC metrics...')
         self.calculate_qc_metrics()
-        
-        print('Filtering cells and genes...')
         self.filter_cells_and_genes()
-        
-        print('Normalizing data...')
         self.normalize_data()
-        
-        print('Identifying highly variable genes...')
         self.adata.X = np.nan_to_num(self.adata.X)
         self.find_highly_variable_genes('hvg.png')
-        
-        print('Filtering highly variable genes...')
         self.filter_hvg()
-        
-        print('Scaling data...')
         self.scale_data()
-        
-        print('Performing PCA...')
         self.pca()
-        
-        print('Computing neighbors...')
         self.neighbors()
-        
-        # bacth correction
-        print('Applying batch correction...')
         self.compare_batch_correction()
-        
-        print('Running UMAP...')
         self.umap()
-        
-        print(f'clustering with {self.clustering}...')
         if self.clustering == 'Leiden Clustering':
             self.leiden()
         elif self.clustering == 'Louvain Clustering':
             self.louvain()
             
-        print(f'Differential Expression Analysis with {self.diff_expr}...')
         self.calculate_diff_expr()
-        
-        print(f'Enrichment Analysis with {self.enrichment_analysis}...')
         self.perform_enrichment_and_annotation()
-        
-        print('Workflow Completed...') 
-
+        self.update_progress('Workflow Completed...') 
 
 
 if __name__ == '__main__':
-    print('~~~~~~~~~~~~~this is a class for scRNA-seq~~~~~~~~~~~~')
+    print('begin~~~')
+    adata_list = []
+    for name in ['dataset1.h5ad', 'dataset2.h5ad', 'dataset3.h5ad', 'dataset4.h5ad', 'dataset5.h5ad']:
+        adata = sc.read(f'/var/www/media/rna_seq/public/{name}')
+        adata_list.append(adata)
+        
+    adata_process = scRNAseqUtils(adata_list, 
+                                  '/home/shenc/test_dir', 
+                                  '/home/shenc/test_dir', 
+                                  '/home/shenc/test_dir/progress.log')
+    print('over~~~')
+    adata_process.full_workflow()

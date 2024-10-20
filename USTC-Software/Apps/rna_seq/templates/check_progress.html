@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Log</title>
+    <style>
+        #logContainer {
+            width: 80vw;
+            height: 30vh;
+            border: 1px solid #ccc;
+            overflow-y: auto; /* 添加滚动条 */
+            padding: 10px;
+            background-color: #f9f9f9;
+            white-space: pre-wrap; /* 保留空白符格式 */
+        }
+    </style>
+</head>
+<body>
+    <div id="logContainer">Checking Progress...</div>
+    <script>
+        const logContainerDiv = document.getElementById('logContainer');
+        let logContentArray = [];  // 用于存储每行日志的全局变量
+        let existingLength = 0;    // 用于跟踪已有内容长度的全局变量
+
+        // 将新增的日志行附加到 logContainer 中
+        function updateLogContainer(newLines) {
+            newLines.forEach(line => {
+                const p = document.createElement('p');
+                p.textContent = line;
+                logContainerDiv.appendChild(p);  // 将新内容追加到容器中
+            });
+            logContainerDiv.scrollTop = logContainerDiv.scrollHeight;  // 保证滚动到最新内容
+        }
+
+        function fetchLog() {
+            fetch('./progress.log')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    const newLines = data.split('\n');  // 以换行符分割成数组
+
+                    // 查找新内容并添加到 logContentArray 中
+                    if (newLines.length > existingLength) {
+                        const freshLines = newLines.slice(existingLength).filter(line => line.trim() !== '');
+                        logContentArray = logContentArray.concat(freshLines);  // 更新全局数组
+                        existingLength = logContentArray.length;  // 更新现有内容长度
+
+                        updateLogContainer(freshLines);  // 只更新新内容
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching the log:', error);
+                });
+        }
+
+        // 每2秒轮询一次
+        setInterval(fetchLog, 2000);
+    </script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>scRNA-seq Analysis</title>
+    <title>scRNA-seq Analysis{{user_id}}</title>
     <!-- 引入 Bootstrap 和 FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
     <style>
@@ -91,7 +91,7 @@
             border-radius: 5px;
             animation: highlight-animation 0.8s ease-in-out forwards; /* 启用动画 */
             transition: background-color 0.5s ease, border 0.5s ease; /* 背景色和边框变化的过渡效果 */
-            z-index: 999;
+            z-index: 9;
         }
         /* 关键帧动画 - 控制字体大小的变大和缩小效果 */
         @keyframes highlight-animation {
@@ -157,6 +157,32 @@
             width: 15vw; /* 设置加载图像的宽度 */
         }
 
+        #logContainer {
+            display: none; /* 初始隐藏 */
+            width: 80vw;
+            height: 30vh; /* 初始高度 */
+            border: 1px solid #ccc;
+            border-radius: 50%;
+            overflow-y: auto; /* 添加滚动条 */
+            padding: 30px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            font-weight: bold;
+            font-size: 1.3rem;
+            white-space: pre-wrap; /* 保留空白符格式 */
+            transition: height 0.5s ease-in-out; /* 添加高度变化的过渡效果 */
+            position: fixed;  /* 固定位置 */
+            top: 50%;  /* 定位到页面垂直中心 */
+            left: 50%;  /* 定位到页面水平中心 */
+            transform: translate(-50%, -50%);  /* 保证居中 */
+            text-align: center; /* 让容器内的文本居中 */
+            z-index: 99;
+        }
+        #logContainer p {
+            margin: 0;
+            padding: 5px 0;  /* 增加垂直间距 */
+            text-align: center; /* p 标签内文字居中 */
+        }
     </style>
 
 </head>
@@ -181,20 +207,38 @@
                 <!-- 说明文本 -->
                 <div class="description mb-3">
                     <p>This step allows you to upload your scRNA-seq data in .h5ad format. You can upload multiple files at once.</p>
-                    <p>or you can select our provided datasets:</p>
                 </div>
 
                 <!-- 提供的数据集选择 -->
-                <div class="mb-3">
+                <div class="mb-3" id="datasetsContainer">
+                    <p>or you can select our provided datasets:</p>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="dataset1" name="datasets" value="dataset1" onclick="toggleUpload()">
                         <label class="form-check-label" for="dataset1">Dataset 1</label>
+                        <a href="/media/rna_seq/public/dataset1.h5ad" class="download-link text-decoration-none" download> (Download)</a>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="dataset2" name="datasets" value="dataset2" onclick="toggleUpload()" disabled>
+                        <input class="form-check-input" type="checkbox" id="dataset2" name="datasets" value="dataset2" onclick="toggleUpload()">
                         <label class="form-check-label" for="dataset2">Dataset 2</label>
+                        <a href="/media/rna_seq/public/dataset2.h5ad" class="download-link text-decoration-none" download> (Download)</a>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="dataset3" name="datasets" value="dataset3" onclick="toggleUpload()">
+                        <label class="form-check-label" for="dataset3">Dataset 3</label>
+                        <a href="/media/rna_seq/public/dataset3.h5ad" class="download-link text-decoration-none" download> (Download)</a>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="dataset4" name="datasets" value="dataset4" onclick="toggleUpload()">
+                        <label class="form-check-label" for="dataset4">Dataset 4</label>
+                        <a href="/media/rna_seq/public/dataset4.h5ad" class="download-link text-decoration-none" download> (Download)</a>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="dataset5" name="datasets" value="dataset5" onclick="toggleUpload()">
+                        <label class="form-check-label" for="dataset5">Dataset 5</label>
+                        <a href="/media/rna_seq/public/dataset5.h5ad" class="download-link text-decoration-none" download> (Download)</a>
                     </div>
                 </div>
+
             </div>
 
             <!-- 中间主要内容 -->
@@ -295,11 +339,11 @@
     </form>
 
     <!-- 加载指示器 -->
-    <div id="loadingIndicator" class="loading-none">
+    <!-- <div id="loadingIndicator" class="loading-none">
         <img src="/static/imgs/loading.gif" alt="Loading">
         <h4>Please be patient, as the execution may take some time.</h4>
-    </div>
-
+    </div> -->
+    <div id="logContainer">Checking...</div>
 
     <script>
         function toggleSelect(element, group) {
@@ -318,49 +362,118 @@
     <script>
         // 允许上传多个文件的同时禁用数据集选择的功能
         document.getElementById('dataFiles').addEventListener('change', function() {
-            const dataset1 = document.getElementById('dataset1');
-            const dataset2 = document.getElementById('dataset2');
-            const maxFileSize = 10 * 1024 * 1024; // 10MB
-    
+            const datasetsContainer = document.getElementById('datasetsContainer');
+            const maxFileSize = 50 * 1024 * 1024; // 50MB
+
             // 清除之前的错误消息
             const errorMessage = document.getElementById('error-message');
             if (errorMessage) {
                 errorMessage.remove();
             }
-    
+
             // 检查上传的文件大小
             const files = this.files;
+            if (files.length === 0) {
+                // 如果没有文件上传，显示数据集选择容器
+                datasetsContainer.style.display = 'block';  // 显示数据集容器
+                return; // 结束函数，避免继续执行
+            }
+
             for (let i = 0; i < files.length; i++) {
                 if (files[i].size > maxFileSize) {
                     // 显示错误消息
                     const error = document.createElement('div');
                     error.id = 'error-message';
                     error.style.color = 'red';
-                    error.textContent = 'For a better user experience, please ensure that each uploaded file does not exceed 10MB in size. Check your files, please.';
+                    error.textContent = 'For a better user experience, please ensure that each uploaded file does not exceed 50MB in size. Check your files, please.';
                     this.parentNode.insertBefore(error, this.nextSibling); // 在文件上传输入框后插入错误消息
-    
+
                     // 清空文件输入
                     this.value = '';
-                    dataset1.disabled = false;
-                    // dataset2.disabled = false;
+                    datasetsContainer.style.display = 'block';  // 显示数据集容器
                     return; // 结束函数，避免继续执行
                 }
             }
-    
-            // 如果用户上传了文件，则禁用数据集选择
-            dataset1.disabled = true;
-            // dataset2.disabled = true;
+
+            // 如果用户上传了文件，则隐藏 datasetsContainer
+            datasetsContainer.style.display = 'none';  // 隐藏数据集容器
         });
     </script>
+
     
     <script>
-        // 提交表单时显示加载指示器
+        const logContainerDiv = document.getElementById('logContainer');
+        let logContentArray = [];  // 用于存储每行日志的全局变量
+    
+        // 用于更新日志容器的函数
+        function updateLogContainer() {
+            // 位置1: 模拟眨眼，先将高度设为0
+            logContainerDiv.style.height = '0';
+    
+            setTimeout(() => {
+                logContainerDiv.innerHTML = '';  // 清空容器内容
+    
+                // 添加新的日志内容
+                logContentArray.forEach(line => {
+                    const p = document.createElement('p');
+                    p.textContent = line;
+                    logContainerDiv.appendChild(p);  // 将每行内容作为 <p> 标签添加
+                });
+    
+                // 位置2: 模拟“睁眼”，将高度恢复为原来的高度
+                logContainerDiv.style.height = '30vh';
+    
+                // 确保滚动到最新内容
+                logContainerDiv.scrollTop = logContainerDiv.scrollHeight;
+            }, 300);  // 延迟300ms模拟“眨眼”效果
+        }
+    
+        // 用于获取日志的函数
+        function fetchLog() {
+            fetch('/media/rna_seq/{{user_id}}/progress.log')  // 根据用户ID动态获取日志路径
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    const newLines = data.split('\n');  // 以换行符分割成数组
+                    const existingLength = logContentArray.length;  // 当前已有内容的长度
+    
+                    // 查找新内容并添加到 logContentArray 中
+                    let hasNewContent = false;  // 标记是否有新内容
+                    newLines.forEach((line, index) => {
+                        if (index >= existingLength && line.trim() !== '') {  // 确保不重复添加已有行
+                            logContentArray.push(line);  // 将新的日志行添加到数组中
+                            hasNewContent = true;  // 设置标记为 true
+                        }
+                    });
+    
+                    // 如果有新内容，才更新日志容器
+                    if (hasNewContent) {
+                        updateLogContainer();  // 重新渲染日志容器并触发眨眼效果
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching the log:', error);
+                });
+        }
+    
+        // 表单提交时触发的事件处理
         document.getElementById('workflow-form').onsubmit = function() {
-            const loadingIndicator = document.getElementById('loadingIndicator');
-            loadingIndicator.classList.remove('loading-none'); // 移除 loading-none 类
-            loadingIndicator.classList.add('loading'); // 添加 loading 类
+            // 显示 logContainerDiv 并初始化样式
+            logContainerDiv.style.display = 'block';
+            logContainerDiv.style.height = '30vh';  // 初始化高度
+    
+            // 每2秒轮询一次日志
+            setInterval(fetchLog, 2000);
+    
+            // 可以在这里继续处理表单提交逻辑
+            return true;  // 表单正常提交
         };
     </script>
+    
     
     <script>
         // 按钮hover高亮对应步骤

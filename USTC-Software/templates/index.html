@@ -34,10 +34,6 @@
         #pymol-card:hover .link-dropdown {
             display: block;
         }
-
-        #image-segment:hover .link-dropdown {
-            display: block;
-        }
         /* 添加链接样式 */
         .link-dropdown a {
             display: block;
@@ -158,7 +154,7 @@
                                     <span>
                                         Multi-Omics
                                         <br>
-                                        Bioformatics Analysis SynthEsis platform
+                                        Bioinformatics Analysis SynthEsis platform
                                     </span>
                                 </div>
                                 <i class="fa-solid fa-quote-right"></i>
@@ -281,24 +277,22 @@
                                         </div>
                                     </a>
                                 </div>
-                                <div class="col 2" id="image-segment">
-                                    <div class="link-dropdown">
-                                        <a href="{% url 'image_segment:2d'%}">2D Segmentation</a>
-                                        <a href="{% url 'image_segment:3d'%}">3D Segmentation</a>
-                                    </div>
-                                    <div class="link-card cards">
-                                        <i class="fa-solid fa-image"></i>
-                                        <span class="link-name" id="link-name-5">
-                                            <a href="{% url 'image_segment:2d'%}">Image Segment Model (SAM)</a>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <a id="link-url-6" href="">
+                                <div class="col 2">
+                                    <a id="link-url-6" href="{% url 'image_segment:2d'%}">
                                         <div class="link-card cards text-center">
                                             <i class="fa-regular fa-image"></i>
                                             <span class="link-name" id="link-name-6">
-                                                Image Segment Model (UNeXt)
+                                                Image Segment Model (2D)
+                                            </span>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col">
+                                    <a id="link-url-6" href="{% url 'image_segment:3d'%}">
+                                        <div class="link-card cards text-center">
+                                            <i class="fa-regular fa-image"></i>
+                                            <span class="link-name" id="link-name-6">
+                                                Image Segment Model (3D)
                                             </span>
                                         </div>
                                     </a>

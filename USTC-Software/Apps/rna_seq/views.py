@@ -27,7 +27,9 @@ def rna_index(request):
         user = User.get_user_by_email(email)
         if user and user.id == int(user_id):
             # 用户已登录，继续渲染页面
-            return render(request, 'upload.html')
+            return render(request, 'upload.html', {
+                'user_id': user_id,
+            })
         else:
             # 用户信息无效，重定向到登录页面
             messages.warning(request, '请重新登录以使用 RNA 实验工具')
@@ -84,8 +86,11 @@ def upload_file(request):
                 adata_list.append(sc.read_h5ad(file_path))
         else:
             DATASET_PATHS = {
-                'dataset1': '/var/www/media/rna_seq/public/pbmc3k_raw.h5ad',
-                'dataset2': '/var/www/media/rna_seq/public/pbmc68k_reduced.h5ad',
+                'dataset1': '/var/www/media/rna_seq/public/dataset1.h5ad',
+                'dataset2': '/var/www/media/rna_seq/public/dataset2.h5ad',
+                'dataset3': '/var/www/media/rna_seq/public/dataset3.h5ad',
+                'dataset4': '/var/www/media/rna_seq/public/dataset4.h5ad',
+                'dataset5': '/var/www/media/rna_seq/public/dataset5.h5ad',
             }
             selected_datasets = request.POST.getlist('datasets')
             if selected_datasets:
@@ -104,17 +109,22 @@ def upload_file(request):
         diff_expr = request.POST.get('diff_expr')
         trajectory_inference = request.POST.get('trajectory_inference')
         
+        # 在用户文件夹下面生成一个专属的progress_path
+        progress_path = os.path.join(user_folder, 'progress.log')
+        
         # 这里开始处理adata_list数据，直接实例化，然后计算所有内容
         adata_process = scRNAseqUtils(
             adata_list,
             user_folder,
             display_path,
+            progress_path,
             batch_correction,
             clustering,
             enrichment_analysis,
             diff_expr,
             trajectory_inference
         )
+        
         workflow_option = request.POST.get('workflow_option')
         if workflow_option == "qc_and_dim_reduction":
             # 执行简单的质量控制
