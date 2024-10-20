@@ -147,25 +147,25 @@ def upload_image2d(request):
 # 类似的，添加一个处理3D图像的方法
 def process_image_3d(
     input_image_path: str,
-    gt_image_path: str,
+    # gt_image_path: str,
     output_image_path: str,
-    roi_index: int,
+    # roi_index: int,
     api_url: str = 'http://127.0.0.3:8000/infer'  # 使用你在 curl 中的 api_url
 ):
     input_file = Path(input_image_path)
-    gt_file = Path(gt_image_path)
+    # gt_file = Path(gt_image_path)
     
     if not input_file.is_file():
         raise FileNotFoundError(f'Input file {input_file} not found')
     
-    if not gt_file.is_file():
-        raise FileNotFoundError(f'Ground truth file {gt_file} not found')
+    # if not gt_file.is_file():
+    #     raise FileNotFoundError(f'Ground truth file {gt_file} not found')
 
     # 构建请求数据
     data = {
         "img_path": str(input_file),  # 输入图像路径
-        "gt_path": str(gt_file),      # GT 图像路径
-        "category_index": roi_index,  # ROI 索引
+        # "gt_path": str(gt_file),      # GT 图像路径
+        # "category_index": roi_index,  # ROI 索引
         "output_path": output_image_path  # 输出路径
     }
 
@@ -202,10 +202,11 @@ def upload_image3d(request):
             return redirect('accounts:signup_login')
 
         input_file = request.FILES.get('input')
-        gt_file = request.FILES.get('gt')
-        roi_index = request.POST.get('roi_index', 0)  # 从表单中获取 ROI 索引
+        # gt_file = request.FILES.get('gt')
+        # roi_index = request.POST.get('roi_index', 0)  # 从表单中获取 ROI 索引
 
-        if input_file and gt_file:
+        # if input_file and gt_file:
+        if input_file:
             # 创建用户的专属文件夹
             user_folder = create_user_folder(user_id)
             # 确保 temp 和 output 目录存在
@@ -220,20 +221,20 @@ def upload_image3d(request):
 
             # 保存上传的文件到临时位置
             input_path = os.path.join(input_dir, f"image_{input_file.name}")
-            gt_path = os.path.join(input_dir, f"gt_{gt_file.name}")
+            # gt_path = os.path.join(input_dir, f"gt_{gt_file.name}")
 
             with open(input_path, 'wb+') as destination:
                 for chunk in input_file.chunks():
                     destination.write(chunk)
-
-            with open(gt_path, 'wb+') as destination:
-                for chunk in gt_file.chunks():
-                    destination.write(chunk)
+            # with open(gt_path, 'wb+') as destination:
+            #     for chunk in gt_file.chunks():
+            #         destination.write(chunk)
 
             # 处理图像
             input_image_url = f'/media/{user_id}/sam3d_input/image_{input_file.name}'
             output_path = os.path.join(output_dir, input_file.name)
-            if process_image_3d(input_path, gt_path, output_path, roi_index):
+            # if process_image_3d(input_path, gt_path, output_path, roi_index):
+            if process_image_3d(input_path, output_path):
                 # 设置结果图像 URL
                 output_image_url = f'/media/{user_id}/sam3d_output/{input_file.name}'
             else:
