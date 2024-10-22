@@ -33,6 +33,8 @@ urlpatterns = [
     path('upload_development_log/', views.upload_development_log, name='upload_development_log'),
     
     # 整合上传
-    path('to_upload/', views.to_upload, name='to_upload')
+    path('to_upload/', views.to_upload, name='to_upload'),
+    
+    path('feedback_list/', views.feedback_list, name="feedback_list"),
 ]
 

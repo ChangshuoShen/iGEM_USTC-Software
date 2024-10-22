@@ -126,7 +126,7 @@
             left: 0;
             right: 0;
             background-color: rgba(255, 255, 255, 0.8); /* 设置背景色以提高可读性 */
-            z-index: 1000; /* 确保其在其他内容之上 */
+            z-index: 666; /* 确保其在其他内容之上 */
             padding: 10px;
             text-align: center;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 增加阴影效果 */
@@ -159,14 +159,18 @@
 
         #logContainer {
             display: none; /* 初始隐藏 */
-            width: 80vw;
+            width: 80vw !important;
             height: 30vh; /* 初始高度 */
-            border: 1px solid #ccc;
-            border-radius: 50%;
+            border-radius: 20px;
             overflow-y: auto; /* 添加滚动条 */
             padding: 30px;
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
+            /* background: radial-gradient(circle at center, #ffffff 30%, rgba(255, 255, 255, 0.8) 100%); */
+            background-image: url('/static/imgs/running.gif'); /* 使用背景图片 */
+            background-position: right bottom; /* 将背景图片定位在右下角 */
+            background-repeat: no-repeat; /* 背景图片不重复 */
+            background-size: 20%; /* 调整背景图片大小，占容器的10% */
+            background-color: white;
+            box-shadow: 0 0 2px 1px rgba(224, 211, 32, 0.5);
             font-weight: bold;
             font-size: 1.3rem;
             white-space: pre-wrap; /* 保留空白符格式 */
@@ -175,18 +179,28 @@
             top: 50%;  /* 定位到页面垂直中心 */
             left: 50%;  /* 定位到页面水平中心 */
             transform: translate(-50%, -50%);  /* 保证居中 */
-            text-align: center; /* 让容器内的文本居中 */
-            z-index: 99;
+            z-index: 999;
         }
+        #overlay {
+            display: none; /* 初始隐藏 */
+            position: fixed;  /* 固定在页面上 */
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.7); /* 半透明黑色背景 */
+            z-index: 888; /* 确保层级低于logContainer但高于其他元素 */
+        }
+        
         #logContainer p {
             margin: 0;
             padding: 5px 0;  /* 增加垂直间距 */
-            text-align: center; /* p 标签内文字居中 */
         }
     </style>
 
 </head>
 <body>
+    <div id="overlay"></div>
     <header>
         <h3 style="color: rgb(159, 200, 63);">Welcome to scRNA-seq Analysis Workflow</h3>
     </header>
@@ -214,28 +228,28 @@
                     <p>or you can select our provided datasets:</p>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="dataset1" name="datasets" value="dataset1" onclick="toggleUpload()">
-                        <label class="form-check-label" for="dataset1">Dataset 1</label>
-                        <a href="/media/rna_seq/public/dataset1.h5ad" class="download-link text-decoration-none" download> (Download)</a>
+                        <label class="form-check-label" for="dataset1">gbm_GSE173278.h5ad</label>
+                        <a href="/media/rna_seq/public/gbm_GSE173278.h5ad" class="download-link text-decoration-none" download> (Download)</a>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="dataset2" name="datasets" value="dataset2" onclick="toggleUpload()">
-                        <label class="form-check-label" for="dataset2">Dataset 2</label>
-                        <a href="/media/rna_seq/public/dataset2.h5ad" class="download-link text-decoration-none" download> (Download)</a>
+                        <label class="form-check-label" for="dataset2">gbm_GSE182109.h5ad</label>
+                        <a href="/media/rna_seq/public/gbm_GSE182109.h5ad" class="download-link text-decoration-none" download> (Download)</a>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="dataset3" name="datasets" value="dataset3" onclick="toggleUpload()">
-                        <label class="form-check-label" for="dataset3">Dataset 3</label>
-                        <a href="/media/rna_seq/public/dataset3.h5ad" class="download-link text-decoration-none" download> (Download)</a>
+                        <label class="form-check-label" for="dataset3">hcc_GSE112271.h5ad</label>
+                        <a href="/media/rna_seq/public/hcc_GSE112271.h5ad" class="download-link text-decoration-none" download> (Download)</a>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="dataset4" name="datasets" value="dataset4" onclick="toggleUpload()">
-                        <label class="form-check-label" for="dataset4">Dataset 4</label>
-                        <a href="/media/rna_seq/public/dataset4.h5ad" class="download-link text-decoration-none" download> (Download)</a>
+                        <label class="form-check-label" for="dataset4">hcc_GSE149614.h5ad</label>
+                        <a href="/media/rna_seq/public/hcc_GSE149614.h5ad" class="download-link text-decoration-none" download> (Download)</a>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="dataset5" name="datasets" value="dataset5" onclick="toggleUpload()">
-                        <label class="form-check-label" for="dataset5">Dataset 5</label>
-                        <a href="/media/rna_seq/public/dataset5.h5ad" class="download-link text-decoration-none" download> (Download)</a>
+                        <label class="form-check-label" for="dataset5">hcc_GSE156625.h5ad</label>
+                        <a href="/media/rna_seq/public/hcc_GSE156625.h5ad" class="download-link text-decoration-none" download> (Download)</a>
                     </div>
                 </div>
 
@@ -343,7 +357,7 @@
         <img src="/static/imgs/loading.gif" alt="Loading">
         <h4>Please be patient, as the execution may take some time.</h4>
     </div> -->
-    <div id="logContainer">Checking...</div>
+    <div id="logContainer">Checking Progress...</div>
 
     <script>
         function toggleSelect(element, group) {
@@ -465,6 +479,10 @@
             // 显示 logContainerDiv 并初始化样式
             logContainerDiv.style.display = 'block';
             logContainerDiv.style.height = '30vh';  // 初始化高度
+
+            // 显示遮罩层
+            const overlay = document.getElementById('overlay');
+            overlay.style.display = 'block'; // 显示遮罩层
     
             // 每2秒轮询一次日志
             setInterval(fetchLog, 2000);

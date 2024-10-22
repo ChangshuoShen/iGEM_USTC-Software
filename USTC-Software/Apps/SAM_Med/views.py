@@ -107,19 +107,22 @@ def upload_image2d(request):
             messages.warning(request, 'Please login before uploading images.')
             return redirect('accounts:signup_login')
 
-        uploaded_image = request.FILES.get('image')
+        uploaded_image = request.FILES.get('uploaded_image')
+        selected_sample_image = request.POST.get('sample_image')
+        # print(selected_sample_image)
+        
+        # 确保用户文件夹存在
+        user_folder = create_user_folder(user_id)
+        input_dir = os.path.join(user_folder, 'sam2d_input')
+        output_dir = os.path.join(user_folder, 'sam2d_output')
+        os.makedirs(input_dir, exist_ok=True)
+        os.makedirs(output_dir, exist_ok=True)
+        
+        # 清空 temp 和 output 目录中的文件
+        clear_directory(input_dir)
+        clear_directory(output_dir)
+        
         if uploaded_image:
-            # 创建用户的专属文件夹
-            user_folder = create_user_folder(user_id)
-            # 确保 temp 和 output 目录存在
-            input_dir = os.path.join(user_folder, 'sam2d_input')
-            output_dir = os.path.join(user_folder, 'sam2d_output')
-            os.makedirs(input_dir, exist_ok=True)
-            os.makedirs(output_dir, exist_ok=True)
-            # 先清除 temp 和 output 目录中的所有文件
-            clear_directory(input_dir)
-            clear_directory(output_dir)
-
             # 保存上传的文件到临时位置
             input_path = os.path.join(input_dir, uploaded_image.name)
             with open(input_path, 'wb+') as destination:
@@ -128,15 +131,25 @@ def upload_image2d(request):
             # 处理图像
             input_image_url = f'/media/{user_id}/sam2d_input/{uploaded_image.name}'
             output_path = os.path.join(output_dir, uploaded_image.name)
-            if process_image_2d(input_path, output_path):
-                # 设置结果图像 URL
-                output_image_url = f'/media/{user_id}/sam2d_output/{uploaded_image.name}'
-                # result_image_url = temp_output_path
-            else:
-                output_image_url = None
-                error_message = 'Image processing failed.'
+        elif selected_sample_image:
+            sample_image_path = f'/var/www{selected_sample_image}'  # 样例图片的实际路径
+            input_image_url = selected_sample_image  # 样例图片的 URL 路径
+            output_path = os.path.join(output_dir, os.path.basename(selected_sample_image))
+            input_path = sample_image_path  # 样例图片的实际路径
         else:
-            error_message = 'No image file was selected.'
+            default_sample_image = '/var/www/media/sam/public/amos_0004_75.png'  # 默认样例图片的实际路径
+            input_image_url = '/media/sam/public/amos_0004_75.png'  # 默认样例图片的 URL
+            output_path = os.path.join(output_dir, 'amos_0004_75.png')
+            input_path = default_sample_image  # 默认样例图片的实际路径
+               
+        if process_image_2d(input_path, output_path):
+            # 设置结果图像 URL
+            output_image_url = f'/media/{user_id}/sam2d_output/{os.path.basename(output_path)}'
+            # result_image_url = temp_output_path
+        else:
+            output_image_url = None
+            error_message = 'Image processing failed.'
+        
 
     return render(request, 'sam2d.html', {
         'input_image_url': input_image_url,
@@ -153,26 +166,17 @@ def process_image_3d(
     api_url: str = 'http://127.0.0.3:8000/infer'  # 使用你在 curl 中的 api_url
 ):
     input_file = Path(input_image_path)
-    # gt_file = Path(gt_image_path)
     
     if not input_file.is_file():
         raise FileNotFoundError(f'Input file {input_file} not found')
-    
-    # if not gt_file.is_file():
-    #     raise FileNotFoundError(f'Ground truth file {gt_file} not found')
-
     # 构建请求数据
     data = {
         "img_path": str(input_file),  # 输入图像路径
-        # "gt_path": str(gt_file),      # GT 图像路径
-        # "category_index": roi_index,  # ROI 索引
         "output_path": output_image_path  # 输出路径
     }
 
     try:
-        # 发送 POST 请求，使用 json 参数
         response = requests.post(api_url, json=data)
-        
         # 检查响应状态码
         if response.status_code == 200:
             result = response.json()
@@ -201,46 +205,49 @@ def upload_image3d(request):
             messages.warning(request, 'Please login before uploading images.')
             return redirect('accounts:signup_login')
 
-        input_file = request.FILES.get('input')
-        # gt_file = request.FILES.get('gt')
-        # roi_index = request.POST.get('roi_index', 0)  # 从表单中获取 ROI 索引
-
-        # if input_file and gt_file:
-        if input_file:
-            # 创建用户的专属文件夹
-            user_folder = create_user_folder(user_id)
-            # 确保 temp 和 output 目录存在
-            input_dir = os.path.join(user_folder, 'sam3d_input')
-            output_dir = os.path.join(user_folder, 'sam3d_output')
-            
-            os.makedirs(input_dir, exist_ok=True)
-            os.makedirs(output_dir, exist_ok=True)
-            # 清除 temp 和 output 目录中的所有文件
-            clear_directory(input_dir)
-            clear_directory(output_dir)
-
+        input_file = request.FILES.get('uploaded_image')
+        uploaded_image = request.FILES.get('uploaded_image')
+        selected_sample_image = request.POST.get('sample_image')
+        
+        # 创建用户的专属文件夹
+        user_folder = create_user_folder(user_id)
+        # 确保 temp 和 output 目录存在
+        input_dir = os.path.join(user_folder, 'sam3d_input')
+        output_dir = os.path.join(user_folder, 'sam3d_output')
+        
+        os.makedirs(input_dir, exist_ok=True)
+        os.makedirs(output_dir, exist_ok=True)
+        # 清除 temp 和 output 目录中的所有文件
+        clear_directory(input_dir)
+        clear_directory(output_dir)
+        
+        if uploaded_image:
             # 保存上传的文件到临时位置
-            input_path = os.path.join(input_dir, f"image_{input_file.name}")
+            input_path = os.path.join(input_dir, f"image_{uploaded_image.name}")
             # gt_path = os.path.join(input_dir, f"gt_{gt_file.name}")
-
             with open(input_path, 'wb+') as destination:
-                for chunk in input_file.chunks():
+                for chunk in uploaded_image.chunks():
                     destination.write(chunk)
-            # with open(gt_path, 'wb+') as destination:
-            #     for chunk in gt_file.chunks():
-            #         destination.write(chunk)
-
             # 处理图像
-            input_image_url = f'/media/{user_id}/sam3d_input/image_{input_file.name}'
-            output_path = os.path.join(output_dir, input_file.name)
+            input_image_url = f'/media/{user_id}/sam3d_input/image_{uploaded_image.name}'
+            output_path = os.path.join(output_dir, uploaded_image.name)
             # if process_image_3d(input_path, gt_path, output_path, roi_index):
             if process_image_3d(input_path, output_path):
                 # 设置结果图像 URL
-                output_image_url = f'/media/{user_id}/sam3d_output/{input_file.name}'
+                output_image_url = f'/media/{user_id}/sam3d_output/{uploaded_image.name}'
+            else:
+                error_message = '3D image processing failed.'
+        elif selected_sample_image:
+            input_path = '/var/www/media/sam/public/amos_0013.nii.gz'
+            input_image_url = '/media/sam/public/amos_0013.nii.gz'
+            output_path = os.path.join(output_dir, 'amos_0013.nii.gz')
+            if process_image_3d(input_path, output_path):
+                # 设置结果图像 URL
+                output_image_url = f'/media/{user_id}/sam3d_output/amos_0013.nii.gz'
             else:
                 error_message = '3D image processing failed.'
         else:
-            error_message = 'Input file or ground truth file missing.'
+            error_message = 'Input file missing.'
 
     return render(request, 'sam3d.html', {
         'input_image_url': input_image_url,

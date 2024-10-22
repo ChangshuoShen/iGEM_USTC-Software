@@ -2,6 +2,7 @@ from django.shortcuts import render, HttpResponse, get_object_or_404, redirect
 from django.contrib import messages
 from .models import post, Comment, Reply, Like, TeachingMaterial, CourseResource, DevelopmentLog
 from Apps.accounts.models import User
+from Apps.feedback.models import Feedback
 from django.core.paginator import Paginator
 from django.urls import reverse
 
@@ -16,6 +17,7 @@ def forum_index(request):
 
     return render(request, 'forum.html', {
         'posts_data': posts_data,
+        'is_admin': request.session.get('email') == 'super@mail',
     })
 
 
@@ -33,13 +35,17 @@ def riddle_difficulty_index(request):
 
     return render(request, 'riddle_index.html', {
         'riddle_difficulty_contents': riddle_contents,
+        'is_admin': request.session.get('email') == 'super@mail',
     })
+
 
 def riddle_category_index(request):
     riddles_by_category = post.get_riddles_by_main_category()
     return render(request, 'riddle_category_index.html', {
         'riddles_by_category': riddles_by_category.items(),
+        'is_admin': request.session.get('email') == 'super@mail',
     })
+
 
 def share(request):
     # 检查用户是否已登录
@@ -49,7 +55,9 @@ def share(request):
         return redirect('accounts:signup_login')
     
     # print(request.session.__dict__)
-    return render(request, 'share.html')
+    return render(request, 'share.html',
+                  {'is_admin': request.session.get('email') == 'super@mail',})
+
 
 def teaching_material_index(request):
     materials_list = TeachingMaterial.objects.all()
@@ -57,10 +65,14 @@ def teaching_material_index(request):
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'teaching.html', {'page_obj': page_obj})
+    return render(request, 'teaching.html', 
+                  {'page_obj': page_obj,
+                   'is_admin': request.session.get('email') == 'super@mail',})
+
 
 def to_upload_teaching_material(request):
     return render(request, 'to_upload_teaching_material.html')
+
 
 def upload_teaching_material(request, material_id=None):
     if request.method == 'POST':
@@ -101,20 +113,25 @@ def teaching_detail(request, material_id):
     # 如果 material 存在，则渲染模板
     response = render(request, 'teaching_detail.html', {'material': material})
     response['Content-Security-Policy'] = "frame-ancestors 'self' http://127.0.0.1:8000"
+    response['is_admin'] = request.session.get('email') == 'super@mail',
     return response
 
-# 这部分是课程资料
 
+# 这部分是课程资料
 def course_resources_index(request):
     resources_list = CourseResource.objects.all()
     paginator = Paginator(resources_list, 8)  # 每页显示10条记录
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'course_resources.html', {'page_obj': page_obj})
+    return render(request, 'course_resources.html', 
+                  {'page_obj': page_obj,
+                   'is_admin': request.session.get('email') == 'super@mail',})
+
 
 def to_upload_course_resource(request):
     return render(request, 'to_upload_course_resource.html')
+
 
 def upload_course_resource(request, resource_id=None):
     if request.method == 'POST':
@@ -144,6 +161,7 @@ def upload_course_resource(request, resource_id=None):
         resource = CourseResource.objects.get(pk=resource_id) if resource_id else None
     return HttpResponse("What???")
 
+
 def course_resource_detail(request, resource_id):
     try:
         resource = CourseResource.objects.get(pk=resource_id)
@@ -151,17 +169,21 @@ def course_resource_detail(request, resource_id):
         return HttpResponse("Not Found", status=404)
     response = render(request, 'course_resource_detail.html', {'resource': resource})
     response['Content-Security-Policy'] = "frame-ancestors 'self' http://127.0.0.1:8000"
+    response['is_admin'] = request.session.get('email') == 'super@mail',
     return response
-
 
 
 # 这里开始是开发日志的相关内容
 def development_log_index(request):
     logs_list = DevelopmentLog.objects.all().order_by('-log_date')
-    return render(request, 'development_log.html', {'logs_list': logs_list})
+    return render(request, 'development_log.html', 
+                  {'logs_list': logs_list,
+                   'is_admin': request.session.get('email') == 'super@mail',})
+
 
 def to_upload_development_log(request):
     return render(request, 'to_upload_development_log.html')
+
 
 def upload_development_log(request, log_id=None):
     if request.method == 'POST':
@@ -181,14 +203,14 @@ def upload_development_log(request, log_id=None):
             DevelopmentLog.objects.create(
                 title=title,
                 description=description,
-                log_date=log_date,
-                created_by=user
+                log_date=log_date
             )
-        return redirect('forum:development_log_index')
+        return redirect('forum:development_log')
 
     else:
         log = DevelopmentLog.objects.get(pk=log_id) if log_id else None
     return render(request, 'to_upload_development_log.html', {'log': log})
+
 
 # 将所有的上传综合到一个页面
 def to_upload(request):
@@ -199,6 +221,7 @@ def to_upload(request):
         response = HttpResponse("You are not authorized to access this page. You will be redirected to the home page in 5 seconds.")
         response['refresh'] = '3;url=' + reverse('forum:forum_index')  # 设置定时器
         return response
+
 
 def submit_sharing(request):
     if request.method == 'POST':
@@ -212,7 +235,6 @@ def submit_sharing(request):
         return show_post_detail(request=request, post_id=new_post.id)
     else:
         return HttpResponse('Error, please try again')
-
 
 
 # from .utils.add_some_replies import create_random_replies
@@ -269,6 +291,7 @@ def show_post_detail(request, post_id):
         'publisher': publisher,
         'post_content': post_content,
         'main_comments': main_comments,
+        'is_admin': request.session.get('email') == 'super@mail',
     })
 
 
@@ -344,3 +367,19 @@ def users(request):
         'users_info': users_info
     })
 
+
+def feedback_list(request):
+    if request.session.get('email') == 'super@mail':
+        feedbacks = Feedback.objects.all().order_by('-created_at')
+        paginator = Paginator(feedbacks, 8)  # 每页展示5条反馈
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        return render(request, 'feedback_list.html', 
+                      {'page_obj': page_obj,
+                       'is_admin': request.session.get('email') == 'super@mail',})
+    else:
+        # 如果不是 "super@mail"，返回一个带有定时重定向的 HttpResponse
+        response = HttpResponse("You are not authorized to access this page. You will be redirected to the home page in 5 seconds.")
+        response['refresh'] = '3;url=' + reverse('forum:forum_index')  # 设置定时器
+        return response
+    

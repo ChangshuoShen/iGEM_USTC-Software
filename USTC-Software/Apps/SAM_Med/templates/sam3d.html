@@ -37,6 +37,7 @@
             border: 2px solid rgba(0, 0, 0, 0.1);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             display: flex;
+            overflow-y: auto;
             flex-direction: column;
             align-items: center; /* 居中对齐 */
             justify-content: flex-start; /* 向上对齐 */
@@ -44,7 +45,7 @@
         .form-container form {
             width: 90%;
         }
-        .result-container {
+        .principle-container {
             flex: 1;
             height: 100%;
             border-radius: 10px;
@@ -54,6 +55,10 @@
             flex-direction: column;
             align-items: center; /* 居中对齐 */
             justify-content: flex-start; /* 向上对齐 */
+        }
+        .principle-container iframe{
+            width: 100%;
+            height: 100%;
         }
         h2 {
             font-size: 2.4rem;
@@ -70,6 +75,7 @@
         .btn-primary {
             background-color: #007bff;
             border-color: #007bff;
+            width: 80%;
         }
         .btn-primary:hover {
             background-color: #7a8b9e;
@@ -102,46 +108,74 @@
 <body>
     <div class="main">
         <div class="form-container">
-            <h2>Upload Files</h2>
+            <h2>Upload A File</h2>
             <h3 style="width: 100%; text-align: right;">for 3D Segmentation</h3>
             
             <form method="post" action="{% url 'image_segment:upload_3d' %}" enctype="multipart/form-data" class="mb-3">
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="input">Choose the Input File (.nii.gz):</label>
-                    <input type="file" class="form-control-file" id="input" accept=".nii.gz" name="input" required>
+                    <input type="file" class="form-control-file" id="input" accept=".nii.gz" name="uploaded_image" onchange="disableSelectImage()">
+                </div>
+                <!-- 样例文件选择，先只提供一个文件 -->
+                <div class="form-group" id="selectImage">
+                    <label for="example_images">Or select a sample image:</label>
+                    <div id="example_images">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sample_image" id="sample1" value="/var/www/media/sam3d/public/sample1.nii.gz" onchange="disableUploadImage()">
+                            <label class="form-check-label" for="sample1">
+                                Sample I: Amos_0013.nii.gz 
+                                <a href="/media/sam/public/amos_0013.nii.gz" download class="sample-download text-decoration-none" id="download-sample1">(Download)</a>
+                            </label>
+                        </div>
+                    </div>
                 </div>
                 <!-- 预览区域，暂时不需要用于3D图像的预览 -->
                 <img id="image-preview" class="preview-image image-fluid" alt="" src="">
                 <button type="submit" class="btn btn-primary btn-block">Upload and Process</button>
             </form>
-
             {% if input_image_url %}
-                <img id="image-uploaded" class="uploaded-image image-fluid" alt="" src="{{ input_image_url }}">
+                <!-- <img id="image-uploaded" class="uploaded-image image-fluid" alt="" src="{{ input_image_url }}"> -->
+                <a href="{{ input_image_url }}" download="uploaded_image.nii.gz"></a>
             {% endif %}
-            
             {% if error_message %}
                 <p class="text-danger">{{ error_message }}</p>
             {% endif %}
+
+            {% if output_image_url %}
+                <h2>Processed Image</h2>
+                <!-- <img src="{{ output_image_url }}" alt="Processed Image" class="img-fluid"> -->
+                <a href="{{ output_image_url }}" download="processed_image.nii.gz" class="text-decoration-none btn btn-primary btn-block">Download Processed Image</a>
+            {% else %}
+                <p>No image processed yet.</p>
+            {% endif %}
         </div>
         
-        <div class="result-container">
-            <h2>Processed Image</h2>
-            <div id="result-image-container" class="result-image-container mt-3">
-                {% if output_image_url %}
-                    <img src="{{ output_image_url }}" alt="Processed Image" class="img-fluid">
-                    <br>
-                    <a href="{{ output_image_url }}" download="processed_image.nii.gz" class="text-decoration-none">Download Processed Image</a>
-                {% else %}
-                    <p>No image processed yet.</p>
-                {% endif %}
-            </div>
+        <div class="principle-container">
+            <iframe src="https://2024.igem.wiki/ustc-software/model" frameborder="0"></iframe>
         </div>
     </div>
 
     <script>
-        // 暂时隐藏预览功能，3D图像不需要前端预览
+        // 当选择上传文件时，禁用样例文件的选择
+        function disableSelectImage() {
+            const exampleImages = document.getElementById('example_images');
+            const radioButtons = exampleImages.getElementsByTagName('input');
+            
+            // 禁用所有样例选择按钮
+            for (let i = 0; i < radioButtons.length; i++) {
+                radioButtons[i].disabled = true;
+            }
+        }
+    
+        // 当选择样例文件时，禁用上传文件的输入
+        function disableUploadImage() {
+            const uploadInput = document.getElementById('input');
+            // 禁用上传文件输入
+            uploadInput.disabled = true;
+        }
     </script>
+    
     <!-- 引入 Bootstrap JS 和依赖 -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>

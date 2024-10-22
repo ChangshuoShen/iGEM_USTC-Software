@@ -381,27 +381,20 @@ def process_med_image(img_path,
     ckpt_path (str): 模型的权重文件路径,
     """
 
-    # 1. 读取和预处理输入数据
+    # 读取和预处理输入数据
     # roi_image, roi_label, meta_info = data_preprocess(
     #     img_path, gt_path, category_index=category_index)
-    
     roi_image, meta_info = data_preprocess(img_path)
     
-    # 2. 准备预训练模型
+    # 预训练模型
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = medim.create_model("SAM-Med3D",
                                pretrained=True,
                                checkpoint_path=ckpt_path).to(device)
     
-    # 将图像数据移到GPU上
     roi_image = roi_image.to(device)
-
-    # 3. 推理模型
     roi_pred = sam_model_infer(model, roi_image, roi_gt=None)
-
-    # 4. 后处理并保存结果
     data_postprocess(roi_pred, meta_info, output_path, img_path)
-    # return output_path
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel

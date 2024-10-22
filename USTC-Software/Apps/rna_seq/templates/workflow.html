@@ -69,10 +69,15 @@
 
         .description-container {
             flex: 1;
-            padding: 0;
+            padding: 10px;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            box-sizing: border-box;
+            overflow: auto;
+            border: solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .description-container p {
@@ -179,7 +184,7 @@
 
             .image-container, .description-container {
                 width: 100%;
-                padding: 10px 0;
+                padding: 15px;
             }
         }
 

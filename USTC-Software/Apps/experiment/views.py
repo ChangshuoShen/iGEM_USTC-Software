@@ -30,7 +30,7 @@ def exp_index(request):
             return render(request, 'exp_index.html')
         else:
             # 用户信息无效，重定向到登录页面
-            messages.warning(request, 'Please login before using Physical Chemistry Experiment Tools')
+            messages.warning(request, 'Error occured!!! Please again~~~')
             response = redirect('accounts:signup_login')
             response.delete_cookie('user_id')
             response.delete_cookie('email')

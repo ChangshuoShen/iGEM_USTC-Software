@@ -37,6 +37,7 @@
             border: 2px solid rgba(0, 0, 0, 0.1);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             display: flex;
+            overflow-y: auto;
             flex-direction: column;
             align-items: center; /* 居中对齐 */
             justify-content: flex-start; /* 向上对齐 */
@@ -55,6 +56,11 @@
             flex-direction: column;
             align-items: center; /* 居中对齐 */
             justify-content: flex-start; /* 向上对齐 */
+            overflow-y: auto;
+        }
+        .result-container iframe {
+            width: 100%;
+            height: 100%;
         }
         h2 {
             font-size: 2.4rem;
@@ -71,6 +77,7 @@
         .btn-primary {
             background-color: #007bff;
             border-color: #007bff;
+            width: 80%;
         }
         .btn-primary:hover {
             background-color: #7a8b9e;
@@ -103,12 +110,41 @@
 <body>
     <div class="main">
         <div class="form-container">
-            <h2>Upload an Image</h2>
+            <h2>Upload A File</h2>
+            <h3 style="width: 100%; text-align: right;">for 2D Segmentation</h3>
             <form method="post" action="{% url 'image_segment:upload_2d' %}" enctype="multipart/form-data" class="mb-3">
                 {% csrf_token %}
-                <div class="form-group">
+                
+                <div class="form-group" id="uploadImage">
                     <label for="image">Choose an image to upload:</label>
-                    <input type="file" class="form-control-file" id="image" name="image" required onchange="previewImage(event)">
+                    <input type="file" class="form-control-file" id="image" name="uploaded_image" required onchange="previewImage(event)">
+                </div>
+                <!-- 样例文件选择 -->
+                <div class="form-group" id="selectImage">
+                    <label for="example_images">Or select a sample image:</label>
+                    <div id="example_images">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sample_image" id="sample1" value="/media/sam/public/amos_0004_75.png" onchange="displaySampleImage(this.value)">
+                            <label class="form-check-label" for="sample1">
+                                Sample Image 1
+                                <a href="/media/sam/public/amos_0004_75.png" download class="sample-download text-decoration-none" id="download-sample1">(Download)</a>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sample_image" id="sample2" value="/media/sam/public/amos_0006_90.png" onchange="displaySampleImage(this.value)">
+                            <label class="form-check-label" for="sample2">
+                                Sample Image 2
+                                <a href="/media/sam/public/amos_0006_90.png" download class="sample-download text-decoration-none" id="download-sample2">(Download)</a>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sample_image" id="sample3" value="/media/sam/public/amos_0507_31.png" onchange="displaySampleImage(this.value)">
+                            <label class="form-check-label" for="sample3">
+                                Sample Image 3
+                                <a href="/media/sam/public/amos_0507_31.png" download class="sample-download text-decoration-none" id="download-sample3">(Download)</a>
+                            </label>
+                        </div>
+                    </div>
                 </div>
                 <!-- 预览区域 -->
                 <img id="image-preview" class="preview-image image-fluid" alt="" src="">
@@ -125,31 +161,47 @@
         </div>
         
         <div class="result-container">
-            <h2>Processed Image</h2>
-            <div id="result-image-container" class="result-image-container mt-3">
-                {% if output_image_url %}
-                    <img src="{{ output_image_url }}" alt="Processed Image" class="img-fluid">
-                    <br>
-                    <a href="{{ output_image_url }}" download="processed_image.png" class="text-decoration-none">Download Processed Image</a>
-                {% else %}
-                    <p>No image processed yet.</p>
-                {% endif %}
-            </div>
+            {% if output_image_url %}
+                <h2>Processed Image</h2>
+                <img src="{{ output_image_url }}" alt="Processed Image" class="img-fluid">
+                <br>
+                <a href="{{ output_image_url }}" download="processed_image.png" class="text-decoration-none btn btn-primary btn-block">Download Processed Image</a>
+            {% else %}
+                <iframe src="https://2024.igem.wiki/ustc-software/model" frameborder="0"></iframe>
+            {% endif %}
         </div>
     </div>
 
     <script>
         function previewImage(event) {
+            // 当用户上传文件时，禁用样例文件的选择
+            var sampleImages = document.getElementsByName('sample_image');
+            for (var i = 0; i < sampleImages.length; i++) {
+                sampleImages[i].disabled = true;
+            }
+    
             var reader = new FileReader();
             reader.onload = function(){
                 var output = document.getElementById('image-preview');
                 output.src = reader.result;
                 output.style.display = 'block'; // 显示预览图像
-
+    
                 var display = document.getElementById('image-uploaded');
-                display.style.display = 'none';
+                display.style.display = 'none'; // 隐藏样例图像（如果之前选择了样例图像）
             }
             reader.readAsDataURL(event.target.files[0]);
+        }
+    
+        function displaySampleImage(imageUrl) {
+            // 当用户选择样例文件时，禁用上传文件输入
+            document.getElementById('image').disabled = true;
+    
+            var output = document.getElementById('image-preview');
+            output.src = imageUrl;
+            output.style.display = 'block'; // 显示样例图像
+    
+            var display = document.getElementById('image-uploaded');
+            display.style.display = 'none'; // 隐藏上传图像（如果之前上传了文件）
         }
     </script>
     <!-- 引入 Bootstrap JS 和依赖 -->

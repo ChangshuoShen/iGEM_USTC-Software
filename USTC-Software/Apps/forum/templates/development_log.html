@@ -24,11 +24,80 @@
             background-size: cover;
         }
         .custom-nav {
-            background-color: rgba(0, 123, 255, 0.8); /* 蓝色，透明度80% */
             border-bottom-left-radius: 25px;
             border-bottom-right-radius: 25px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 添加轻微阴影 */
         }
+        ul.timeline {
+            list-style: none; /* 去掉默认列表样式 */
+            padding: 0; /* 去掉内边距 */
+            position: relative; /* 为绝对定位的伪元素设置相对定位 */
+        }
+        
+        ul.timeline:before {
+            content: '';
+            position: absolute;
+            left: 20px; /* 调整线的位置 */
+            top: 0; /* 从顶部开始 */
+            height: 100%; /* 线的高度 */
+            width: 2px; /* 线的宽度 */
+            background: rgba(68, 215, 182, 0.5); /* 线的颜色 */
+        }
+        
+        ul.timeline li {
+            position: relative; /* 为子元素提供绝对定位 */
+            margin-bottom: 20px; /* 项目之间的间距 */
+        }
+        
+        ul.timeline li:last-child {
+            margin-bottom: 0; /* 去掉最后一项的底部间距 */
+        }
+        
+        .timeline-badge {
+            position: absolute;
+            left: 10px; /* 位置调整 */
+            top: 0; /* 与父元素顶部对齐 */
+            background: #44d7b6; /* 背景颜色 */
+            color: white; /* 文字颜色 */
+            border-radius: 50%; /* 圆形 */
+            width: 30px; /* 圆的宽度 */
+            height: 30px; /* 圆的高度 */
+            display: flex;
+            align-items: center;
+            justify-content: center; /* 中心对齐图标 */
+            z-index: 1; /* 确保徽章在最上层 */
+        }
+        
+        .timeline-panel {
+            margin-left: 50px; /* 确保内容在徽章的右侧 */
+            border-radius: 8px; /* 圆角 */
+            padding: 15px; /* 内边距 */
+            position: relative; /* 设置相对定位 */
+            z-index: 2; /* 确保面板在徽章之上 */
+        }
+        
+        .timeline-heading {
+            margin-bottom: 10px; /* 顶部间距 */
+        }
+
+        .timeline-title {
+            margin: 0; /* 去掉默认外边距 */
+            font-weight: bold; /* 加粗标题 */
+        }
+        
+        .timeline-body {
+            margin: 0; /* 去掉默认外边距 */
+        }
+        
+        /* 在悬停时改变面板的背景色 */
+        ul.timeline li:hover .timeline-panel {
+            background: rgba(255, 87, 34, 0.1); /* 悬停时的背景颜色 */
+        }
+        
+        ul.timeline li:hover .timeline-badge {
+            background: #ff5722; /* 悬停时徽章的颜色 */
+        }
+        
     </style>
 </head>
 
@@ -65,7 +134,7 @@
             {% else %}
                 <p>No development logs found.</p>
             {% endif %}
-        </ul>
+        </ul>        
     </div>
 
     <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>

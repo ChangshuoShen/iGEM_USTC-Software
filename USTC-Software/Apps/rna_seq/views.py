@@ -86,11 +86,11 @@ def upload_file(request):
                 adata_list.append(sc.read_h5ad(file_path))
         else:
             DATASET_PATHS = {
-                'dataset1': '/var/www/media/rna_seq/public/dataset1.h5ad',
-                'dataset2': '/var/www/media/rna_seq/public/dataset2.h5ad',
-                'dataset3': '/var/www/media/rna_seq/public/dataset3.h5ad',
-                'dataset4': '/var/www/media/rna_seq/public/dataset4.h5ad',
-                'dataset5': '/var/www/media/rna_seq/public/dataset5.h5ad',
+                'dataset1': '/var/www/media/rna_seq/public/gbm_GSE173278.h5ad',
+                'dataset2': '/var/www/media/rna_seq/public/gbm_GSE182109.h5ad',
+                'dataset3': '/var/www/media/rna_seq/public/hcc_GSE112271.h5ad',
+                'dataset4': '/var/www/media/rna_seq/public/hcc_GSE149614.h5ad',
+                'dataset5': '/var/www/media/rna_seq/public/hcc_GSE156625.h5ad',
             }
             selected_datasets = request.POST.getlist('datasets')
             if selected_datasets:

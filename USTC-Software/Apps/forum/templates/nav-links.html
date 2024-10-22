@@ -16,8 +16,13 @@
         <li class="nav-item">
             <a class="nav-link" href="{% url 'forum:share' %}">Share sth.</a>
         </li>
+        {% if is_admin %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'forum:feedback_list' %}">feedbacks</a>
+        </li>
         <li class="nav-item">
             <a class="nav-link" href="{% url 'forum:to_upload' %}">upload</a>
         </li>
+        {% endif %}
     </ul>
 </div>
