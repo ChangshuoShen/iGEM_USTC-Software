@@ -15,30 +15,14 @@ def exp_index(request):
     # 先检查是否登陆成功，后面需要根据用户专门建文件夹存放实验数据和处理结果
     # 检查用户的 cookie 或 session，判断是否已登录
     user_id = request.COOKIES.get('user_id')
-    email = request.COOKIES.get('email')
     
     # 如果没有找到用户信息，重定向到登录页面
-    if not user_id or not email:
+    if not user_id:
         messages.warning(request, 'Please login before using Physical Chemistry Experiment Tools')
         return redirect('accounts:signup_login')
     
+    return render(request, 'exp_index.html')
      # 检查用户是否存在于数据库中
-    try:
-        user = User.get_user_by_email(email)
-        if user and user.id == int(user_id):
-            # 用户已登录，继续渲染页面
-            return render(request, 'exp_index.html')
-        else:
-            # 用户信息无效，重定向到登录页面
-            messages.warning(request, 'Error occured!!! Please again~~~')
-            response = redirect('accounts:signup_login')
-            response.delete_cookie('user_id')
-            response.delete_cookie('email')
-            return response
-    except Exception as e:
-        # 异常处理，重定向到登录页面
-        messages.error(request, 'Error occured!!! Please try again')
-        return redirect('accounts:signup_login')
 
 
 def specific_exp(request, exp_name):

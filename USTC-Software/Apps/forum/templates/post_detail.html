@@ -39,12 +39,6 @@
         .breadcrumb li {
             display: inline-block; /* 让li元素在一行内排列 */
         }
-        .custom-nav {
-            background-color: rgba(0, 123, 255, 0.8); /* 蓝色，透明度80% */
-            border-bottom-left-radius: 25px;
-            border-bottom-right-radius: 25px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 添加轻微阴影 */
-        }
         .card-custom {
             border-radius: 15px;
             background-color: rgba(255, 255, 255, 0.8); /* 白色，80%透明 */
@@ -282,6 +276,21 @@
             border-radius: 3px;
             font-family: fontawesome;
         }
+        .custom-nav {
+            background-color: rgba(0, 123, 255, 0.7);
+            border-bottom-left-radius: 25px;
+            border-bottom-right-radius: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 10000002;
+        }
+        #google_translate_element {
+            position: fixed;
+            bottom: 5px;
+            right: 8px;
+            z-index: 9999;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+            border-radius: 5px;
+        }
     </style>
 </head>
 
@@ -307,7 +316,6 @@
             <div class="post-detail-footer"> 
                 <a href="#"><i class="fa fa-star star2" aria-hidden="true">{{post_content.post_likes}}</i></a> 
                 <i class="fa fa-clock-o clock2" aria-hidden="true"> {{ post_content.publish_date }}</i> 
-                <i class="fa fa-user user2" aria-hidden="true"> 70 views</i> 
                 <form id="likeForm" action="{% url 'forum:like_post' %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="post_id" value="{{post_content.post_id}}">
@@ -391,6 +399,16 @@
             </div>
         </div>
     </div>
+    <div id="google_translate_element"></div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                includedLanguages: 'zh-CN,en,fr',  // 仅提供中文、英语和法语
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE  // 简单布局
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
     <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>

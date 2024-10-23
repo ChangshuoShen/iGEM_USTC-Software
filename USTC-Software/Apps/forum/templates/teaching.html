@@ -31,10 +31,19 @@
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
         }
         .custom-nav {
-            background-color: rgba(0, 123, 255, 0.576);
+            background-color: rgba(0, 123, 255, 0.7);
             border-bottom-left-radius: 25px;
             border-bottom-right-radius: 25px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 10000002;
+        }
+        #google_translate_element {
+            position: fixed;
+            bottom: 5px;
+            right: 8px;
+            z-index: 9999;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -50,12 +59,12 @@
             </ol>
 
             <!-- 搜索框 -->
-            <form class="d-flex search-box mx-3">
+            <!-- <form class="d-flex search-box mx-3">
                 <input type="text" class="form-control" placeholder="Search..." aria-label="Search">
                 <button class="btn btn-outline-secondary" type="submit">
                     <i class="fa fa-search"></i>
                 </button>
-            </form>
+            </form> -->
 
             {% include 'nav-links.html' %}
         </div>
@@ -142,6 +151,16 @@
             </div>
         </section>
     </div>
+    <div id="google_translate_element"></div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                includedLanguages: 'zh-CN,en,fr',  // 仅提供中文、英语和法语
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE  // 简单布局
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
     <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>

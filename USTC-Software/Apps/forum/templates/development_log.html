@@ -24,9 +24,11 @@
             background-size: cover;
         }
         .custom-nav {
+            background-color: rgba(0, 123, 255, 0.7); /* 蓝色，透明度80% */
             border-bottom-left-radius: 25px;
             border-bottom-right-radius: 25px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 添加轻微阴影 */
+            z-index: 10000002;
         }
         ul.timeline {
             list-style: none; /* 去掉默认列表样式 */
@@ -97,12 +99,20 @@
         ul.timeline li:hover .timeline-badge {
             background: #ff5722; /* 悬停时徽章的颜色 */
         }
+        #google_translate_element {
+            position: fixed;
+            bottom: 5px;
+            right: 8px;
+            z-index: 9999;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+            border-radius: 5px;
+        }
         
     </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-topcustom-nav">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top custom-nav">
         <div class="container-fluid">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
@@ -136,7 +146,18 @@
             {% endif %}
         </ul>        
     </div>
+    <div id="google_translate_element"></div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                includedLanguages: 'zh-CN,en,fr',  // 仅提供中文、英语和法语
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE  // 简单布局
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
 </body>

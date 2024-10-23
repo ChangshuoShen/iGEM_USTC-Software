@@ -28,10 +28,11 @@
             width: 100%;
         }
         .custom-nav {
-            background-color: rgba(0, 123, 255, 0.8); /* 蓝色，透明度80% */
+            background-color: rgba(0, 123, 255, 0.7);
             border-bottom-left-radius: 25px;
             border-bottom-right-radius: 25px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 添加轻微阴影 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 10000002;
         }
         .custom-button {
             background-color: rgb(44, 44, 138); /* 默认背景颜色 */
@@ -57,6 +58,14 @@
         }
         #shareForm{
             width: 96%;
+        }
+        #google_translate_element {
+            position: fixed;
+            bottom: 5px;
+            right: 8px;
+            z-index: 9999;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+            border-radius: 5px;
         }
     </style>
 </head>
