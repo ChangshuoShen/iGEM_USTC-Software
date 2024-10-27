@@ -46,6 +46,21 @@
         .link-dropdown a:hover {
             background-color: rgba(14, 55, 75, 0.5); /* 悬停时的背景颜色 */
         }
+        #video-player{
+            flex: 1;
+            max-width: 800px; /* 设置最大宽度 */
+            height: auto;
+            aspect-ratio: 16 / 9; /* 维持16:9比例 */
+            overflow: hidden; /* 防止溢出 */
+            margin: 0 auto; /* 居中对齐 */
+            border-radius: 10px;
+        }
+        #video-player video {
+            width: 95%;
+            height: 95%;
+            border: 0; /* 去掉边框 */
+            border-radius: 10px;
+        }
     </style>
 </head>
 
@@ -147,7 +162,7 @@
                         </div>
 
                         <!--介绍信息-->
-                        <div class="message cards" id="switchmore">
+                        <!-- <div class="message cards" id="switchmore">
                             <div class="des" id="des">
                                 <i class="fa-solid fa-quote-left"></i>
                                 <div class="des-title">
@@ -159,18 +174,14 @@
                                 </div>
                                 <i class="fa-solid fa-quote-right"></i>
                             </div>
-                        </div>
+                        </div> -->
 
                         <!--社交链接-->
-                        <div class="social" id="social">
+                        <!-- <div class="social" id="social">
                             <a href="https://github.com/ChangshuoShen/iGEM_USTC-Software" class="link" id="github" style="margin-left: 4px"
                                target="_blank">
                                 <i class="fa-brands fa-github"></i>
                             </a>
-                            <!-- <a href="https://wpa.qq.com/msgrd?v=3&uin=507614154&site=qq&menu=yes" class="link"
-                               id="wechat" target="_blank">
-                                <i class="fa-brands fa-weixin"></i>
-                            </a> -->
                             <a href="mailto:USTC_Software2024@163.com" class="link" id="email">
                                 <i class="fa-solid fa-envelope"></i>
                             </a>
@@ -179,7 +190,13 @@
                                <i class="fa-solid fa-dna"></i>
                             </a>
                             <a id="link-text">Contact Us Here</a>
+                        </div> -->
+                        <div id="video-player">
+                            <video src="/static/videos/short_pre_video.mp4" autoplay loop muted controls>
+                                您的浏览器不支持 HTML5 视频。
+                            </video>
                         </div>
+                                    
                     </div>
                 </div>
 
@@ -320,7 +337,19 @@
             </script>
             <a href="#" id="power-text">USTC-Software</a>
         </span>
+        <a href="https://github.com/ChangshuoShen/iGEM_USTC-Software" class="link" id="github" style="margin-left: 4px" target="_blank">
+            <i class="fa-brands fa-github"></i>
+        </a>
+        <a href="mailto:USTC_Software2024@163.com" class="link" id="email">
+            <i class="fa-solid fa-envelope"></i>
+        </a>
+        <a href="https://2024.igem.wiki/ustc-software/" class="link" id="wiki"
+            target="_blank">
+            <i class="fa-solid fa-dna"></i>
+        </a>
+        <a id="link-text">Contact Us Here</a>
     </div>
+    
 </footer>
 <!-- noscript -->
 <noscript>
