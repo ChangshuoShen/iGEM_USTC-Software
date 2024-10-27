@@ -1,0 +1,13 @@
+[Unit]
+Description=Gunicorn for SAM API
+After=network.target
+
+[Service]
+User=root
+Group=www-data
+WorkingDirectory=/home/shenc/iGEM_USTC-Software/USTC-Software/Apps/SAM_Med2D/main.py
+ExecStart=/root/anaconda3/envs/sam_api/bin/gunicorn --workers 3 --bind 127.0.0.1:8002 --timeout 300 main:app
+
+[Install]
+WantedBy=multi-user.target
+

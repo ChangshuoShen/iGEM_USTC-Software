@@ -1,0 +1,13 @@
+[Unit]
+Description=Gunicorn service for SAM3D API
+After=network.target
+
+[Service]
+User=root
+Group=www-data
+WorkingDirectory=/home/shenc/iGEM_USTC-Software/USTC-Software/Apps/SAM_Med
+ExecStart=/root/anaconda3/envs/sam_api/bin/gunicorn --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 127.0.0.3:8000 main_3d:app
+
+[Install]
+WantedBy=multi-user.target
+
